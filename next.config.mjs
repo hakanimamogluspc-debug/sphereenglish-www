@@ -2,7 +2,10 @@ import { imageHosts } from './image-hosts.config.js';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  productionBrowserSourceMaps: true,
+  productionBrowserSourceMaps: false,
+  experimental: {
+    optimizeCss: true,
+  },
   distDir: process.env.DIST_DIR || '.next',  typescript: {
     ignoreBuildErrors: true,
   },
