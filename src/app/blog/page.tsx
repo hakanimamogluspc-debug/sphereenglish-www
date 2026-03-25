@@ -1,4 +1,20 @@
-import React from 'react';
+import type { Metadata } from 'next';
+
+  export const metadata: Metadata = {
+    title: 'Blog — İş İngilizcesi & Kurumsal Eğitim Rehberi',
+    description:
+      'İş dünyasında İngilizce, kurumsal dil eğitimi, kariyer gelişimi ve sektör haberleri hakkında uzman içerikler. Sphere English Blog.',
+    alternates: { canonical: 'https://www.sphereenglish.com/blog' },
+    openGraph: {
+      title: 'Blog | Sphere English — İş İngilizcesi Rehberi',
+      description:
+        'İş dünyasında İngilizce ve kurumsal eğitim üzerine uzman içerikler, ipuçları ve güncel haberler.',
+      url: 'https://www.sphereenglish.com/blog',
+      images: [{ url: '/assets/blog_cover_english.svg', width: 1200, height: 630 }],
+    },
+  };
+
+  import React from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
