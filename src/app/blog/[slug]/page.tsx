@@ -5,6 +5,34 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { getBlogPostBySlug, getPageBlocks, BlogBlock } from '@/lib/notion';
 
+  import type { Metadata } from 'next';
+  import { getBlogPostBySlug as getBlogPostBySlugMeta } from '@/lib/notion';
+
+  export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+    try {
+      const { slug } = await params;
+      const post = await getBlogPostBySlugMeta(slug);
+      if (!post) return { title: 'Blog Yazısı Bulunamadı' };
+      return {
+        title: post.title,
+        description: post.excerpt || post.title,
+        alternates: { canonical: `https://www.sphereenglish.com/blog/${slug}` },
+        openGraph: {
+          title: post.title,
+          description: post.excerpt || post.title,
+          url: `https://www.sphereenglish.com/blog/${slug}`,
+          type: 'article',
+          publishedTime: post.date,
+          images: post.cover ? [{ url: post.cover, width: 1200, height: 630 }] : [],
+        },
+      };
+    } catch {
+      return { title: 'Blog | Sphere English' };
+    }
+  }
+
+  
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
