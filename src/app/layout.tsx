@@ -134,7 +134,7 @@ import React from 'react';
           <link
             rel="preload"
             as="image"
-            href="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1120&q=80"
+            href="/assets/images/hero-online-english.jpg"
             fetchPriority="high"
           />
           <script
