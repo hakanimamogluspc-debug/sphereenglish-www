@@ -158,7 +158,7 @@ function formatDate(dateStr: string): string {
 
 function BlogCard({ post }: { post: BlogPost }) {
   const coverImage = post.cover || `/assets/blog/${post.slug}.svg`;
-  const isExternalCover = post.cover && post.cover.startsWith('http');
+  const isExternalCover = true; // slug-bazlı SVG veya harici URL, hepsini <img> olarak render et
 
   return (
     <Link
