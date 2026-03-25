@@ -73,6 +73,11 @@ import React from 'react';
     alternates: {
       canonical: BASE_URL,
     },
+    icons: {
+      icon: '/favicon.ico',
+      apple: '/apple-touch-icon.png',
+      shortcut: '/favicon.ico',
+    },
   };
 
   const organizationJsonLd = {
