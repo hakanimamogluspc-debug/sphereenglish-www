@@ -1,94 +1,77 @@
-import { MetadataRoute } from 'next';
-import { getBlogPosts } from '@/lib/notion';
+import type { MetadataRoute } from 'next';
+  import { getBlogPosts } from '@/lib/notion';
+  import { cozumlerSlugs } from '@/lib/cozumler-data';
 
-const BASE_URL = 'https://sphereenglish.com';
+  const BASE_URL = 'https://www.sphereenglish.com';
 
-const cozumlerSlugs = [
-  'toplanti-ingilizcesi',
-  'sunum-teknikleri',
-  'eposta-yazimi',
-  'muzakere-ve-ikna',
-  'telaffuz-ve-akicilik',
-  'yoneticiler-icin',
-  'ik-profesyonelleri',
-  'satis-ekipleri',
-  'teknik-ekipler',
-  'finans-ingilizcesi',
-  'teknoloji-ingilizcesi',
-  'saglik-ingilizcesi',
-  'hukuk-ingilizcesi',
-];
+  export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+    const today = new Date().toISOString();
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const today = new Date().toISOString().split('T')[0];
+    const staticUrls: MetadataRoute.Sitemap = [
+      {
+        url: BASE_URL,
+        lastModified: today,
+        changeFrequency: 'weekly',
+        priority: 1.0,
+      },
+      {
+        url: `${BASE_URL}/home`,
+        lastModified: today,
+        changeFrequency: 'weekly',
+        priority: 1.0,
+      },
+      {
+        url: `${BASE_URL}/hakkimizda`,
+        lastModified: today,
+        changeFrequency: 'monthly',
+        priority: 0.8,
+      },
+      {
+        url: `${BASE_URL}/nasil-calisir`,
+        lastModified: today,
+        changeFrequency: 'monthly',
+        priority: 0.8,
+      },
+      {
+        url: `${BASE_URL}/cozumler`,
+        lastModified: today,
+        changeFrequency: 'weekly',
+        priority: 0.9,
+      },
+      {
+        url: `${BASE_URL}/blog`,
+        lastModified: today,
+        changeFrequency: 'daily',
+        priority: 0.9,
+      },
+      {
+        url: `${BASE_URL}/iletisim`,
+        lastModified: today,
+        changeFrequency: 'monthly',
+        priority: 0.7,
+      },
+    ];
 
-  // Static pages
-  const staticUrls: MetadataRoute.Sitemap = [
-    {
-      url: `${BASE_URL}/`,
+    const cozumlerUrls: MetadataRoute.Sitemap = cozumlerSlugs.map((slug) => ({
+      url: `${BASE_URL}/cozumler/${slug}`,
       lastModified: today,
-      changeFrequency: 'weekly',
-      priority: 1.0,
-    },
-    {
-      url: `${BASE_URL}/home`,
-      lastModified: today,
-      changeFrequency: 'weekly',
-      priority: 1.0,
-    },
-    {
-      url: `${BASE_URL}/hakkimizda`,
-      lastModified: today,
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/nasil-calisir`,
-      lastModified: today,
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/cozumler`,
-      lastModified: today,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/blog`,
-      lastModified: today,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/iletisim`,
-      lastModified: today,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-  ];
-
-  // Dynamic cozumler pages
-  const cozumlerUrls: MetadataRoute.Sitemap = cozumlerSlugs.map((slug) => ({
-    url: `${BASE_URL}/cozumler/${slug}`,
-    lastModified: today,
-    changeFrequency: 'monthly' as const,
-    priority: 0.8,
-  }));
-
-  // Dynamic blog post pages from Notion
-  let blogUrls: MetadataRoute.Sitemap = [];
-  try {
-    const posts = await getBlogPosts();
-    blogUrls = posts.map((post) => ({
-      url: `${BASE_URL}/blog/${post.slug}`,
-      lastModified: post.date || today,
       changeFrequency: 'monthly' as const,
-      priority: 0.7,
+      priority: 0.8,
     }));
-  } catch {
-    // If Notion is unavailable, skip dynamic blog URLs
-  }
 
-  return [...staticUrls, ...cozumlerUrls, ...blogUrls];
-}
+    let blogUrls: MetadataRoute.Sitemap = [];
+    try {
+      const posts = await getBlogPosts();
+      blogUrls = posts.map((post) => ({
+        url: `${BASE_URL}/blog/${post.slug}`,
+        lastModified: post.date || today,
+        changeFrequency: 'monthly' as const,
+        priority: 0.7,
+      }));
+    } catch {
+      // Notion erişilemezse blog URL\'leri atla
+    }
+
+    return [...staticUrls, ...cozumlerUrls, ...blogUrls];
+  }
+  
