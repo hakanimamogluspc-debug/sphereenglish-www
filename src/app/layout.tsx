@@ -131,6 +131,12 @@ import React from 'react';
     return (
       <html lang="tr">
         <head>
+          <link
+            rel="preload"
+            as="image"
+            href="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1120&q=80"
+            fetchPriority="high"
+          />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}

@@ -28,16 +28,7 @@ const nextConfig = {
       },
     ];
   },
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.(jsx|tsx)$/,
-      exclude: [/node_modules/],
-      use: [{
-        loader: '@dhiwise/component-tagger/nextLoader',
-      }],
-    });
-    return config;
-  },
 };
+// Note: @dhiwise/component-tagger webpack plugin removed — caused 270ms TBT in production
 
 export default nextConfig;
