@@ -20,7 +20,7 @@ package = "@netlify/plugin-nextjs"
   [plugins.inputs]
 
 [build]
-publish = "/home/ubuntu/download/69ba70717d947e001461cb19/salesplaybook_1773826161670/.next"
+publish = "."
 publishOrigin = "ui"
 commandOrigin = "ui"
 command = "npm run build"
