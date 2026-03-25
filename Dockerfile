@@ -1,15 +1,24 @@
-FROM nginx:alpine
+FROM node:20-alpine AS deps
+  WORKDIR /app
+  COPY package.json ./
+  RUN npm install
 
-  # Tüm statik dosyaları kopyala
-  COPY . /usr/share/nginx/html/
+  FROM node:20-alpine AS builder
+  WORKDIR /app
+  COPY --from=deps /app/node_modules ./node_modules
+  COPY . .
+  RUN npm run build
 
-  # Netlify toml ve git dosyalarını temizle
-  RUN rm -f /usr/share/nginx/html/netlify.toml            /usr/share/nginx/html/_redirects
-
-  # Nginx konfigürasyonu
-  COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-  EXPOSE 80
-
-  CMD ["nginx", "-g", "daemon off;"]
+  FROM node:20-alpine AS runner
+  WORKDIR /app
+  ENV NODE_ENV=production
+  COPY --from=builder /app/.next ./.next
+  COPY --from=builder /app/public ./public
+  COPY --from=builder /app/node_modules ./node_modules
+  COPY --from=builder /app/package.json ./package.json
+  COPY --from=builder /app/next.config.mjs ./next.config.mjs
+  COPY --from=builder /app/image-hosts.config.js ./image-hosts.config.js
+  COPY --from=builder /app/image-hosts.config.mjs ./image-hosts.config.mjs
+  EXPOSE 3000
+  CMD ["node_modules/.bin/next", "start", "-p", "3000"]
   
