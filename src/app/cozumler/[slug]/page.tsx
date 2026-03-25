@@ -11,7 +11,24 @@ interface SolutionData {
   ctaText: string;
 }
 
-const solutions: Record<string, SolutionData> = {
+
+  export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const solution = solutions[slug];
+    if (!solution) return { title: 'Çözüm Bulunamadı' };
+    return {
+      title: `${solution.title} — Kurumsal İngilizce Eğitimi`,
+      description: solution.description.slice(0, 160),
+      alternates: { canonical: `https://www.sphereenglish.com/cozumler/${slug}` },
+      openGraph: {
+        title: `${solution.title} | Sphere English`,
+        description: solution.description.slice(0, 160),
+        url: `https://www.sphereenglish.com/cozumler/${slug}`,
+      },
+    };
+  }
+
+  const solutions: Record<string, SolutionData> = {
   'toplanti-ingilizcesi': {
     title: 'Toplantı İngilizcesi',
     category: 'Beceriye Göre',
