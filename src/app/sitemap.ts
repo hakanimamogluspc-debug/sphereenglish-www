@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import type { MetadataRoute } from 'next';
   import { getBlogPosts } from '@/lib/notion';
   import { cozumlerSlugs } from '@/lib/cozumler-data';
