@@ -19,6 +19,6 @@ FROM node:20-alpine AS deps
   COPY --from=builder /app/next.config.mjs ./next.config.mjs
   COPY --from=builder /app/image-hosts.config.js ./image-hosts.config.js
   COPY --from=builder /app/image-hosts.config.mjs ./image-hosts.config.mjs
-  EXPOSE 3000
-  CMD ["node_modules/.bin/next", "start", "-p", "3000"]
+  EXPOSE 80
+  CMD ["node_modules/.bin/next", "start", "-p", "80"]
   
