@@ -15,6 +15,13 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        // sphereenglish.com → www.sphereenglish.com (SEO canonical redirect)
+        source: '/:path*',
+        has: [{ type: 'host', value: 'sphereenglish.com' }],
+        destination: 'https://www.sphereenglish.com/:path*',
+        permanent: true,
+      },
+      {
         source: '/',
         destination: '/home',
         permanent: false,
