@@ -2,7 +2,21 @@ export const dynamic = 'force-dynamic';
 
 import type { MetadataRoute } from 'next';
   import { getBlogPosts } from '@/lib/notion';
-  import { cozumlerSlugs } from '@/lib/cozumler-data';
+  const cozumlerSlugs = [
+    'toplanti-ingilizcesi',
+    'sunum-teknikleri',
+    'eposta-yazimi',
+    'muzakere-ve-ikna',
+    'telaffuz-ve-akicilik',
+    'yoneticiler-icin',
+    'ik-profesyonelleri',
+    'satis-ekipleri',
+    'teknik-ekipler',
+    'finans-ingilizcesi',
+    'teknoloji-ingilizcesi',
+    'saglik-ingilizcesi',
+    'hukuk-ingilizcesi',
+  ];
 
   const BASE_URL = 'https://www.sphereenglish.com';
 
