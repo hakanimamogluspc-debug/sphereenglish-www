@@ -157,7 +157,7 @@ function formatDate(dateStr: string): string {
 }
 
 function BlogCard({ post }: { post: BlogPost }) {
-  const coverImage = post.cover || categoryCovers[post.category] || DEFAULT_COVER;
+  const coverImage = post.cover || `/assets/blog/${post.slug}.svg`;
   const isExternalCover = post.cover && post.cover.startsWith('http');
 
   return (
