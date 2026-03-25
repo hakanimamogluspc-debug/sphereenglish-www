@@ -72,6 +72,10 @@ import React from 'react';
     },
     alternates: {
       canonical: BASE_URL,
+      languages: {
+        'tr-TR': BASE_URL,
+        'tr': BASE_URL,
+      },
     },
     icons: {
       icon: '/favicon.ico',
@@ -101,6 +105,15 @@ import React from 'react';
     '@type': 'EducationalOrganization',
     name: 'Sphere English',
     url: BASE_URL,
+    areaServed: {
+      '@type': 'Country',
+      name: 'Turkey',
+    },
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'TR',
+      addressLocality: 'İstanbul',
+    },
     logo: `${BASE_URL}/assets/images/logo-1774019980261.png`,
     description:
       "Türkiye'nin önde gelen kurumsal İş İngilizcesi eğitim platformu. Oxford ortaklığı ile ölçülebilir sonuçlar.",
@@ -137,6 +150,10 @@ import React from 'react';
             href="/assets/images/hero-online-english.jpg"
             fetchPriority="high"
           />
+          <meta name="geo.region" content="TR" />
+          <meta name="geo.country" content="Turkey" />
+          <meta name="geo.placename" content="İstanbul, Türkiye" />
+          <meta httpEquiv="content-language" content="tr-TR" />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
