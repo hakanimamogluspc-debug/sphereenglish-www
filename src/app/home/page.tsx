@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
   export const metadata: Metadata = {
-    title: 'Kurumsal İş İngilizcesi Eğitimi — Ölçülebilir Sonuçlar',
+    title: 'Kurumsal İş İngilizcesi Eğitimi | Şirketiniz için Online Dil Programı',
     description:
-      'Çalışanlarınız için hedef odaklı, raporlanabilir ve Oxford sertifikalı kurumsal İş İngilizcesi eğitimi. 50+ şirket, 500+ çalışan, %94 memnuniyet oranı.',
+      'Türkiye genelinde şirketlere kurumsal iş İngilizcesi eğitimi veriyoruz. Yönetici, satış, İK ve teknik ekipler için Oxford University Press ortaklıklı, ölçülebilir kurumsal dil eğitimi. Ücretsiz demo randevusu alın. 50+ şirket, 500+ çalışan, %94 memnuniyet oranı.',
     alternates: { canonical: 'https://www.sphereenglish.com/home' },
     openGraph: {
       title: 'Sphere English | Kurumsal İş İngilizcesi — Ölçülebilir Sonuçlar',

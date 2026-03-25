@@ -1,16 +1,14 @@
 import type { Metadata } from 'next';
 
   export const metadata: Metadata = {
-    title: 'İletişim — Ücretsiz Demo & Teklif Alın',
+    title: 'İletişim | Kurumsal İngilizce Eğitim Teklifi Alın',
     description:
-      'Sphere English ile iletişime geçin. Şirketiniz için ücretsiz ihtiyaç analizi ve kişiselleştirilmiş kurumsal İngilizce eğitim teklifi alın.',
+      'Şirketiniz için kurumsal iş İngilizcesi eğitim teklifi alın. Ücretsiz demo randevusu, ihtiyaç analizi ve kişiselleştirilmiş program önerisi için bizimle iletişime geçin.',
     alternates: { canonical: 'https://www.sphereenglish.com/iletisim' },
     openGraph: {
-      title: 'İletişim & Teklif Alın | Sphere English',
-      description:
-        'Şirketiniz için ücretsiz ihtiyaç analizi ve kurumsal İngilizce eğitim teklifi alın.',
+      title: 'İletişim | Sphere English — Kurumsal İngilizce Eğitimi',
+      description: 'Şirketiniz için kurumsal ingilizce eğitim teklifi alın. Ücretsiz demo ve ihtiyaç analizi.',
       url: 'https://www.sphereenglish.com/iletisim',
-      images: [{ url: '/assets/images/hero_online_english_lesson.png', width: 1200, height: 630 }],
     },
   };
 

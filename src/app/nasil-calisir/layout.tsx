@@ -1,16 +1,14 @@
 import type { Metadata } from 'next';
 
   export const metadata: Metadata = {
-    title: 'Nasıl Çalışır? — Eğitim Süreci & Metodoloji',
+    title: 'Nasıl Çalışır | Kurumsal İngilizce Eğitim Süreci',
     description:
-      'Sphere English\'in 4 aşamalı kurumsal İngilizce eğitim süreci: İhtiyaç analizi, kişiselleştirilmiş müfredat, canlı dersler ve ölçülebilir raporlama. Nasıl çalıştığını keşfedin.',
+      'Sphere English'in kurumsal iş İngilizcesi eğitim süreci: ihtiyaç analizi, kişiselleştirilmiş program tasarımı, canlı online dersler ve ölçülebilir raporlama. Şirketiniz için adım adım dil eğitimi.',
     alternates: { canonical: 'https://www.sphereenglish.com/nasil-calisir' },
     openGraph: {
-      title: 'Nasıl Çalışır? | Sphere English',
-      description:
-        'Şirketinizin ihtiyaçlarına göre kişiselleştirilmiş İngilizce eğitim süreci. 4 adımda ölçülebilir sonuçlar.',
+      title: 'Nasıl Çalışır | Sphere English — Kurumsal Eğitim Süreci',
+      description: 'İhtiyaç analizinden raporlamaya: kurumsal ingilizce eğitiminin adımları. Online, esnek ve ölçülebilir.',
       url: 'https://www.sphereenglish.com/nasil-calisir',
-      images: [{ url: '/assets/images/hero_online_english_lesson.png', width: 1200, height: 630 }],
     },
   };
 

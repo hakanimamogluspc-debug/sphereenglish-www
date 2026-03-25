@@ -17,7 +17,7 @@ import React from 'react';
       template: '%s | Sphere English',
     },
     description:
-      "Çalışanlarınız için ölçülebilir, raporlanabilir ve hedef odaklı kurumsal İş İngilizcesi eğitimi. Oxford ortaklığı ile A1'den C2'ye kadar sertifikalı programlar. Türkiye'nin önde gelen kurumsal İngilizce eğitim platformu.",
+      "Türkiye'nin kurumsal iş İngilizcesi eğitim platformu. Şirketinizin çalışanları için ölçülebilir, raporlanabilir Oxford University Press ortaklıklı kurumsal dil eğitimi. Yöneticiden satış ekibine, İK'dan teknik kadrolara sektöre özel programlar. Kurumsal ingilizce eğitimi, iş ingilizcesi kursu ve online dil eğitiminde Türkiye'nin önde gelen kurumsal İngilizce eğitim platformu.",
     keywords: [
       'kurumsal ingilizce eğitimi',
       'iş ingilizcesi',
@@ -78,6 +78,22 @@ import React from 'react';
       apple: '/apple-touch-icon.png',
       shortcut: '/favicon.ico',
     },
+    keywords: [
+      'kurumsal ingilizce eğitimi',
+      'iş ingilizcesi eğitimi',
+      'kurumsal dil eğitimi',
+      'şirketler için ingilizce',
+      'çalışanlar için ingilizce kursu',
+      'online kurumsal ingilizce',
+      'b2b ingilizce eğitimi',
+      'yöneticiler için ingilizce eğitimi',
+      'satış ekibi ingilizce',
+      'teknik ekip ingilizce eğitimi',
+      'toplantı ingilizcesi',
+      'sunum ingilizcesi',
+      'oxford university press ingilizce',
+      'sphere english',
+    ],
   };
 
   const organizationJsonLd = {

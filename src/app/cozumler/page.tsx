@@ -4,9 +4,16 @@ import Footer from '@/components/Footer';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Çözümler | Sphere English',
-  description: 'Beceriye, rolüne ve sektörüne göre kişiselleştirilmiş İş İngilizcesi çözümleri.',
-};
+    title: 'Kurumsal İngilizce Çözümleri | Sektör ve Rol Bazlı Eğitim',
+    description:
+      'Yöneticilerden satış ekiplerine, finans profesyonellerinden teknik kadrolara: sektörünüze ve rolünüze özel kurumsal iş İngilizcesi programları. Toplantı, sunum, e-posta, müzakere ingilizcesi ve daha fazlası.',
+    alternates: { canonical: 'https://www.sphereenglish.com/cozumler' },
+    openGraph: {
+      title: 'Kurumsal İngilizce Çözümleri | Sphere English',
+      description: 'Sektörünüze ve rolünüze özel iş İngilizcesi programları. Yönetici, satış, İK, teknik ve finans profesyonelleri için.',
+      url: 'https://www.sphereenglish.com/cozumler',
+    },
+  };
 
 const categories = [
   {
