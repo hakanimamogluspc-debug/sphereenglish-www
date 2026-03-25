@@ -17,7 +17,7 @@ import React from 'react';
       template: '%s | Sphere English',
     },
     description:
-      'Çalışanlarınız için ölçülebilir, raporlanabilir ve hedef odaklı kurumsal İş İngilizcesi eğitimi. Oxford ortaklığı ile A1'den C2'ye kadar sertifikalı programlar. Türkiye\'nin önde gelen kurumsal İngilizce eğitim platformu.',
+      "Çalışanlarınız için ölçülebilir, raporlanabilir ve hedef odaklı kurumsal İş İngilizcesi eğitimi. Oxford ortaklığı ile A1'den C2'ye kadar sertifikalı programlar. Türkiye'nin önde gelen kurumsal İngilizce eğitim platformu.",
     keywords: [
       'kurumsal ingilizce eğitimi',
       'iş ingilizcesi',
@@ -53,7 +53,7 @@ import React from 'react';
       siteName: 'Sphere English',
       title: 'Sphere English | Kurumsal İş İngilizcesi Eğitimi',
       description:
-        'Çalışanlarınız için ölçülebilir ve raporlanabilir kurumsal İş İngilizcesi eğitimi. Oxford ortaklığı ile sertifikalı programlar.',
+        "Çalışanlarınız için ölçülebilir ve raporlanabilir kurumsal İş İngilizcesi eğitimi. Oxford ortaklığı ile sertifikalı programlar.",
       images: [
         {
           url: '/assets/images/hero_online_english_lesson.png',
@@ -67,14 +67,11 @@ import React from 'react';
       card: 'summary_large_image',
       title: 'Sphere English | Kurumsal İş İngilizcesi Eğitimi',
       description:
-        'Çalışanlarınız için ölçülebilir ve raporlanabilir kurumsal İş İngilizcesi eğitimi.',
+        "Çalışanlarınız için ölçülebilir ve raporlanabilir kurumsal İş İngilizcesi eğitimi.",
       images: ['/assets/images/hero_online_english_lesson.png'],
     },
     alternates: {
       canonical: BASE_URL,
-    },
-    verification: {
-      google: 'yhtLWuOgEHv3n-XN1W_NwEXCrGBTCUZQTvXjQEbpAiI',
     },
   };
 
@@ -85,7 +82,7 @@ import React from 'react';
     url: BASE_URL,
     logo: `${BASE_URL}/assets/images/logo-1774019980261.png`,
     description:
-      'Türkiye\'nin önde gelen kurumsal İş İngilizcesi eğitim platformu. Oxford ortaklığı ile ölçülebilir sonuçlar.',
+      "Türkiye'nin önde gelen kurumsal İş İngilizcesi eğitim platformu. Oxford ortaklığı ile ölçülebilir sonuçlar.",
     address: {
       '@type': 'PostalAddress',
       addressCountry: 'TR',
@@ -96,7 +93,6 @@ import React from 'react';
       contactType: 'customer service',
       availableLanguage: ['Turkish', 'English'],
     },
-    sameAs: [],
   };
 
   const websiteJsonLd = {
@@ -104,14 +100,6 @@ import React from 'react';
     '@type': 'WebSite',
     name: 'Sphere English',
     url: BASE_URL,
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${BASE_URL}/blog?q={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
-    },
   };
 
   export default function RootLayout({
@@ -130,7 +118,6 @@ import React from 'react';
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
           />
-          {/* Google Analytics */}
           {/* eslint-disable-next-line @next/next/no-sync-scripts */}
           <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} />
           <script
