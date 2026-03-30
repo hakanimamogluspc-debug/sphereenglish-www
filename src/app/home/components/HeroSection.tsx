@@ -106,7 +106,7 @@ export default function HeroSection() {
         <div className="relative flex flex-col items-center justify-center lg:justify-end order-first lg:order-last">
           <div className="relative w-full max-w-[480px] sm:max-w-[560px] aspect-[16/10] sm:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
             <AppImage
-              src="/assets/images/hero-online-english.jpg"
+              src="https://images.pexels.com/photos/3182773/pexels-photo-3182773.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
               alt="Profesyoneller Zoom üzerinden çevrimiçi İş İngilizcesi dersi yapıyor, modern ofis ortamı"
               fill
               className="object-cover object-center"
