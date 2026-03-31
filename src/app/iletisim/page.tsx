@@ -151,19 +151,39 @@ export default function IletisimPage() {
                 </div>
               </div>
 
-              {/* Google Maps Embed */}
-              <div className="bg-white rounded-3xl shadow-sm border border-[#e8f0fe] overflow-hidden" style={{ minHeight: '300px' }}>
-                <iframe
-                  title="Sphere English Ofis Konumu"
-                  src="https://www.openstreetmap.org/export/embed.html?bbox=32.7392%2C39.8768%2C32.7592%2C39.8968&layer=mapnik&marker=39.8868%2C32.7492"
-                  width="100%"
-                  height="300"
-                  style={{ border: 0, display: 'block' }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
+              {/* Konum Kartı */}
+              <a
+                href=""
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-white rounded-3xl shadow-sm border border-[#e8f0fe] overflow-hidden hover:shadow-md transition-shadow duration-200 group"
+                aria-label="Google Maps'te aç"
+              >
+                {/* Statik harita görseli */}
+                <div
+                  className="relative w-full flex flex-col items-center justify-center gap-4"
+                  style={{ minHeight: '240px', background: 'linear-gradient(135deg, #e8f0fe 0%, #f0f7ff 50%, #dbeafe 100%)' }}
+                >
+                  {/* Pin ikonu */}
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg" style={{ background: '#1B365D' }}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#fff"/>
+                    </svg>
+                  </div>
+                  <div className="text-center px-6">
+                    <p className="text-[13px] font-bold text-[#1B365D] mb-1">YDA Center</p>
+                    <p className="text-[12px] text-gray-500">Dumlupınar Bulvarı No:158</p>
+                    <p className="text-[12px] text-gray-500">Çankaya / Ankara</p>
+                  </div>
+                  {/* Tıkla butonu */}
+                  <div className="flex items-center gap-2 px-5 py-2.5 rounded-full text-[12px] font-bold text-white transition-all duration-200 group-hover:opacity-90" style={{ background: '#0ea5e9' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    Google Maps'te Aç
+                  </div>
+                </div>
+              </a>
             </div>
 
             {/* Right: Contact Form */}
