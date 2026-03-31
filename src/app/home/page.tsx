@@ -28,6 +28,7 @@ import PaketlerSection from './components/SyllabusDownload';
 import ContactSection from './components/StickyCTA';
 import ReferencesSection from './components/ReferencesSection';
 import FAQSection from './components/FAQSection';
+import AICoachesSection from './components/AICoachesSection';
 
 export default function HomePage() {
   return (
@@ -38,6 +39,7 @@ export default function HomePage() {
         <NedenBizSection />
         <EgitimModeliSection />
         <BentoGrid />
+        <AICoachesSection />
         <FounderQuoteSection />
         <MerveFounderQuoteSection />
         <RaporlamaSection />
@@ -50,4 +52,3 @@ export default function HomePage() {
     </div>
   );
 }
-
