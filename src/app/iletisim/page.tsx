@@ -155,7 +155,7 @@ export default function IletisimPage() {
               <div className="bg-white rounded-3xl shadow-sm border border-[#e8f0fe] overflow-hidden" style={{ minHeight: '300px' }}>
                 <iframe
                   title="Sphere English Ofis Konumu"
-                  src="https://maps.google.com/maps?q=YDA+Center+Dumlup%C4%B1nar+Bulvar%C4%B1+No+158+%C3%87ankaya+Ankara&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=32.7392%2C39.8768%2C32.7592%2C39.8968&layer=mapnik&marker=39.8868%2C32.7492"
                   width="100%"
                   height="300"
                   style={{ border: 0, display: 'block' }}
