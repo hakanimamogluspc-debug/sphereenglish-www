@@ -13,7 +13,7 @@ const faqs: FAQ[] = [
   },
   {
     question: 'Eğitmenleriniz kimlerden oluşuyor?',
-    answer: 'Tüm eğitmenlerimiz CELTA veya DELTA sertifikalı, iş dünyasında deneyim sahibi profesyonellerdir. Ekibimizde anadili İngilizce olan (native speaker) eğitmenler ile Türkiye'nin önde gelen kurumsal İngilizce uzmanları bir arada çalışmaktadır. Her eğitmen, şirketinizin sektörüne göre özellikle seçilmektedir.',
+    answer: "Tüm eğitmenlerimiz CELTA veya DELTA sertifikalı, iş dünyasında deneyim sahibi profesyonellerdir. Ekibimizde anadili İngilizce olan (native speaker) eğitmenler ile Türkiye'nin önde gelen kurumsal İngilizce uzmanları bir arada çalışmaktadır. Her eğitmen, şirketinizin sektörüne göre özellikle seçilmektedir.",
   },
   {
     question: 'Şirketimize özel içerik hazırlanıyor mu?',
@@ -21,11 +21,11 @@ const faqs: FAQ[] = [
   },
   {
     question: 'Kaç kişilik gruplarla çalışıyorsunuz?',
-    answer: 'En etkili öğrenme deneyimi için grup derslerimizi maksimum 6 kişi ile sınırlı tutuyoruz. Bire bir (birebir) özel dersler de sunuyoruz. Çalışan sayısı 20'yi aşan şirketler için seviye grupları oluşturarak hem maliyeti optimize ediyor hem de homojen sınıf yapısını koruyoruz.',
+    answer: "En etkili öğrenme deneyimi için grup derslerimizi maksimum 6 kişi ile sınırlı tutuyoruz. Bire bir (birebir) özel dersler de sunuyoruz. Çalışan sayısı 20'yi aşan şirketler için seviye grupları oluşturarak hem maliyeti optimize ediyor hem de homojen sınıf yapısını koruyoruz.",
   },
   {
     question: 'Eğitimin etkisini nasıl ölçüyorsunuz?',
-    answer: 'Her ay detaylı ilerleme raporu sunuyoruz. Çalışanların konuşma akıcılığı, yazılı iletişim, kelime dağarcığı ve iş İngilizcesi kullanımı gibi kriterlerde somut verilerle gelişimini takip ediyoruz. Oxford University Press' iş birliğiyle uygulanan standart testler aracılığıyla başlangıç ve bitiş seviyeleri karşılaştırmalı olarak raporlanır.',
+    answer: "Her ay detaylı ilerleme raporu sunuyoruz. Çalışanların konuşma akıcılığı, yazılı iletişim, kelime dağarcığı ve iş İngilizcesi kullanımı gibi kriterlerde somut verilerle gelişimini takip ediyoruz. Oxford University Press iş birliğiyle uygulanan standart testler aracılığıyla başlangıç ve bitiş seviyeleri karşılaştırmalı olarak raporlanır.",
   },
   {
     question: 'Online eğitim yüz yüze eğitim kadar etkili mi?',
@@ -33,7 +33,7 @@ const faqs: FAQ[] = [
   },
   {
     question: 'İngilizce seviyesi belirleme süreci nasıl işliyor?',
-    answer: 'Programa başlamadan önce her çalışan için ücretsiz kapsamlı bir seviye tespit sınavı yapıyoruz. Bu değerlendirme; yazılı, sözlü ve dinleme becerilerini CEFR standartları (A1'den C2'ye) çerçevesinde ölçüyor. Sonuçlara göre çalışanlar uygun seviye grubuna yerleştiriliyor ve kişiselleştirilmiş öğrenme hedefleri belirleniyor.',
+    answer: "Programa başlamadan önce her çalışan için ücretsiz kapsamlı bir seviye tespit sınavı yapıyoruz. Bu değerlendirme; yazılı, sözlü ve dinleme becerilerini CEFR standartları (A1'den C2'ye) çerçevesinde ölçüyor. Sonuçlara göre çalışanlar uygun seviye grubuna yerleştiriliyor ve kişiselleştirilmiş öğrenme hedefleri belirleniyor.",
   },
   {
     question: 'Teklif almak ve demo randevusu ayarlamak için ne yapmalıyız?',
@@ -122,4 +122,3 @@ export default function FAQSection() {
     </section>
   );
 }
-
