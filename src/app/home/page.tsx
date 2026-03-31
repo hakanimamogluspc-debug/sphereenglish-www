@@ -27,6 +27,7 @@ import RaporlamaSection from './components/ProofSection';
 import PaketlerSection from './components/SyllabusDownload';
 import ContactSection from './components/StickyCTA';
 import ReferencesSection from './components/ReferencesSection';
+import FAQSection from './components/FAQSection';
 
 export default function HomePage() {
   return (
@@ -42,9 +43,11 @@ export default function HomePage() {
         <RaporlamaSection />
         <ReferencesSection />
         <PaketlerSection />
+        <FAQSection />
         <ContactSection />
       </main>
       <Footer />
     </div>
   );
 }
+
