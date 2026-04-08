@@ -93,7 +93,7 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
         <nav className="hidden md:flex items-center gap-7 text-[11px] font-bold tracking-[0.18em]" style={{ color: '#1B365D' }}>
           <Link href="/home" className="hover:text-[#0ea5e9] transition-colors duration-200">ANASAYFA</Link>
           <Link href="/hakkimizda" className="hover:text-[#0ea5e9] transition-colors duration-200">HAKKIMIZDA</Link>
-          <Link href="/nasil-calisir" className="hover:text-[#0ea5e9] transition-colors duration-200">NASIL ÇALIŞIR</Link>
+          <Link href="/ai-studio" className="hover:text-[#0ea5e9] transition-colors duration-200" style={{ color: '#0ea5e9' }}>AI STUDIO</Link>
 
           {/* Çözümler Dropdown */}
           <div className="relative" ref={dropdownRef}>
@@ -183,7 +183,7 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
         <div className="md:hidden bg-white border-t border-[#e8f0fe] px-6 py-6 flex flex-col gap-5">
           <Link href="/home" className="text-[12px] font-bold tracking-[0.18em] hover:text-[#0ea5e9] transition-colors duration-200" style={{ color: '#1B365D' }} onClick={() => setMobileOpen(false)}>ANASAYFA</Link>
           <Link href="/hakkimizda" className="text-[12px] font-bold tracking-[0.18em] hover:text-[#0ea5e9] transition-colors duration-200" style={{ color: '#1B365D' }} onClick={() => setMobileOpen(false)}>HAKKIMIZDA</Link>
-          <Link href="/nasil-calisir" className="text-[12px] font-bold tracking-[0.18em] hover:text-[#0ea5e9] transition-colors duration-200" style={{ color: '#1B365D' }} onClick={() => setMobileOpen(false)}>NASIL ÇALIŞIR</Link>
+          <Link href="/ai-studio" className="text-[12px] font-bold tracking-[0.18em] transition-colors duration-200" style={{ color: '#0ea5e9' }} onClick={() => setMobileOpen(false)}>AI STUDIO</Link>
 
           {/* Mobile Çözümler */}
           <div>
