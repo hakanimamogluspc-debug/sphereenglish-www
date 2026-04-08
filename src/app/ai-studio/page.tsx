@@ -421,17 +421,11 @@ export default function AIStudioPage() {
                 AI Koçunla Tanış,<br />Farklı Konuş.
               </h2>
               <p className="text-white/60 text-lg mb-10">Kayıt ol, koçunu seç ve ilk dersini hemen başlat. Kredi kartı gerekmez.</p>
-              <div className="flex flex-wrap gap-4 justify-center">
-                <a href="https://app.sphereenglish.com/register"
-                  className="inline-flex items-center gap-2 rounded-2xl px-8 py-4 font-bold text-white text-base hover:opacity-90 transition-opacity"
-                  style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)', boxShadow: '0 8px 32px #0ea5e944' }}>
-                  ✦ Hemen Başla — Ücretsiz
-                </a>
-                <a href="https://app.sphereenglish.com/student/pronunciation-coach"
-                  className="inline-flex items-center gap-2 rounded-2xl px-8 py-4 font-bold text-white/70 text-base border border-white/20 hover:border-white/40 transition-all hover:bg-white/10">
-                  🌐 Koçları Keşfet
-                </a>
-              </div>
+              <a href="https://app.sphereenglish.com/register"
+                className="inline-flex items-center gap-2 rounded-2xl px-8 py-4 font-bold text-white text-base hover:opacity-90 transition-opacity"
+                style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)', boxShadow: '0 8px 32px #0ea5e944' }}>
+                ✦ Hemen Başla — Ücretsiz
+              </a>
             </div>
           </div>
         </section>
