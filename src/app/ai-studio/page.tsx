@@ -202,7 +202,7 @@ export default function AIStudioPage() {
                     <div className="relative flex-shrink-0">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={"https://app.sphereenglish.com/images/" + coach.image}
+                        src={"/assets/images/coaches/" + coach.image}
                         alt={coach.name}
                         width={80}
                         height={80}
