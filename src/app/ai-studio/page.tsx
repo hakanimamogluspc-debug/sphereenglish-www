@@ -330,10 +330,10 @@ export default function AIStudioPage() {
             <div className="text-center mb-16">
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: TURQUOISE }}>— Yapay Zeka Koçları</span>
               <h2 className="text-4xl md:text-5xl font-black mt-3 mb-4" style={{ fontFamily: "'Outfit', sans-serif", color: NAVY }}>
-                11 Uzman, 11 Farklı Dünya
+                12 Uzman, 12 Farklı Dünya
               </h2>
               <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-                Her koç kendi sektörüne özgü dil, aksan ve eğitim stiliyle programlanmıştır. Sektörünüze ve hedefinize en uygun koçu seçin; gerçek bir iş ortamına hazırlanın.
+                12 koç, 12 farklı sektör uzmanlığı, aksan ve eğitim stili. Sektörünüze ve hedefinize en uygun koçu seçin; gerçek bir iş ortamına hazırlanın.
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -387,7 +387,7 @@ export default function AIStudioPage() {
                 Platform, kurumsal ve bireysel kullanıcıların dil yetkinliklerini CEFR (Common European Framework of Reference for Languages) standartlarına göre A1'den C2'ye kadar geliştirebileceği şekilde tasarlanmıştır. Oxford University Press müfredatıyla uyumlu içerik tabanı, öğrenme sürecinin uluslararası standartlarda ilerlediğini güvence altına alır.
               </p>
               <p>
-                <strong style={{ color: NAVY }}>Telaffuz Koçu</strong> özelliği, kullanıcının sesini gerçek zamanlı olarak analiz eder; fonem düzeyinde hataları tespit eder ve hem metin hem sesli geri bildirim sunar. 11 farklı yapay zeka koç karakteri, İngiliz RP'den Amerikan West Coast'a, Wall Street aksanından Avustralya İngilizcesine kadar geniş bir yelpazede aksan çeşitliliği sağlar.
+                <strong style={{ color: NAVY }}>Telaffuz Koçu</strong> özelliği, kullanıcının sesini gerçek zamanlı olarak analiz eder; fonem düzeyinde hataları tespit eder ve hem metin hem sesli geri bildirim sunar. 12 farklı yapay zeka koç karakteri, İngiliz RP'den Amerikan West Coast'a, Wall Street aksanından Sağlık Turizmi İngilizcesine kadar geniş bir yelpazede aksan ve sektör çeşitliliği sağlar.
               </p>
               <p>
                 <strong style={{ color: NAVY }}>Yazma Koçu</strong>, iş dünyasında en sık kullanılan 7 metin türünü (e-posta, rapor, sunum, özgeçmiş, akademik metin, müzakere mektubu, teknik döküman) analiz eder. Kullanıcının metni gramer doğruluğu, kelime zenginliği, tutarlılık ve profesyonel ton açısından CEFR ölçütleriyle puanlanır; yapay zeka tarafından yeniden yazılmış geliştirilmiş versiyonu ile karşılaştırmalı sunulur.
@@ -397,6 +397,9 @@ export default function AIStudioPage() {
               </p>
               <p>
                 <strong style={{ color: NAVY }}>Kelime Oyunu</strong>, 4000'den fazla iş İngilizcesi ve sektöre özgü terimi adaptif bir algoritmayla öğretir. Kelimeler bağlamsal cümleler içinde sunulduğu için yalnızca anlam değil, doğru kullanım kalıpları da kalıcı olarak yerleşir. Streak sistemi, liderlik tablosu ve rozetler kullanıcı motivasyonunu uzun vadede destekler.
+              </p>
+              <p>
+                <strong style={{ color: NAVY }}>İş Senaryoları</strong>, 14 farklı sektörde (finans, teknoloji, sağlık turizmi, lojistik, hukuk, danışmanlık ve daha fazlası) gerçek iş hayatı senaryolarını simüle eder. 12 uzman yapay zeka koçundan birini seçerek yatırımcı sunumundan sözleşme müzakeresine, kriz yönetiminden mülakat pratiğine kadar onlarca farklı senaryoda gerçek zamanlı konuşma yapabilirsiniz. Her konuşma sonrası anlık gramer analizi, kelime önerileri ve oturum raporu otomatik oluşturulur.
               </p>
               <p>
                 Kurumsal planlarda yöneticiler, ekip üyelerinin AI Studio kullanımını, ilerleme raporlarını, CEFR seviye değişimlerini ve hata dağılımlarını merkezi panelden takip edebilir. Bu sayede insan kaynakları ve L&D ekipleri, eğitim yatırımının somut çıktısını ölçebilir.
