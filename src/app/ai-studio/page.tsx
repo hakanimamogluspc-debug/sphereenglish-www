@@ -78,6 +78,7 @@ const COACHES = [
   { id: 'alistair', name: 'Alistair', flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', specialty: 'Satış & Müzakere', accent: 'İskoç (Edinburg)', color: '#B91C1C', image: 'coach-alistair.png', bio: "Edinburg doğumlu, sahadan yetişmiş bir satış efsanesi. Müzakere teknikleri, ikna dili, itiraz yönetimi ve kapanış cümleleri konusunda rakipsiz bir pratikçi.", idealFor: 'Satış uzmanları · Müzakere becerileri · Kurumsal fiyatlama görüşmeleri' },
   { id: 'chloe', name: 'Chloe', flag: '🇦🇺', specialty: 'Müşteri İlişkileri', accent: 'Avusturalyalı (Friendly)', color: '#D97706', image: 'coach-chloe.png', bio: "Melbourne'dan dünyaya; sıcak, samimi ve rahatlatıcı. Müşteri destek İngilizcesi, şikâyet yönetimi, e-ticaret iletişimi ve günlük konuşma pratiği onun güçlü yanları.", idealFor: 'Müşteri hizmetleri · Çağrı merkezi · Samimi Avustralya İngilizcesi' },
   { id: 'james', name: 'James', flag: '🇺🇸', specialty: 'Üretim & Fabrika Yönetimi', accent: 'Amerikan (Midwest)', color: '#78350F', image: 'coach-james-mfg.png', bio: "Ohio'da yetişmiş, fabrika sahasından yönetim masasına çıkmış biri. Üretim süreçleri jargonu, iş güvenliği talimatları ve tedarikçi görüşmeleri konusunda direkt ve güvenilir.", idealFor: 'Üretim & imalat yöneticileri · Endüstriyel sektör · Teknik Amerikan İngilizcesi' },
+  { id: 'olivia', name: 'Dr. Olivia', flag: '🇺🇸', specialty: 'Sağlık Turizmi İngilizcesi', accent: 'Amerikan (Miami / Sağlık Turizmi)', color: '#0891b2', image: 'coach-olivia-health.png', bio: 'Miami merkezli sağlık turizmi koordinatörü. Uluslararası hastaların tedavi planlamasından hastane koordinasyonuna, sigorta sürecinden klinik görüşmelere kadar tüm profesyonel İngilizce ihtiyaçlarını karşılıyor. Türk sağlık turizmcileri için özel koç.', idealFor: 'Sağlık turizmi profesyonelleri · Hastane koordinatörleri · Medikal danışmanlar' },
   { id: 'claire', name: 'Dr. Claire', flag: '🇬🇧', specialty: 'Gramer & İleri Telaffuz', accent: 'Akademik İngiliz (Oxford)', color: '#0F766E', image: 'coach-claire-grammar.png', bio: "Oxford'da yetişmiş dil bilimci. Makale kullanımı, sesli harf seslenimleri, cümle vurgusu gibi Türk öğrencilerin zorlandığı noktalara odaklanır — sabırlı, titiz ve sistematik.", idealFor: 'IELTS · TOEFL · Akademik sunum · C1/C2 hedefleyenler' },
 ];
 
@@ -430,3 +431,4 @@ export default function AIStudioPage() {
     </div>
   );
 }
+
