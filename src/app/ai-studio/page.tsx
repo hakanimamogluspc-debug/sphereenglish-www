@@ -65,6 +65,21 @@ const AI_FEATURES = [
     tag: null,
     tagBg: null,
   },
+  {
+    icon: '💼',
+    title: 'İş Senaryoları',
+    subtitle: 'BUSINESS SIMULATION',
+    description:
+      '14 farklı sektörde gerçek iş hayatı senaryolarını simüle edin. Yatırımcı sunumundan müzakere masasına, sözleşme görüşmesinden kriz yönetimine — 12 uzman AI koçuyla profesyonel İngilizce pratiği yapın. Her konuşma sonrası gramer analizi ve skor raporu alın.',
+    highlights: ['14 sektör & 50+ gerçek senaryo', '12 uzman AI koç (finans, hukuk, BT…)', 'Anlık gramer & kelime geri bildirimi', 'Oturum raporu, hata özeti & skor'],
+    detail: 'Finans, teknoloji, sağlık turizmi, lojistik, hukuk, danışmanlık ve daha pek çok sektörde gerçekçi diyaloglar. Mr. Sterling ile yönetim kurulu sunumu, Elena ile sözleşme müzakeresi, David ile CFO görüşmesi…',
+    color: '#0f766e',
+    bg: 'from-teal-50 to-emerald-50',
+    link: 'https://app.sphereenglish.com/student/simulation-mode',
+    tag: 'Yeni',
+    tagBg: '#0f766e',
+    span: true,
+  },
 ];
 
 const COACHES = [
@@ -84,7 +99,7 @@ const COACHES = [
 
 const STATS = [
   { value: '11', label: 'Yapay Zeka Koçu' },
-  { value: '4', label: 'AI Özelliği' },
+  { value: '5', label: 'AI Özelliği' },
   { value: '4000+', label: 'Kelime & Kural' },
   { value: 'A1–C2', label: 'CEFR Seviyeleri' },
 ];
@@ -92,7 +107,7 @@ const STATS = [
 const HOW_IT_WORKS = [
   { step: '01', icon: '🔐', title: 'Üye Ol', desc: 'Ücretsiz hesap oluşturun. Kredi kartı gerekmez. 30 saniyede kayıt tamamlanır.' },
   { step: '02', icon: '🎯', title: 'Koç Seç', desc: '11 yapay zeka koçu arasından kendi sektörünüze ve öğrenme hedefinize en uygun olanı seçin.' },
-  { step: '03', icon: '🗣️', title: 'Konuş & Yaz', desc: 'Telaffuz koçuyla sesli konuşun, yazma koçuna metin gönderin, dilbilgisi sorularını çözün veya kelime oyunu oynayın.' },
+  { step: '03', icon: '🗣️', title: 'Konuş, Yaz & Simüle Et', desc: 'Telaffuz koçuyla sesli konuşun, iş senaryolarını simüle edin, yazma koçuna metin gönderin, dilbilgisi sorularını çözün veya kelime oyunu oynayın.' },
   { step: '04', icon: '📊', title: 'Gelişimini Takip Et', desc: 'Her oturum sonrası otomatik oluşturulan raporlar, hata dağılımı ve CEFR seviyenizi güncel tutar.' },
 ];
 
@@ -106,7 +121,7 @@ const TECH_STACK = [
 const FAQS = [
   {
     q: 'Sphere AI Studio nedir?',
-    a: 'Sphere AI Studio, Sphere English LMS platformunun yapay zeka destekli eğitim bölümüdür. 11 farklı yapay zeka koçu, 4 özellik (Telaffuz Koçu, Yazma Koçu, Dilbilgisi Koçu, Kelime Oyunu) ve A1–C2 CEFR ölçeğinde kapsamlı içerikler sunar. GPT-4o ve Whisper AI teknolojileri kullanılarak geliştirilmiştir.',
+    a: 'Sphere AI Studio, Sphere English LMS platformunun yapay zeka destekli eğitim bölümüdür. 12 farklı yapay zeka koçu, 5 özellik (Telaffuz Koçu, İş Senaryoları, Yazma Koçu, Dilbilgisi Koçu, Kelime Oyunu) ve A1–C2 CEFR ölçeğinde kapsamlı içerikler sunar. GPT-4o ve Whisper AI teknolojileri kullanılarak geliştirilmiştir.',
   },
   {
     q: 'AI Studio\'yu kullanmak için ne kadar İngilizce bilmem gerekiyor?',
@@ -118,7 +133,7 @@ const FAQS = [
   },
   {
     q: 'Koçlar gerçek kişiler mi yoksa tamamen yapay zeka mı?',
-    a: 'Tüm koçlar (Mr. Sterling, Jake, David, Emma, Raj, Hans, Elena, Alistair, Chloe, James ve Dr. Claire) tamamen yapay zekadır. Her koç farklı bir sektör uzmanlığı, aksan ve eğitim stiliyle programlanmıştır. Gerçek bir insan koçun aksine 7/24 erişilebilir ve sınırsız konuşma yapılabilir.',
+    a: 'Tüm koçlar (Mr. Sterling, Jake, David, Emma, Raj, Hans, Elena, Alistair, Chloe, James, Dr. Claire ve Dr. Olivia) tamamen yapay zekadır. Her koç farklı bir sektör uzmanlığı, aksan ve eğitim stiliyle programlanmıştır. Gerçek bir insan koçun aksine 7/24 erişilebilir ve sınırsız konuşma yapılabilir.',
   },
   {
     q: 'AI Studio kurumsal planlara dahil mi?',
@@ -139,6 +154,10 @@ const FAQS = [
   {
     q: 'Kelime Oyunu\'nun diğer uygulamalardan farkı nedir?',
     a: 'Kelime Oyunu yalnızca genel İngilizce değil, 4000\'den fazla iş İngilizcesi ve sektöre özgü terimi kapsar. Adaptif zorluk algoritması performansınıza göre seviyeyi otomatik ayarlar. Kelimeler bağlamsal cümlelerde sunulduğu için anlam ve kullanım birlikte öğretilir.',
+  },
+  {
+    q: 'İş Senaryoları özelliği nasıl çalışıyor?',
+    a: 'Önce sektörünüzü (finans, teknoloji, sağlık, lojistik, hukuk vb.) ve ardından o sektörün uzman koçunu seçiyorsunuz. Senaryo modu ile gerçek iş durumlarını simüle edebilir, serbest konuşma moduyla da koçunuzla dilediğiniz konuyu konuşabilirsiniz. Her tur sonrası gramer hataları, kelime önerileri ve genel skor raporunuz otomatik oluşturulur.',
   },
   {
     q: 'AI Studio\'ya mobil cihazdan erişebilir miyim?',
@@ -201,7 +220,7 @@ export default function AIStudioPage() {
               Sphere <span style={{ color: '#0ea5e9' }}>AI</span><br />Studio
             </h1>
             <p className="text-xl text-white/60 mt-6 mb-4 max-w-2xl mx-auto leading-relaxed">
-              GPT-4o ve Whisper AI destekli 11 yapay zeka koçuyla gerçek zamanlı konuşma pratiği, akıllı yazma analizi, dilbilgisi öğrenimi ve oyunlaştırılmış kelime geliştirme — tek platformda.
+              GPT-4o ve Whisper AI destekli 12 yapay zeka koçuyla gerçek zamanlı konuşma pratiği, iş senaryosu simülasyonu, akıllı yazma analizi, dilbilgisi öğrenimi ve oyunlaştırılmış kelime geliştirme — tek platformda.
             </p>
             <p className="text-sm text-white/40 max-w-xl mx-auto mb-10">
               Oxford müfredatı · CEFR A1–C2 · 7/24 erişim · Kurumsal raporlama
@@ -266,16 +285,16 @@ export default function AIStudioPage() {
             <div className="text-center mb-16">
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: TURQUOISE }}>— Yapay Zeka Araçları</span>
               <h2 className="text-4xl md:text-5xl font-black mt-3 mb-4" style={{ fontFamily: "'Outfit', sans-serif", color: NAVY }}>
-                4 Güçlü AI Özelliği
+                5 Güçlü AI Özelliği
               </h2>
               <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-                Konuşma, yazma, dilbilgisi ve kelime — İngilizce öğrenmenin dört temel boyutu, tek platformda yapay zeka ile destekleniyor.
+                Konuşma, yazma, dilbilgisi, kelime ve iş senaryosu — İngilizce öğrenmenin beş temel boyutu, tek platformda yapay zeka ile destekleniyor.
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {AI_FEATURES.map((f) => (
                 <a key={f.title} href={f.link}
-                  className={"block rounded-3xl p-8 bg-gradient-to-br " + f.bg + " border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"}>
+                  className={"block rounded-3xl p-8 bg-gradient-to-br " + f.bg + " border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group" + ((f as any).span ? " md:col-span-2" : "")}>
                   <div className="flex items-start justify-between mb-5">
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style={{ background: f.color + '15' }}>
                       {f.icon}
