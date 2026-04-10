@@ -11,10 +11,10 @@ const META_PIXEL_ID  = '2156406151837976';
 const META_API_VER   = 'v19.0';
 
 async function sendMetaLead({
-  email, name, clientIp, clientUserAgent, fbc, fbp,
+  email, firstName, lastName, phone, clientIp, clientUserAgent, fbc, fbp,
 }: {
-  email: string; name?: string; clientIp?: string;
-  clientUserAgent?: string; fbc?: string; fbp?: string;
+  email: string; firstName?: string; lastName?: string; phone?: string;
+  clientIp?: string; clientUserAgent?: string; fbc?: string; fbp?: string;
 }) {
   const token = process.env.META_CONVERSIONS_API_TOKEN;
   if (!token) return;
@@ -23,8 +23,11 @@ async function sendMetaLead({
     crypto.createHash('sha256').update(v.trim().toLowerCase()).digest('hex');
 
   const userData: Record<string, string> = {};
-  if (email) userData.em = sha256(email);
-  if (clientIp) userData.client_ip_address = clientIp;
+  if (email)     userData.em = sha256(email);
+  if (firstName) userData.fn = sha256(firstName);
+  if (lastName)  userData.ln = sha256(lastName);
+  if (phone)     userData.ph = sha256(phone.replace(/\D/g, ''));
+  if (clientIp)  userData.client_ip_address = clientIp;
   if (clientUserAgent) userData.client_user_agent = clientUserAgent;
   if (fbc) userData.fbc = fbc;
   if (fbp) userData.fbp = fbp;
@@ -74,12 +77,16 @@ export async function POST(req: NextRequest) {
       }),
     }).catch((err) => console.error('Lead kayıt hatası:', err));
 
-    // ── 2. Meta Conversions API — Lead eventi ──
+    // ── 2. Meta Conversions API — Lead eventi (ad/soyad/e-posta ile gelişmiş eşleştirme) ──
+    const nameParts  = name.trim().split(' ');
+    const firstName  = nameParts[0] || undefined;
+    const lastName   = nameParts.length > 1 ? nameParts.slice(1).join(' ') : undefined;
     const forwardedIp = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
     const clientIp    = forwardedIp || req.headers.get('x-real-ip') || undefined;
     sendMetaLead({
       email,
-      name,
+      firstName,
+      lastName,
       clientIp,
       clientUserAgent: req.headers.get('user-agent') || undefined,
       fbc: req.cookies.get('_fbc')?.value,
