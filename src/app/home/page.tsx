@@ -29,6 +29,7 @@ import ContactSection from './components/StickyCTA';
 import ReferencesSection from './components/ReferencesSection';
 import FAQSection from './components/FAQSection';
 import AICoachesSection from './components/AICoachesSection';
+import AIStudioTeaser from './components/AIStudioTeaser';
 
 export default function HomePage() {
   return (
@@ -40,6 +41,7 @@ export default function HomePage() {
         <EgitimModeliSection />
         <BentoGrid />
         <AICoachesSection />
+        <AIStudioTeaser />
         <FounderQuoteSection />
         <MerveFounderQuoteSection />
         <RaporlamaSection />
