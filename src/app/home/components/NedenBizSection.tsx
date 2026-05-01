@@ -31,7 +31,7 @@ const whyCards: WhyCard[] = [
   {
     icon: 'ChartBarSquareIcon',
     title: 'Ölçülebilir Sonuçlar',
-    description: 'Aylık gelişim raporları ve performans değerlendirmeleriyle eğitimin ROI\'sini somut verilerle takip edin.',
+    description: "Aylık gelişim raporları ve performans değerlendirmeleriyle eğitimin ROI'sini somut verilerle takip edin.",
     tag: 'Veri Odaklı',
   },
   {
@@ -50,33 +50,55 @@ const whyCards: WhyCard[] = [
 
 export default function NedenBizSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const cards = sectionRef.current?.querySelectorAll('.reveal-card');
-    if (!cards) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const el = entry.target as HTMLElement;
-            const delay = parseInt(el.dataset.delay || '0');
-            setTimeout(() => el.classList.add('visible'), delay);
-            observer.unobserve(el);
-          }
+    let ctx: any;
+    (async () => {
+      const gsap = (await import('gsap')).default;
+      const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+      gsap.registerPlugin(ScrollTrigger);
+
+      ctx = gsap.context(() => {
+        gsap.from(headingRef.current, {
+          y: 40,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: headingRef.current,
+            start: 'top 85%',
+            once: true,
+          },
         });
-      },
-      { threshold: 0.12 }
-    );
-    cards.forEach((c) => observer.observe(c));
-    return () => observer.disconnect();
+
+        const cards = cardsRef.current?.querySelectorAll('.why-card');
+        if (cards && cards.length > 0) {
+          gsap.from(cards, {
+            y: 50,
+            opacity: 0,
+            duration: 0.7,
+            ease: 'power3.out',
+            stagger: 0.1,
+            scrollTrigger: {
+              trigger: cardsRef.current,
+              start: 'top 82%',
+              once: true,
+            },
+          });
+        }
+      }, sectionRef);
+    })();
+
+    return () => ctx?.revert();
   }, []);
 
   return (
     <section id="neden-biz" className="py-20 lg:py-28 bg-white" ref={sectionRef}>
       <div className="max-w-6xl mx-auto px-6 lg:px-10">
 
-        {/* Header */}
-        <div className="text-center mb-14">
+        <div className="text-center mb-14" ref={headingRef}>
           <span className="inline-block text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase mb-4">
             NEDEN SPHERE ENGLISH?
           </span>
@@ -89,13 +111,11 @@ export default function NedenBizSection() {
           </p>
         </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {whyCards.map((card, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" ref={cardsRef}>
+          {whyCards.map((card) => (
             <div
               key={card.title}
-              className="reveal-card bg-[#f8fafc] border border-gray-100 rounded-3xl p-8 flex flex-col gap-5 shadow-sm hover:shadow-md transition-shadow duration-300 cursor-default"
-              data-delay={i * 100}
+              className="why-card bg-[#f8fafc] border border-gray-100 rounded-3xl p-8 flex flex-col gap-5 shadow-sm hover:shadow-md transition-shadow duration-300 cursor-default"
             >
               <div className="flex items-start justify-between">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[#e8f0fe]">

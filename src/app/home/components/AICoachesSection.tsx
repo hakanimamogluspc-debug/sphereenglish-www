@@ -44,35 +44,69 @@ const coaches = [
 
 export default function AICoachesSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const cards = sectionRef.current?.querySelectorAll('.ai-card-reveal');
-    if (!cards) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const el = entry.target as HTMLElement;
-            const delay = parseInt(el.dataset.delay || '0');
-            setTimeout(() => el.classList.add('visible'), delay);
-            observer.unobserve(el);
-          }
+    let ctx: any;
+    (async () => {
+      const gsap = (await import('gsap')).default;
+      const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+      gsap.registerPlugin(ScrollTrigger);
+
+      ctx = gsap.context(() => {
+        gsap.from(headingRef.current, {
+          y: 40,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: headingRef.current,
+            start: 'top 85%',
+            once: true,
+          },
         });
-      },
-      { threshold: 0.1 }
-    );
-    cards.forEach((c) => observer.observe(c));
-    return () => observer.disconnect();
+
+        const cards = cardsRef.current?.querySelectorAll('.ai-coach-card');
+        if (cards && cards.length > 0) {
+          Array.from(cards).forEach((card, i) => {
+            gsap.from(card, {
+              x: i % 2 === 0 ? -60 : 60,
+              opacity: 0,
+              duration: 0.85,
+              ease: 'power3.out',
+              delay: i * 0.15,
+              scrollTrigger: {
+                trigger: cardsRef.current,
+                start: 'top 80%',
+                once: true,
+              },
+            });
+          });
+        }
+
+        gsap.from(ctaRef.current, {
+          y: 24,
+          opacity: 0,
+          duration: 0.7,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: ctaRef.current,
+            start: 'top 90%',
+            once: true,
+          },
+        });
+      }, sectionRef);
+    })();
+
+    return () => ctx?.revert();
   }, []);
 
   return (
     <section id="yapay-zeka-koclar" ref={sectionRef} className="py-20 lg:py-28 bg-[#f8fafc]">
-      <style>{`
-        .ai-card-reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.55s ease, transform 0.55s ease; }
-        .ai-card-reveal.visible { opacity: 1; transform: translateY(0); }
-      `}</style>
       <div className="max-w-6xl mx-auto px-6 lg:px-10">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16" ref={headingRef}>
           <span className="inline-block text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase mb-4">
             YAPAY ZEKA KOÇLARIMIZ
           </span>
@@ -84,12 +118,11 @@ export default function AICoachesSection() {
             Çalışanlarınız öğretmen beklemek zorunda değil. Sphere English&apos;in yapay zeka koçları istedikleri an devreye giriyor.
           </p>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {coaches.map((coach, i) => (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" ref={cardsRef}>
+          {coaches.map((coach) => (
             <div
               key={coach.id}
-              className="ai-card-reveal bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
-              data-delay={i * 150}
+              className="ai-coach-card bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
             >
               <div className="h-1.5 w-full" style={{ backgroundColor: coach.color }} />
               <div className="p-8 lg:p-10 flex flex-col gap-6">
@@ -128,7 +161,7 @@ export default function AICoachesSection() {
             </div>
           ))}
         </div>
-        <div className="mt-12 text-center">
+        <div className="mt-12 text-center" ref={ctaRef}>
           <p className="text-[14px] text-gray-400 mb-4">
             Tüm yapay zeka koçlarımız <span className="font-semibold text-[#1B365D]">app.sphereenglish.com</span> üzerinden erişilebilir.
           </p>

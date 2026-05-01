@@ -3,16 +3,18 @@ import React, { useEffect, useRef } from 'react';
 import Icon from '@/components/ui/AppIcon';
 
 interface Metric {
-  value: string;
+  prefix: string;
+  numericValue: number;
+  suffix: string;
   label: string;
   sub: string;
   fill: number;
 }
 
 const metrics: Metric[] = [
-  { value: '%87', label: 'Katılım Oranı', sub: 'Ortalama ders devam yüzdesi', fill: 87 },
-  { value: '+2.1', label: 'Seviye Artışı', sub: 'Ortalama CEFR seviye gelişimi', fill: 84 },
-  { value: '%94', label: 'Memnuniyet', sub: 'Kurumsal müşteri memnuniyeti', fill: 94 },
+  { prefix: '%', numericValue: 87, suffix: '', label: 'Katılım Oranı', sub: 'Ortalama ders devam yüzdesi', fill: 87 },
+  { prefix: '+', numericValue: 2.1, suffix: '', label: 'Seviye Artışı', sub: 'Ortalama CEFR seviye gelişimi', fill: 84 },
+  { prefix: '%', numericValue: 94, suffix: '', label: 'Memnuniyet', sub: 'Kurumsal müşteri memnuniyeti', fill: 94 },
 ];
 
 const dashboardFeatures = [
@@ -40,52 +42,117 @@ const dashboardFeatures = [
 
 export default function RaporlamaSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const barsRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const metricsRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLDivElement>(null);
+  const mockupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const cards = sectionRef.current?.querySelectorAll('.reveal-card');
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const el = entry.target as HTMLElement;
-            const delay = parseInt(el.dataset.delay || '0');
-            setTimeout(() => el.classList.add('visible'), delay);
-            observer.unobserve(el);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    cards?.forEach((c) => observer.observe(c));
-    return () => observer.disconnect();
-  }, []);
+    let ctx: any;
+    (async () => {
+      const gsap = (await import('gsap')).default;
+      const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+      gsap.registerPlugin(ScrollTrigger);
 
-  useEffect(() => {
-    const bars = barsRef.current?.querySelectorAll('.progress-bar');
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const bar = entry.target as HTMLElement;
-            const fill = bar.dataset.fill || '0';
-            bar.style.width = `${fill}%`;
-            observer.unobserve(bar);
-          }
+      ctx = gsap.context(() => {
+        gsap.from(headingRef.current, {
+          y: 36,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: headingRef.current,
+            start: 'top 85%',
+            once: true,
+          },
         });
-      },
-      { threshold: 0.5 }
-    );
-    bars?.forEach((b) => observer.observe(b));
-    return () => observer.disconnect();
+
+        const metricCards = metricsRef.current?.querySelectorAll('.metric-card');
+        const bars = metricsRef.current?.querySelectorAll('.progress-bar-inner');
+        const counters = metricsRef.current?.querySelectorAll('.metric-value');
+
+        if (metricCards && metricCards.length > 0) {
+          gsap.from(metricCards, {
+            y: 50,
+            opacity: 0,
+            duration: 0.7,
+            ease: 'power3.out',
+            stagger: 0.12,
+            scrollTrigger: {
+              trigger: metricsRef.current,
+              start: 'top 80%',
+              once: true,
+              onEnter: () => {
+                bars?.forEach((bar) => {
+                  const el = bar as HTMLElement;
+                  const fill = parseFloat(el.dataset.fill || '0');
+                  gsap.to(el, {
+                    width: `${fill}%`,
+                    duration: 1.4,
+                    ease: 'power2.out',
+                    delay: 0.3,
+                  });
+                });
+
+                counters?.forEach((counter, i) => {
+                  const el = counter as HTMLElement;
+                  const target = parseFloat(el.dataset.target || '0');
+                  const prefix = el.dataset.prefix || '';
+                  const isDecimal = target % 1 !== 0;
+                  const obj = { val: 0 };
+                  gsap.to(obj, {
+                    val: target,
+                    duration: 1.6,
+                    delay: i * 0.12 + 0.2,
+                    ease: 'power2.out',
+                    onUpdate: () => {
+                      el.textContent = prefix + (isDecimal ? obj.val.toFixed(1) : Math.round(obj.val).toString());
+                    },
+                  });
+                });
+              },
+            },
+          });
+        }
+
+        const featureCards = featuresRef.current?.querySelectorAll('.feature-card');
+        if (featureCards && featureCards.length > 0) {
+          gsap.from(featureCards, {
+            y: 40,
+            opacity: 0,
+            duration: 0.65,
+            ease: 'power3.out',
+            stagger: 0.09,
+            scrollTrigger: {
+              trigger: featuresRef.current,
+              start: 'top 82%',
+              once: true,
+            },
+          });
+        }
+
+        gsap.from(mockupRef.current, {
+          y: 50,
+          opacity: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: mockupRef.current,
+            start: 'top 85%',
+            once: true,
+          },
+        });
+      }, sectionRef);
+    })();
+
+    return () => ctx?.revert();
   }, []);
 
   return (
     <section id="raporlama" className="py-20 lg:py-28 bg-gradient-to-br from-[#f0f4f8] to-white" ref={sectionRef}>
       <div className="max-w-5xl mx-auto px-6 lg:px-10">
 
-        {/* Header */}
-        <div className="text-center mb-14">
+        <div className="text-center mb-14" ref={headingRef}>
           <span className="inline-block text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase mb-4">
             RAPORLAMA & TAKİP
           </span>
@@ -95,22 +162,26 @@ export default function RaporlamaSection() {
           </h2>
         </div>
 
-        {/* Metrics */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10" ref={barsRef}>
-          {metrics.map((m, i) => (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10" ref={metricsRef}>
+          {metrics.map((m) => (
             <div
               key={m.label}
-              className="reveal-card bg-white border border-gray-100 rounded-3xl p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
-              data-delay={i * 100}
+              className="metric-card bg-white border border-gray-100 rounded-3xl p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
             >
               <p className="text-[44px] font-extrabold leading-none mb-1 text-[#1B365D]">
-                {m.value}
+                <span
+                  className="metric-value"
+                  data-target={m.numericValue}
+                  data-prefix={m.prefix}
+                >
+                  {m.prefix}0
+                </span>
               </p>
               <p className="text-[13px] font-bold text-[#1B365D] mb-1">{m.label}</p>
               <p className="text-[12px] text-gray-400 mb-5">{m.sub}</p>
               <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                 <div
-                  className="progress-bar h-full rounded-full transition-all duration-1000 ease-out bg-[#0ea5e9]"
+                  className="progress-bar-inner h-full rounded-full bg-[#0ea5e9]"
                   data-fill={m.fill}
                   style={{ width: '0%' }}
                 />
@@ -119,13 +190,11 @@ export default function RaporlamaSection() {
           ))}
         </div>
 
-        {/* Dashboard features */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          {dashboardFeatures.map((feat, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10" ref={featuresRef}>
+          {dashboardFeatures.map((feat) => (
             <div
               key={feat.title}
-              className="reveal-card bg-[#f8fafc] border border-gray-100 rounded-3xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300"
-              data-delay={i * 90}
+              className="feature-card bg-[#f8fafc] border border-gray-100 rounded-3xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow duration-300"
             >
               <div className="w-11 h-11 rounded-2xl flex items-center justify-center bg-[#e8f0fe]">
                 <Icon name={feat.icon as any} size={20} style={{ color: '#082567' }} />
@@ -140,10 +209,9 @@ export default function RaporlamaSection() {
           ))}
         </div>
 
-        {/* Dashboard mockup visual */}
         <div
-          className="rounded-3xl border border-gray-100 overflow-hidden reveal-card shadow-sm"
-          data-delay={200}
+          className="rounded-3xl border border-gray-100 overflow-hidden shadow-sm"
+          ref={mockupRef}
           style={{ background: '#f8fafc' }}
         >
           <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-100 bg-[#1B365D] rounded-t-3xl overflow-hidden">
