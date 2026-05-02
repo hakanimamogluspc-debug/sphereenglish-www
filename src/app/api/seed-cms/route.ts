@@ -12,7 +12,14 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   const token = req.headers.get('x-seed-token');
-  const expected = process.env.SEED_TOKEN || 'dev-seed-only';
+  const expected = process.env.SEED_TOKEN
+    || (process.env.NODE_ENV !== 'production' ? 'dev-seed-only' : null);
+  if (!expected) {
+    return NextResponse.json(
+      { error: 'SEED_TOKEN env var must be set in production.' },
+      { status: 503 }
+    );
+  }
   if (token !== expected) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
