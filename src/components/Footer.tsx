@@ -112,6 +112,7 @@ export default function Footer() {
             © 2026 Sphere English. Tüm hakları saklıdır.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-[12px] text-white/40">
+            <Link href="/brand" className="hover:text-white/70 transition-colors">Brand Kit</Link>
             <Link href="#" className="hover:text-white/70 transition-colors">Gizlilik Politikası</Link>
             <Link href="#" className="hover:text-white/70 transition-colors">Kullanım Koşulları</Link>
             <Link href="#" className="hover:text-white/70 transition-colors">KVKK</Link>
