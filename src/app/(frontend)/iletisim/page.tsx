@@ -115,7 +115,7 @@ export default function IletisimPage() {
                     </div>
                     <div>
                       <p className="text-[11px] font-bold tracking-[0.16em] uppercase mb-1" style={{ color: '#0ea5e9' }}>WHATSAPP</p>
-                      <a href="https://wa.me/903128701058" target="_blank" rel="noopener noreferrer" className="text-sm font-medium hover:text-[#0ea5e9] transition-colors" style={{ color: '#1B365D' }}>
+                      <a href="https://wa.me/905066085810" target="_blank" rel="noopener noreferrer" className="text-sm font-medium hover:text-[#0ea5e9] transition-colors" style={{ color: '#1B365D' }}>
                         WhatsApp
                       </a>
                     </div>
