@@ -332,6 +332,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           />
         </noscript>
         {children}
+        <script src="https://app.sphereenglish.com/api/widget.js" async defer></script>
       </body>
     </html>
   );
