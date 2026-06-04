@@ -59,7 +59,7 @@ const skillsData: SkillEntry[] = [
     name: 'grammar-coach',
     type: 'tool',
     description:
-      'A1–C1 arası 60+ ders birimi. Türk öğrencilerin sık yaptığı hatalara odaklı yapılandırılmış müfredat.',
+      'A1–C2 arası yapılandırılmış müfredat (her seviyede çoklu ders birimi). Türk öğrencilerin sık yaptığı hatalara odaklı.',
     url: 'https://app.sphereenglish.com/student/grammar-coach',
     category: 'grammar',
     tags: ['grammar', 'cefr', 'structured-learning'],

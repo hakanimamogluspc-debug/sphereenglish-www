@@ -19,7 +19,7 @@ URL: https://app.sphereenglish.com/student/simulation-mode
 URL: https://app.sphereenglish.com/student/writing-coach
 
 ### 4. Dilbilgisi Koçu (Grammar Coach)
-A1–C1 arası yapılandırılmış müfredat (60+ ders birimi). Türk öğrencilerin sık hatalarına odaklı.
+A1–C2 arası yapılandırılmış müfredat (her CEFR seviyesinde çoklu ders birimi, içerik sürekli genişliyor). Türk öğrencilerin sık hatalarına odaklı.
 URL: https://app.sphereenglish.com/student/grammar-coach
 
 ### 5. Kelime Oyunu (Vocab Game)
