@@ -106,10 +106,17 @@ const organizationJsonLd = {
   },
   address: {
     '@type': 'PostalAddress',
+    streetAddress: '150 Evler Mah. Atatürk Blv. No:456/35',
+    addressLocality: 'Ayvalık',
+    addressRegion: 'Balıkesir',
+    postalCode: '10400',
     addressCountry: 'TR',
+<<<<<<< Updated upstream
     addressRegion: 'Ankara',
     addressLocality: 'Çankaya',
     streetAddress: 'Kızılırmak Mah. Dumlupınar Blv. YDA Center 9A No:158',
+=======
+>>>>>>> Stashed changes
   },
   telephone: '+90 312 870 10 58',
   email: 'info@sphereenglish.com',
@@ -284,11 +291,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           href="/assets/images/hero-online-english.jpg"
           fetchPriority="high"
         />
-        <meta name="geo.region" content="TR" />
+        <meta name="geo.region" content="TR-10" />
         <meta name="geo.country" content="Turkey" />
+<<<<<<< Updated upstream
         <meta name="geo.placename" content="Ankara, Türkiye" />
         <meta name="geo.position" content="39.9078;32.7689" />
         <meta name="ICBM" content="39.9078, 32.7689" />
+=======
+        <meta name="geo.placename" content="Ayvalık, Balıkesir, Türkiye" />
+        <meta name="geo.position" content="39.3173;26.6939" />
+        <meta name="ICBM" content="39.3173, 26.6939" />
+>>>>>>> Stashed changes
         <meta httpEquiv="content-language" content="tr-TR" />
         {/* AI / LLM discovery */}
         <link rel="alternate" type="text/plain" href="/llms.txt" title="AI Content Summary" />

@@ -131,8 +131,8 @@ export default function IletisimPage() {
                     <div>
                       <p className="text-[11px] font-bold tracking-[0.16em] uppercase mb-1" style={{ color: '#0ea5e9' }}>ADRES</p>
                       <p className="text-sm font-medium leading-relaxed" style={{ color: '#1B365D' }}>
-                        Kızılırmak mah. Dumlupınar Blv. YDA Center 9A No:158<br />
-                        Çankaya/ANKARA
+                        150 Evler Mah. Atatürk Blv. No:456/35<br />
+                        10400 Ayvalık / Balıkesir
                       </p>
                     </div>
                   </div>
@@ -153,7 +153,7 @@ export default function IletisimPage() {
 
               {/* Konum Kartı */}
               <a
-                href=""
+                href="https://www.google.com/maps/search/?api=1&query=150+Evler+Mahallesi+Atat%C3%BCrk+Bulvar%C4%B1+456%2F35+Ayval%C4%B1k+Bal%C4%B1kesir"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block bg-white rounded-3xl shadow-sm border border-[#e8f0fe] overflow-hidden hover:shadow-md transition-shadow duration-200 group"
@@ -171,9 +171,9 @@ export default function IletisimPage() {
                     </svg>
                   </div>
                   <div className="text-center px-6">
-                    <p className="text-[13px] font-bold text-[#1B365D] mb-1">YDA Center</p>
-                    <p className="text-[12px] text-gray-500">Dumlupınar Bulvarı No:158</p>
-                    <p className="text-[12px] text-gray-500">Çankaya / Ankara</p>
+                    <p className="text-[13px] font-bold text-[#1B365D] mb-1">Sphere English Merkez</p>
+                    <p className="text-[12px] text-gray-500">150 Evler Mah. Atatürk Blv. No:456/35</p>
+                    <p className="text-[12px] text-gray-500">10400 Ayvalık / Balıkesir</p>
                   </div>
                   {/* Tıkla butonu */}
                   <div className="flex items-center gap-2 px-5 py-2.5 rounded-full text-[12px] font-bold text-white transition-all duration-200 group-hover:opacity-90" style={{ background: '#0ea5e9' }}>

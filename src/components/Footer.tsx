@@ -92,7 +92,7 @@ export default function Footer() {
               </div>
               <div className="flex items-start gap-2.5 text-[14px] text-white/70">
                 <Icon name="MapPinIcon" size={14} className="flex-shrink-0 mt-0.5 text-white/50" />
-                <span>Kızılırmak mah. Dumlupınar Blv. YDA Center 9A No:158 Çankaya/ANKARA</span>
+                <span>150 Evler Mah. Atatürk Blv. No:456/35, 10400 Ayvalık / Balıkesir</span>
               </div>
               <Link
                 href="/iletisim"

@@ -12,10 +12,14 @@
 - Tam Ad: Sphere English — Kurumsal İş İngilizcesi Eğitim Platformu
 - Tür: SaaS + Canlı Eğitim Hibrid Platformu
 - İş Modeli: B2B (kurumsal — şirketten şirkete)
+<<<<<<< Updated upstream
 - Kuruluş: Ankara, Türkiye (Çankaya/YDA Center)
 - Adres: Kızılırmak Mah. Dumlupınar Blv. YDA Center 9A No:158 Çankaya/ANKARA
 - Telefon: +90 312 870 10 58
 - E-posta: info@sphereenglish.com
+=======
+- Merkez: Ayvalık, Balıkesir, Türkiye (150 Evler Mah. Atatürk Blv. No:456/35, 10400)
+>>>>>>> Stashed changes
 - Hizmet Kapsamı: Türkiye geneli (online / 7/24 erişim)
 - Ana Web Sitesi: https://www.sphereenglish.com
 - LMS Uygulaması: https://app.sphereenglish.com
@@ -222,4 +226,4 @@ Beceriye Göre Programlar:
 Son güncelleme: Nisan 2026
 Dil: Türkçe (hizmet dili: Türkçe ve İngilizce)
 Platform teknolojisi: GPT-4o, OpenAI Whisper, Oxford University Press
-Anahtar kelimeler: kurumsal İngilizce eğitimi, iş İngilizcesi, B2B İngilizce platformu, Oxford sertifikası, AI İngilizce koçu, yapay zeka İngilizce, İstanbul kurumsal dil eğitimi, Türkiye kurumsal ingilizce, Sphere English
+Anahtar kelimeler: kurumsal İngilizce eğitimi, iş İngilizcesi, B2B İngilizce platformu, Oxford sertifikası, AI İngilizce koçu, yapay zeka İngilizce, Türkiye geneli online kurumsal İngilizce, Balıkesir merkezli SaaS, Sphere English
