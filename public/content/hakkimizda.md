@@ -47,18 +47,18 @@ Kurumsal müşteri başarısı ve operasyon süreçlerini yönetir. Kurumsal rap
 ## Şirket Bilgileri
 
 - **Kuruluş:** 2020
-- **Merkez:** Çankaya, Ankara, Türkiye
+- **Merkez:** Ayvalık, Balıkesir, Türkiye
 - **Hizmet bölgesi:** Türkiye geneli (online)
 - **Çalışma modeli:** B2B kurumsal
 
 ## Adres
 
-Kızılırmak Mah. Dumlupınar Blv. YDA Center 9A No:158 Çankaya/ANKARA
+150 Evler Mah. Atatürk Blv. No:456/35, 10400 Ayvalık / Balıkesir
 
 ## İletişim
 
 - E-posta: info@sphereenglish.com
-- Telefon: +90 312 870 10 58
+- WhatsApp: +90 506 608 58 10 (https://wa.me/905066085810)
 
 ## İlgili Sayfalar
 

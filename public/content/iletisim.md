@@ -12,9 +12,8 @@
 ## İletişim Bilgileri
 
 - **E-posta:** info@sphereenglish.com
-- **Telefon:** +90 312 870 10 58
-- **WhatsApp:** https://wa.me/905066085810
-- **Adres:** Kızılırmak Mah. Dumlupınar Blv. YDA Center 9A No:158 Çankaya/ANKARA
+- **WhatsApp:** +90 506 608 58 10 (https://wa.me/905066085810)
+- **Adres:** 150 Evler Mah. Atatürk Blv. No:456/35, 10400 Ayvalık / Balıkesir
 
 ## Demo İletişim Formu Alanları
 

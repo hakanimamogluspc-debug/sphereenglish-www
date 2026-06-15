@@ -43,7 +43,7 @@ nihai teklif satış ekibi tarafından özel olarak hazırlanır.
 
 ## Kurumsal Enterprise (50+ çalışan)
 
-- **Fiyat:** Özel teklif — sales@sphereenglish.com / +90 312 870 10 58
+- **Fiyat:** Özel teklif — sales@sphereenglish.com / WhatsApp +90 506 608 58 10
 - **Format:** Tam özelleştirilmiş program, opsiyonel SSO entegrasyonu, kurumsal SLA
 - **Kapsam:** Yukarıdakilere ek olarak: SSO, custom analytics, API entegrasyonu, dedicated account manager, in-person workshop opsiyonu
 - **Sözleşme süresi:** Yıllık veya çok yıllı
@@ -87,8 +87,7 @@ nihai teklif satış ekibi tarafından özel olarak hazırlanır.
 
 - Web: https://www.sphereenglish.com/iletisim
 - E-posta: info@sphereenglish.com (genel), sales@sphereenglish.com (enterprise)
-- Telefon: +90 312 870 10 58
-- WhatsApp: https://wa.me/905066085810
+- WhatsApp: +90 506 608 58 10 (https://wa.me/905066085810)
 
 ---
 

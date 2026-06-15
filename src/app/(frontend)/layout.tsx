@@ -111,14 +111,8 @@ const organizationJsonLd = {
     addressRegion: 'Balıkesir',
     postalCode: '10400',
     addressCountry: 'TR',
-<<<<<<< Updated upstream
-    addressRegion: 'Ankara',
-    addressLocality: 'Çankaya',
-    streetAddress: 'Kızılırmak Mah. Dumlupınar Blv. YDA Center 9A No:158',
-=======
->>>>>>> Stashed changes
   },
-  telephone: '+90 312 870 10 58',
+  telephone: '+90 506 608 58 10',
   email: 'info@sphereenglish.com',
   founder: [
     { '@type': 'Person', name: 'Didem İmamoğlu', jobTitle: 'Kurucu' },
@@ -127,13 +121,14 @@ const organizationJsonLd = {
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer service',
-    telephone: '+90 312 870 10 58',
+    telephone: '+90 506 608 58 10',
     email: 'info@sphereenglish.com',
     url: `${BASE_URL}/iletisim`,
     availableLanguage: ['Turkish', 'English'],
   },
   sameAs: [
     'https://app.sphereenglish.com',
+    'https://wa.me/905066085810',
   ],
 };
 
@@ -293,15 +288,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         />
         <meta name="geo.region" content="TR-10" />
         <meta name="geo.country" content="Turkey" />
-<<<<<<< Updated upstream
-        <meta name="geo.placename" content="Ankara, Türkiye" />
-        <meta name="geo.position" content="39.9078;32.7689" />
-        <meta name="ICBM" content="39.9078, 32.7689" />
-=======
         <meta name="geo.placename" content="Ayvalık, Balıkesir, Türkiye" />
         <meta name="geo.position" content="39.3173;26.6939" />
         <meta name="ICBM" content="39.3173, 26.6939" />
->>>>>>> Stashed changes
         <meta httpEquiv="content-language" content="tr-TR" />
         {/* AI / LLM discovery */}
         <link rel="alternate" type="text/plain" href="/llms.txt" title="AI Content Summary" />

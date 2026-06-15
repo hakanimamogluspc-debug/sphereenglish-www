@@ -43,8 +43,10 @@ export default function Footer() {
                 <Icon name="EnvelopeIcon" size={15} />
               </a>
               <a
-                href="tel:+903128701058"
-                aria-label="Telefon"
+                href="https://wa.me/905066085810"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
                 className="w-9 h-9 rounded border border-white/25 flex items-center justify-center text-white/55 hover:text-white hover:border-white/60 transition-colors"
               >
                 <Icon name="PhoneIcon" size={15} />
