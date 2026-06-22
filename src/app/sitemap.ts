@@ -38,6 +38,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/blog`, lastModified: today, changeFrequency: 'daily', priority: 0.9 },
     { url: `${BASE_URL}/iletisim`, lastModified: today, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE_URL}/ai-studio`, lastModified: today, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/fiyatlandirma`, lastModified: today, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/abonelik`, lastModified: today, changeFrequency: 'weekly', priority: 0.7 },
     // Hukuki / Iyzico onay sayfaları
     { url: `${BASE_URL}/kvkk`, lastModified: today, changeFrequency: 'yearly', priority: 0.4 },
     { url: `${BASE_URL}/gizlilik-politikasi`, lastModified: today, changeFrequency: 'yearly', priority: 0.4 },

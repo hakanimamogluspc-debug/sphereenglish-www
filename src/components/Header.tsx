@@ -147,6 +147,7 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
             )}
           </div>
 
+          <Link href="/fiyatlandirma" className="hover:text-[#0ea5e9] transition-colors duration-200">FİYATLAR</Link>
           <Link href="/blog" className="hover:text-[#0ea5e9] transition-colors duration-200">BLOG</Link>
           <Link href="/iletisim" className="hover:text-[#0ea5e9] transition-colors duration-200">İLETİŞİM</Link>
           <a
@@ -225,6 +226,7 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
             )}
           </div>
 
+          <Link href="/fiyatlandirma" className="text-[12px] font-bold tracking-[0.18em] hover:text-[#0ea5e9] transition-colors duration-200" style={{ color: '#1B365D' }} onClick={() => setMobileOpen(false)}>FİYATLAR</Link>
           <Link href="/blog" className="text-[12px] font-bold tracking-[0.18em] hover:text-[#0ea5e9] transition-colors duration-200" style={{ color: '#1B365D' }} onClick={() => setMobileOpen(false)}>BLOG</Link>
           <Link href="/iletisim" className="text-[12px] font-bold tracking-[0.18em] hover:text-[#0ea5e9] transition-colors duration-200" style={{ color: '#1B365D' }} onClick={() => setMobileOpen(false)}>İLETİŞİM</Link>
           <a

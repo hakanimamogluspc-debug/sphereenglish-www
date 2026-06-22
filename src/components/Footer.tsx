@@ -62,6 +62,7 @@ export default function Footer() {
               <Link href="/hakkimizda" className="text-[14px] text-white/70 hover:text-white transition-colors">Hakkımızda</Link>
               <Link href="/nasil-calisir" className="text-[14px] text-white/70 hover:text-white transition-colors">Nasıl Çalışır</Link>
               <Link href="/cozumler" className="text-[14px] text-white/70 hover:text-white transition-colors">Çözümler</Link>
+              <Link href="/fiyatlandirma" className="text-[14px] text-white/70 hover:text-white transition-colors">Fiyatlandırma</Link>
               <Link href="/abonelik" className="text-[14px] text-white/70 hover:text-white transition-colors">Abonelik</Link>
               <Link href="/blog" className="text-[14px] text-white/70 hover:text-white transition-colors">Blog</Link>
               <Link href="/iletisim" className="text-[14px] text-white/70 hover:text-white transition-colors">İletişim</Link>
