@@ -62,6 +62,7 @@ export default function Footer() {
               <Link href="/hakkimizda" className="text-[14px] text-white/70 hover:text-white transition-colors">Hakkımızda</Link>
               <Link href="/nasil-calisir" className="text-[14px] text-white/70 hover:text-white transition-colors">Nasıl Çalışır</Link>
               <Link href="/cozumler" className="text-[14px] text-white/70 hover:text-white transition-colors">Çözümler</Link>
+              <Link href="/abonelik" className="text-[14px] text-white/70 hover:text-white transition-colors">Abonelik</Link>
               <Link href="/blog" className="text-[14px] text-white/70 hover:text-white transition-colors">Blog</Link>
               <Link href="/iletisim" className="text-[14px] text-white/70 hover:text-white transition-colors">İletişim</Link>
             </div>
@@ -75,10 +76,10 @@ export default function Footer() {
                 <Icon name="EnvelopeIcon" size={14} className="flex-shrink-0 text-white/50" />
                 <span>info@sphereenglish.com</span>
               </div>
-              <div className="flex items-center gap-2.5 text-[14px] text-white/70">
+              <a href="https://wa.me/905066085810" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-[14px] text-white/70 hover:text-white transition-colors">
                 <Icon name="PhoneIcon" size={14} className="flex-shrink-0 text-white/50" />
-                <span>+90 (312) 870 10 58</span>
-              </div>
+                <span>+90 506 608 58 10</span>
+              </a>
               <div className="flex items-center gap-2.5 text-[14px]">
                 <a
                   href="https://wa.me/905066085810"
