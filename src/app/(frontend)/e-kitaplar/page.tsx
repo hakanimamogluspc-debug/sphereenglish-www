@@ -186,12 +186,6 @@ export default async function EKitaplarPage() {
 
                 {/* Bilgi */}
                 <div className="flex flex-col flex-1 p-5">
-                  {b.series_title && (
-                    <p className="text-[10px] font-bold tracking-[0.16em] uppercase text-[#0ea5e9] mb-2">
-                      {b.series_title}
-                      {b.series_order != null && ` · ${String(b.series_order).padStart(2, '0')}`}
-                    </p>
-                  )}
                   <h2 className="text-[18px] font-bold text-[#1B365D] mb-1 group-hover:text-[#0ea5e9] transition-colors">
                     {b.title}
                   </h2>

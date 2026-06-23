@@ -272,12 +272,6 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
 
           {/* Bilgi paneli */}
           <div>
-            {ebook.series_title && (
-              <p className="text-[11px] font-bold tracking-[0.18em] text-[#0ea5e9] uppercase mb-2">
-                {ebook.series_title}
-                {ebook.series_order != null && ` · Kitap ${String(ebook.series_order).padStart(2, '0')}`}
-              </p>
-            )}
             <h1 className="text-[36px] lg:text-[44px] font-extrabold tracking-[-0.025em] text-[#1B365D] leading-[1.1] mb-3">
               {ebook.title}
             </h1>
