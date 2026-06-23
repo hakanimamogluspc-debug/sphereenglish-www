@@ -28,8 +28,8 @@ const FAQS = [
     a: 'Evet. Aboneliğim sayfasından tek tıkla iptal edebilirsin. İptal sonrası mevcut ödeme dönemin sonuna kadar erişimin devam eder, yeni tahsilat yapılmaz.',
   },
   {
-    q: 'Yıllık planda neden 2 ay bedava?',
-    a: 'Yıllık peşin ödeyenlere teşekkür olarak 12 aylık fiyatı 10 ay fiyatından sunuyoruz. Aylık plana göre %16 tasarruf sağlar; uzun vadeli öğrenme planı yapanlar için ideal.',
+    q: 'Yıllık planda %17 indirim nasıl hesaplanıyor?',
+    a: 'Aylık fiyatınızı 12 ay yerine 10 ay üzerinden ödersiniz. Aylık planla karşılaştırıldığında %17 (yaklaşık 2 ay) tasarruf sağlar. Uzun vadeli öğrenme planı yapanlar için ideal.',
   },
   {
     q: 'KDV dahil mi?',
@@ -86,7 +86,7 @@ export default function FiyatlandirmaClient() {
             >
               Yıllık
               <span className="ml-2 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-700 uppercase tracking-wide">
-                2 ay bedava
+                %17 indirim
               </span>
             </button>
           </div>
@@ -96,6 +96,12 @@ export default function FiyatlandirmaClient() {
           {visiblePlans.map((p) => {
             const style = TIER_STYLE[p.tier];
             const monthlyEquivalent = p.billingType === 'yearly' ? Math.round(p.amount / 12) : null;
+            // Yıllık planlar için "ne olurdu" kıyas fiyatı: aylık eşdeğer plan × 12.
+            // Plans kataloğunda aylık fiyatı: aynı tier'ın monthly versiyonu.
+            const monthlyTwin = p.billingType === 'yearly'
+              ? PLAN_CATALOG.find(x => x.tier === p.tier && x.billingType === 'monthly')
+              : null;
+            const yearlyComparisonPrice = monthlyTwin ? monthlyTwin.amount * 12 : null;
             return (
               <div
                 key={p.code}
@@ -119,6 +125,17 @@ export default function FiyatlandirmaClient() {
                 </p>
 
                 <div className="mb-5">
+                  {/* Yıllık'ta üstü çizili kıyas fiyat */}
+                  {yearlyComparisonPrice && (
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="text-[15px] text-gray-400 line-through">
+                        {formatTRY(yearlyComparisonPrice)}
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700">
+                        %17 indirim
+                      </span>
+                    </div>
+                  )}
                   <div className="text-[36px] font-extrabold leading-none mb-1" style={{ color: style.color }}>
                     {formatTRY(p.amount)}
                   </div>
@@ -127,7 +144,7 @@ export default function FiyatlandirmaClient() {
                   </div>
                   {monthlyEquivalent && (
                     <div className="text-[11px] text-emerald-700 font-semibold mt-1">
-                      ≈ ayda {formatTRY(monthlyEquivalent)} • 2 ay bedava
+                      ≈ ayda {formatTRY(monthlyEquivalent)}
                     </div>
                   )}
                 </div>
