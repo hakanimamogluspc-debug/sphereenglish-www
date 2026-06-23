@@ -17,10 +17,9 @@ interface Props {
 }
 
 const TIER_STYLE: Record<PlanDefinition['tier'], { color: string; bg: string; ring: string }> = {
-  basic: { color: '#475569', bg: '#f1f5f9', ring: '#cbd5e1' },
-  standard: { color: '#0284c7', bg: '#e0f2fe', ring: '#7dd3fc' },
-  premium: { color: '#4f46e5', bg: '#eef2ff', ring: '#818cf8' },
-  executive: { color: '#7c3aed', bg: '#faf5ff', ring: '#c4b5fd' },
+  core:    { color: '#475569', bg: '#f8fafc', ring: '#cbd5e1' },
+  pro:     { color: '#4f46e5', bg: '#eef2ff', ring: '#818cf8' },
+  premium: { color: '#7c3aed', bg: '#faf5ff', ring: '#c4b5fd' },
 };
 
 function formatTRY(amount: number) {
@@ -33,7 +32,7 @@ function formatTRY(amount: number) {
 
 export default function AbonelikClient({ initialPlanCode, initialEmail, initialName }: Props) {
   const [plans, setPlans] = useState<PlanDefinition[]>([]);
-  const [tab, setTab] = useState<'recurring' | 'one-time'>('recurring');
+  const [tab, setTab] = useState<'monthly' | 'yearly'>('monthly');
   const [selectedCode, setSelectedCode] = useState<string | null>(initialPlanCode ?? null);
   const [email, setEmail] = useState(initialEmail ?? '');
   const [name, setName] = useState(initialName ?? '');
@@ -125,32 +124,35 @@ export default function AbonelikClient({ initialPlanCode, initialEmail, initialN
 
   return (
     <div>
-      {/* Tab — aylık recurring / peşin paket */}
+      {/* Tab — Aylık / Yıllık (2 ay bedava) */}
       <div className="flex justify-center mb-8">
         <div className="inline-flex gap-1 p-1 rounded-xl bg-gray-100">
           <button
             type="button"
-            onClick={() => setTab('recurring')}
+            onClick={() => setTab('monthly')}
             className={`px-5 py-2.5 rounded-lg text-[13px] font-bold transition-all ${
-              tab === 'recurring' ? 'bg-white text-[#1B365D] shadow-sm' : 'text-gray-500 hover:text-[#1B365D]'
+              tab === 'monthly' ? 'bg-white text-[#1B365D] shadow-sm' : 'text-gray-500 hover:text-[#1B365D]'
             }`}
           >
-            Aylık (Otomatik Yenilenir)
+            Aylık
           </button>
           <button
             type="button"
-            onClick={() => setTab('one-time')}
-            className={`px-5 py-2.5 rounded-lg text-[13px] font-bold transition-all ${
-              tab === 'one-time' ? 'bg-white text-[#1B365D] shadow-sm' : 'text-gray-500 hover:text-[#1B365D]'
+            onClick={() => setTab('yearly')}
+            className={`px-5 py-2.5 rounded-lg text-[13px] font-bold transition-all relative ${
+              tab === 'yearly' ? 'bg-white text-[#1B365D] shadow-sm' : 'text-gray-500 hover:text-[#1B365D]'
             }`}
           >
-            Peşin Paket
+            Yıllık
+            <span className="ml-2 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-700 uppercase tracking-wide">
+              2 ay bedava
+            </span>
           </button>
         </div>
       </div>
 
-      {/* Plan kartları */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+      {/* Plan kartları — 3 sütun (Core / Pro / Premium) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12 max-w-4xl mx-auto">
         {visiblePlans.map((p) => {
           const style = TIER_STYLE[p.tier];
           const isSelected = selectedCode === p.code;
@@ -183,7 +185,7 @@ export default function AbonelikClient({ initialPlanCode, initialEmail, initialN
                 {formatTRY(p.amount)}
               </div>
               <div className="text-[11px] text-gray-500 mb-3">
-                {p.billingType === 'recurring' ? 'her ay' : `${p.durationMonths} ay süreyle`}
+                {p.billingType === 'monthly' ? 'aylık' : 'yıllık'} · KDV dahil
               </div>
               <ul className="space-y-1.5 text-[12px] text-gray-700">
                 {p.features.slice(0, 4).map((f, i) => (
@@ -206,7 +208,7 @@ export default function AbonelikClient({ initialPlanCode, initialEmail, initialN
           </h2>
           <p className="text-[14px] text-gray-500 mb-5">
             Toplam: <strong className="text-[#1B365D]">{formatTRY(selectedPlan.amount)}</strong>{' '}
-            {selectedPlan.billingType === 'recurring' ? '/ ay' : `(${selectedPlan.durationMonths} ay peşin)`}
+            {selectedPlan.billingType === 'monthly' ? '/ ay' : '/ yıl'}
           </p>
 
           <div className="space-y-4">

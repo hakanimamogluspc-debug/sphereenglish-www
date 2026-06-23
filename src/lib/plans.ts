@@ -1,157 +1,197 @@
 /**
- * Sphere English plan kataloğu — pazarlama sitesi tarafı.
+ * Sphere English plan kataloğu — pazarlama sitesi.
  *
- * LMS api-server/src/lib/plans.ts ile BİREBİR senkron tutulmalı. Bir tarafı
- * güncelleyince diğeri de güncellenmeli (gelecekte ortak `@workspace/plans`
- * paketine taşınabilir).
+ * Yapı: 3 tier (Core / Pro / Premium) × 2 faturalama (Aylık / Yıllık).
+ * Yıllık planlarda 2 ay bedava (yıllık = aylık × 10).
  *
- * Pazarlama sitesi /abonelik sayfasında bu listeyi gösterir, kullanıcı plan
- * seçer, /api/payment/initialize çağrıldığında bu liste içinden plan kodu
- * doğrulanır.
+ * LMS api-server/src/lib/plans.ts ile BİREBİR senkron tutulmalı.
+ * Bir tarafı güncelleyince diğeri de güncellensin.
  */
 
+export type PlanTier = "core" | "pro" | "premium";
+export type BillingType = "monthly" | "yearly";
+
 export type PlanCode =
-  | "bireysel-basic-aylik"
-  | "bireysel-standard-aylik"
-  | "bireysel-premium-aylik"
-  | "bireysel-executive-aylik"
-  | "bireysel-standard-3aylik"
-  | "bireysel-standard-6aylik"
-  | "bireysel-standard-yillik"
-  | "bireysel-premium-3aylik"
-  | "bireysel-premium-6aylik"
-  | "bireysel-premium-yillik";
+  | "sphere-core-aylik"
+  | "sphere-core-yillik"
+  | "sphere-pro-aylik"
+  | "sphere-pro-yillik"
+  | "sphere-premium-aylik"
+  | "sphere-premium-yillik";
 
 export interface PlanDefinition {
   code: PlanCode;
   label: string;
-  tier: "basic" | "standard" | "premium" | "executive";
-  billingType: "recurring" | "one-time";
+  tier: PlanTier;
+  billingType: BillingType;
+  /** TL, KDV dahil. Aylık plan için aylık tutar, yıllıkta toplam yıllık tutar. */
   amount: number;
-  durationMonths?: number;
+  /** Aktif süre — aylık=1, yıllık=12. */
+  durationMonths: number;
+  /** Bu plana özgü öne çıkan özellikler — kart üstünde gösterilir. */
   features: string[];
+  /** "En Popüler" rozet — sadece Pro tier'da true. */
   popular?: boolean;
-  discountPercent?: number;
+  /** Tüm tier'larda paylaşılan ortak feature matrix (karşılaştırma tablosu için). */
 }
 
 export const PLAN_CATALOG: PlanDefinition[] = [
+  // ── CORE ─────────────────────────────────────────────────────────────────
   {
-    code: "bireysel-basic-aylik",
-    label: "Basic — Aylık",
-    tier: "basic",
-    billingType: "recurring",
-    amount: 599,
+    code: "sphere-core-aylik",
+    label: "Sphere Core",
+    tier: "core",
+    billingType: "monthly",
+    amount: 349,
+    durationMonths: 1,
     features: [
-      "AI Studio temel modüller (Telaffuz, Dilbilgisi, Kelime)",
-      "Aylık 1 canlı grup dersi",
-      "Forum erişimi",
-      "Mobil + web",
+      "Standart AI Coach (günlük pratik)",
+      "Oxford müfredatı A1–B1",
+      "Temel seviye tespiti",
+      "Temel ilerleme paneli",
+      "E-posta destek",
     ],
   },
   {
-    code: "bireysel-standard-aylik",
-    label: "Standard — Aylık",
-    tier: "standard",
-    billingType: "recurring",
-    amount: 1799,
+    code: "sphere-core-yillik",
+    label: "Sphere Core",
+    tier: "core",
+    billingType: "yearly",
+    amount: 3490,
+    durationMonths: 12,
     features: [
-      "Tüm AI Studio modülleri",
-      "Aylık 2 canlı birebir ders",
-      "İş Senaryoları + Mülakat Simülatörü",
-      "Aylık ilerleme raporu",
+      "Standart AI Coach (günlük pratik)",
+      "Oxford müfredatı A1–B1",
+      "Temel seviye tespiti",
+      "Temel ilerleme paneli",
+      "E-posta destek",
+      "2 ay bedava",
     ],
   },
+
+  // ── PRO (En Popüler) ────────────────────────────────────────────────────
   {
-    code: "bireysel-premium-aylik",
-    label: "Premium — Aylık",
-    tier: "premium",
-    billingType: "recurring",
-    amount: 4499,
+    code: "sphere-pro-aylik",
+    label: "Sphere Pro",
+    tier: "pro",
+    billingType: "monthly",
+    amount: 699,
+    durationMonths: 1,
     popular: true,
     features: [
-      "Standard'daki tüm özellikler",
-      "Haftalık 1 birebir koç oturumu (4/ay)",
-      "Sunum Simülatörü + Yazma Koçu detaylı geri bildirim",
+      "Sınırsız AI Coach",
+      "Oxford müfredatı A1–C1 (tüm seviyeler)",
+      "AI Studio: toplantı, e-mail, sunum, müzakere",
+      "Adaptif kişisel öğrenme planı",
+      "Haftalık hedef + detaylı rapor",
       "Öncelikli destek",
-      "Sertifikalı program çıktısı",
     ],
   },
   {
-    code: "bireysel-executive-aylik",
-    label: "Executive — Aylık",
-    tier: "executive",
-    billingType: "recurring",
-    amount: 9999,
+    code: "sphere-pro-yillik",
+    label: "Sphere Pro",
+    tier: "pro",
+    billingType: "yearly",
+    amount: 6990,
+    durationMonths: 12,
+    popular: true,
     features: [
-      "Premium'daki tüm özellikler",
-      "Haftalık 2 birebir executive coach (8/ay)",
-      "Kişiye özel öğrenme planı + 1-on-1 değerlendirme",
-      "Anında destek + dedicated success manager",
-      "Liderlik / C-suite konuşma simülasyonları",
+      "Sınırsız AI Coach",
+      "Oxford müfredatı A1–C1 (tüm seviyeler)",
+      "AI Studio: toplantı, e-mail, sunum, müzakere",
+      "Adaptif kişisel öğrenme planı",
+      "Haftalık hedef + detaylı rapor",
+      "Öncelikli destek",
+      "2 ay bedava",
+    ],
+  },
+
+  // ── PREMIUM ──────────────────────────────────────────────────────────────
+  {
+    code: "sphere-premium-aylik",
+    label: "Sphere Premium",
+    tier: "premium",
+    billingType: "monthly",
+    amount: 1199,
+    durationMonths: 1,
+    features: [
+      "Sınırsız AI Coach + telaffuz/aksan analizi",
+      "Oxford müfredatı tüm seviyeler + sektörel modüller",
+      "AI Studio gelişmiş + sektöre özel senaryolar",
+      "Tam kişiselleştirilmiş plan + hedef takibi",
+      "Derin analiz + öneri raporu",
+      "Öncelikli destek + aylık canlı koçluk",
     ],
   },
   {
-    code: "bireysel-standard-3aylik",
-    label: "Standard — 3 Aylık Peşin",
-    tier: "standard",
-    billingType: "one-time",
-    amount: Math.round(1799 * 3 * 0.95),
-    durationMonths: 3,
-    discountPercent: 5,
-    features: ["Standard plan, 3 ay süreyle aktif", "Ortalama aylık ~1709 ₺"],
-  },
-  {
-    code: "bireysel-standard-6aylik",
-    label: "Standard — 6 Aylık Peşin",
-    tier: "standard",
-    billingType: "one-time",
-    amount: Math.round(1799 * 6 * 0.88),
-    durationMonths: 6,
-    discountPercent: 12,
-    features: ["Standard plan, 6 ay süreyle aktif", "Ortalama aylık ~1583 ₺"],
-  },
-  {
-    code: "bireysel-standard-yillik",
-    label: "Standard — Yıllık Peşin",
-    tier: "standard",
-    billingType: "one-time",
-    amount: Math.round(1799 * 12 * 0.8),
+    code: "sphere-premium-yillik",
+    label: "Sphere Premium",
+    tier: "premium",
+    billingType: "yearly",
+    amount: 11990,
     durationMonths: 12,
-    discountPercent: 20,
-    features: ["Standard plan, 12 ay süreyle aktif", "En kazançlı seçenek"],
-  },
-  {
-    code: "bireysel-premium-3aylik",
-    label: "Premium — 3 Aylık Peşin",
-    tier: "premium",
-    billingType: "one-time",
-    amount: Math.round(4499 * 3 * 0.95),
-    durationMonths: 3,
-    discountPercent: 5,
-    features: ["Premium plan, 3 ay aktif"],
-  },
-  {
-    code: "bireysel-premium-6aylik",
-    label: "Premium — 6 Aylık Peşin",
-    tier: "premium",
-    billingType: "one-time",
-    amount: Math.round(4499 * 6 * 0.88),
-    durationMonths: 6,
-    discountPercent: 12,
-    features: ["Premium plan, 6 ay aktif"],
-  },
-  {
-    code: "bireysel-premium-yillik",
-    label: "Premium — Yıllık Peşin",
-    tier: "premium",
-    billingType: "one-time",
-    amount: Math.round(4499 * 12 * 0.8),
-    durationMonths: 12,
-    discountPercent: 20,
-    features: ["Premium plan, 12 ay aktif", "En kazançlı paket"],
+    features: [
+      "Sınırsız AI Coach + telaffuz/aksan analizi",
+      "Oxford müfredatı tüm seviyeler + sektörel modüller",
+      "AI Studio gelişmiş + sektöre özel senaryolar",
+      "Tam kişiselleştirilmiş plan + hedef takibi",
+      "Derin analiz + öneri raporu",
+      "Öncelikli destek + aylık canlı koçluk",
+      "2 ay bedava",
+    ],
   },
 ];
 
 export function getPlan(code: string): PlanDefinition | undefined {
   return PLAN_CATALOG.find((p) => p.code === code);
 }
+
+/**
+ * Karşılaştırma tablosu — fiyatlandırma sayfasında 3 sütun olarak gösterilir.
+ * Hücre değerleri: string (boş veya "—" = yok)
+ */
+export interface ComparisonRow {
+  feature: string;
+  core: string;
+  pro: string;
+  premium: string;
+}
+
+export const COMPARISON_TABLE: ComparisonRow[] = [
+  {
+    feature: "AI Coach",
+    core: "Standart (günlük pratik)",
+    pro: "Sınırsız",
+    premium: "Sınırsız + telaffuz/aksan analizi",
+  },
+  {
+    feature: "Oxford müfredatı",
+    core: "A1–B1",
+    pro: "Tüm seviyeler A1–C1",
+    premium: "Tüm seviyeler + sektörel",
+  },
+  {
+    feature: "AI Studio (iş senaryoları)",
+    core: "—",
+    pro: "Toplantı, e-mail, sunum, müzakere",
+    premium: "Gelişmiş + sektöre özel senaryolar",
+  },
+  {
+    feature: "Öğrenme planı",
+    core: "Temel seviye tespiti",
+    pro: "Adaptif kişisel plan",
+    premium: "Tam kişiselleştirilmiş + hedef takibi",
+  },
+  {
+    feature: "İlerleme paneli & rapor",
+    core: "Temel",
+    pro: "Haftalık hedef + detaylı rapor",
+    premium: "Derin analiz + öneri",
+  },
+  {
+    feature: "Destek",
+    core: "E-posta",
+    pro: "Öncelikli",
+    premium: "Öncelikli + aylık canlı koçluk",
+  },
+];
