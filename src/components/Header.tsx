@@ -97,7 +97,6 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-7 text-[11px] font-bold tracking-[0.18em]" style={{ color: '#1B365D' }}>
-          <Link href="/home" className="hover:text-[#0ea5e9] transition-colors duration-200">ANASAYFA</Link>
           <Link href="/ai-studio" className="px-4 py-2 rounded-full text-[11px] font-bold tracking-[0.18em] transition-all hover:opacity-90" style={{ color: '#0ea5e9', background: '#0ea5e912' }}>AI STUDIO</Link>
 
           {/* Çözümler Dropdown */}
@@ -236,7 +235,6 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
       {/* Mobile Menu */}
       {mobileOpen && (
         <div className="md:hidden bg-white border-t border-[#e8f0fe] px-6 py-6 flex flex-col gap-5">
-          <Link href="/home" className="text-[12px] font-bold tracking-[0.18em] hover:text-[#0ea5e9] transition-colors duration-200" style={{ color: '#1B365D' }} onClick={() => setMobileOpen(false)}>ANASAYFA</Link>
           <Link href="/ai-studio" className="inline-block text-[12px] font-bold tracking-[0.18em] px-4 py-2.5 rounded-full transition-all" style={{ color: '#0ea5e9', background: '#0ea5e912' }} onClick={() => setMobileOpen(false)}>AI STUDIO</Link>
 
           {/* Mobile Çözümler */}
