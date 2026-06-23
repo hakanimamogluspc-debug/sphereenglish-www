@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import EbookGallery from './EbookGallery';
 
 const API_BASE = process.env.INTERNAL_API_BASE_URL ?? 'http://sphere-english_sphere-english-app:3000';
 
@@ -23,6 +24,7 @@ interface Ebook {
   series_slug: string | null;
   series_order: number | null;
   cover_image_url: string | null;
+  gallery_urls: string[] | null;
   preview_pdf_url: string | null;
   page_count: number | null;
   reading_time_min: number | null;
@@ -122,6 +124,14 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
   if (!result) return notFound();
   const { ebook, related } = result;
 
+  // Tüm görseller (SEO/Schema için)
+  const allImages: string[] = [];
+  if (ebook.cover_image_url) allImages.push(`https://www.sphereenglish.com${ebook.cover_image_url}`);
+  for (const g of ebook.gallery_urls ?? []) {
+    const full = `https://www.sphereenglish.com${g}`;
+    if (!allImages.includes(full)) allImages.push(full);
+  }
+
   // ── JSON-LD: Book + Product schema (e-ticaret + kitap için en güçlü combo) ──
   const bookLd = {
     '@context': 'https://schema.org',
@@ -137,9 +147,7 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
     publisher: { '@type': 'Organization', name: ebook.publisher },
     datePublished: ebook.published_at,
     description: ebook.description,
-    image: ebook.cover_image_url
-      ? `https://www.sphereenglish.com${ebook.cover_image_url}`
-      : undefined,
+    image: allImages.length > 0 ? allImages : undefined,
     url: `https://www.sphereenglish.com/e-kitaplar/${ebook.slug}`,
   };
 
@@ -148,9 +156,7 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
     '@type': 'Product',
     name: ebook.title,
     description: ebook.description,
-    image: ebook.cover_image_url
-      ? `https://www.sphereenglish.com${ebook.cover_image_url}`
-      : undefined,
+    image: allImages.length > 0 ? allImages : undefined,
     brand: { '@type': 'Brand', name: ebook.publisher },
     category: ebook.category ?? 'İş İngilizcesi',
     offers: {
@@ -241,28 +247,27 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
       {/* Üst bölüm: kapak + bilgi */}
       <section className="max-w-6xl mx-auto px-6 lg:px-10 py-10">
         <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] gap-10 lg:gap-14">
-          {/* Kapak */}
+          {/* Ürün galerisi: ana görsel + alt thumbnail'lar */}
           <div>
-            <div className="sticky top-28 rounded-2xl overflow-hidden shadow-2xl aspect-[5/7] bg-gradient-to-br from-[#0B1F3A] to-[#1B365D]">
-              {ebook.cover_image_url && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={ebook.cover_image_url}
-                  alt={`${ebook.title} kapak — ${ebook.author}, ${ebook.publisher}`}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+            <div className="sticky top-28 space-y-4">
+              <EbookGallery
+                cover={ebook.cover_image_url}
+                gallery={ebook.gallery_urls ?? []}
+                title={ebook.title}
+                author={ebook.author}
+                publisher={ebook.publisher}
+              />
+              {ebook.preview_pdf_url && (
+                <a
+                  href={ebook.preview_pdf_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-center px-4 py-3 rounded-xl text-[13px] font-bold text-[#0ea5e9] border-2 border-[#0ea5e9]/30 hover:bg-[#0ea5e9]/5 transition-colors"
+                >
+                  📖 Ücretsiz Önizleme (5 sayfa)
+                </a>
               )}
             </div>
-            {ebook.preview_pdf_url && (
-              <a
-                href={ebook.preview_pdf_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 block text-center px-4 py-3 rounded-xl text-[13px] font-bold text-[#0ea5e9] border-2 border-[#0ea5e9]/30 hover:bg-[#0ea5e9]/5 transition-colors"
-              >
-                📖 Ücretsiz Önizleme (5 sayfa)
-              </a>
-            )}
           </div>
 
           {/* Bilgi paneli */}
