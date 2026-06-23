@@ -22,6 +22,8 @@
 - Demo & İletişim: https://www.sphereenglish.com/iletisim
 - Blog: https://www.sphereenglish.com/blog
 - Çözümler: https://www.sphereenglish.com/cozumler
+- E-Kitap Kataloğu: https://www.sphereenglish.com/e-kitaplar (dijital iş İngilizcesi PDF kitapları)
+- Fiyatlandırma: https://www.sphereenglish.com/fiyatlandirma
 - Nasıl Çalışır: https://www.sphereenglish.com/nasil-calisir
 - Hakkımızda: https://www.sphereenglish.com/hakkimizda
 - Fiyatlandırma (makine okunabilir): https://www.sphereenglish.com/pricing.md

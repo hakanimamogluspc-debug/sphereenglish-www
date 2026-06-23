@@ -153,6 +153,7 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
           </div>
 
           <Link href="/fiyatlandirma" className="hover:text-[#0ea5e9] transition-colors duration-200">FİYATLAR</Link>
+          <Link href="/e-kitaplar" className="hover:text-[#0ea5e9] transition-colors duration-200">E-KİTAPLAR</Link>
           <Link href="/blog" className="hover:text-[#0ea5e9] transition-colors duration-200">BLOG</Link>
 
           {/* Kurumsal Dropdown — Hakkımızda, Eğitmen Ol, İletişim */}
@@ -279,6 +280,7 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
           </div>
 
           <Link href="/fiyatlandirma" className="text-[12px] font-bold tracking-[0.18em] hover:text-[#0ea5e9] transition-colors duration-200" style={{ color: '#1B365D' }} onClick={() => setMobileOpen(false)}>FİYATLAR</Link>
+          <Link href="/e-kitaplar" className="text-[12px] font-bold tracking-[0.18em] hover:text-[#0ea5e9] transition-colors duration-200" style={{ color: '#1B365D' }} onClick={() => setMobileOpen(false)}>E-KİTAPLAR</Link>
           <Link href="/blog" className="text-[12px] font-bold tracking-[0.18em] hover:text-[#0ea5e9] transition-colors duration-200" style={{ color: '#1B365D' }} onClick={() => setMobileOpen(false)}>BLOG</Link>
 
           {/* Mobile Kurumsal collapse */}
