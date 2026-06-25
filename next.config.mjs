@@ -7,9 +7,16 @@ const nextConfig = {
   assetPrefix: process.env.BASE_PATH || undefined,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
+  // iyzipay paketi resources/ klasöründe CA sertifikası içerir; Next.js
+  // build'inde bu klasör tracelenmediği için runtime'da ENOENT alıyoruz.
+  // External olarak işaretleyince paket node_modules'tan runtime'da
+  // resolve olur, kaynak dosyaları da bulunur.
+  serverExternalPackages: ['iyzipay'],
   experimental: {
     optimizeCss: true,
     reactCompiler: false,
+    // Next.js 14 backward-compat (15'te root'taki ayar kullanılır)
+    serverComponentsExternalPackages: ['iyzipay'],
   },
   distDir: process.env.DIST_DIR || '.next',
   typescript: {
