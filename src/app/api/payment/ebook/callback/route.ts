@@ -38,7 +38,7 @@ async function handle(req: NextRequest) {
 
   if (!token) {
     return NextResponse.redirect(
-      `${paymentBaseUrl()}/odeme/basarisiz?reason=token_eksik`,
+      `${paymentBaseUrl()}/odeme/basarisiz?type=ebook&reason=token_eksik`,
       { status: 303 },
     );
   }
@@ -72,7 +72,7 @@ async function handle(req: NextRequest) {
       );
       console.error("[payment/ebook/callback] Iyzico status başarısız:", result?.status, result?.errorMessage);
       return NextResponse.redirect(
-        `${paymentBaseUrl()}/odeme/basarisiz?reason=${reason}`,
+        `${paymentBaseUrl()}/odeme/basarisiz?type=ebook&reason=${reason}`,
         { status: 303 },
       );
     }
@@ -95,7 +95,7 @@ async function handle(req: NextRequest) {
       );
       console.error("[payment/ebook/callback] paymentStatus başarısız:", result?.paymentStatus, "mdStatus:", result?.mdStatus);
       return NextResponse.redirect(
-        `${paymentBaseUrl()}/odeme/basarisiz?reason=${errorMsg}`,
+        `${paymentBaseUrl()}/odeme/basarisiz?type=ebook&reason=${errorMsg}`,
         { status: 303 },
       );
     }
@@ -106,7 +106,7 @@ async function handle(req: NextRequest) {
     if (!ebookIdMatch) {
       console.error("[payment/ebook/callback] Beklenmeyen conversationId:", conversationId, "tam response:", result);
       return NextResponse.redirect(
-        `${paymentBaseUrl()}/odeme/basarisiz?reason=conversation_id_uyumsuz`,
+        `${paymentBaseUrl()}/odeme/basarisiz?type=ebook&reason=conversation_id_uyumsuz`,
         { status: 303 },
       );
     }
@@ -159,7 +159,7 @@ async function handle(req: NextRequest) {
   } catch (e: any) {
     console.error("[payment/ebook/callback] HATA:", e?.message ?? e);
     return NextResponse.redirect(
-      `${paymentBaseUrl()}/odeme/basarisiz?reason=sistem_hatasi`,
+      `${paymentBaseUrl()}/odeme/basarisiz?type=ebook&reason=sistem_hatasi`,
       { status: 303 },
     );
   }

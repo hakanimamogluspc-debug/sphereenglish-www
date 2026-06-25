@@ -32,6 +32,10 @@ export const metadata: Metadata = {
   ],
 };
 
+// Cache'i kapat — admin değişikliği anında yansısın
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const API_BASE = process.env.INTERNAL_API_BASE_URL ?? 'http://sphere-english_sphere-english-app:3000';
 
 interface Ebook {
@@ -57,7 +61,7 @@ interface Ebook {
 async function getEbooks(): Promise<Ebook[]> {
   try {
     const r = await fetch(`${API_BASE.replace(/\/$/, '')}/api/ebooks`, {
-      next: { revalidate: 60 },
+      cache: 'no-store',
     });
     if (!r.ok) return [];
     const data = await r.json();
