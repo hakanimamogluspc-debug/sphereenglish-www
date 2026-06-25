@@ -50,30 +50,67 @@ async function handle(req: NextRequest) {
       { locale: "tr", token },
     );
 
-    const isSuccess = result?.status === "success" && result?.paymentStatus === "SUCCESS";
+    // TÜM RESPONSE'U LOGA YAZ — bu sayede sunucu loglarında ne döndüğünü görebileceğiz
+    console.log("[payment/ebook/callback] Iyzico response:", JSON.stringify({
+      status: result?.status,
+      paymentStatus: result?.paymentStatus,
+      conversationId: result?.conversationId,
+      errorCode: result?.errorCode,
+      errorMessage: result?.errorMessage,
+      errorGroup: result?.errorGroup,
+      mdStatus: result?.mdStatus,
+      paymentId: result?.paymentId,
+    }, null, 2));
+
     const conversationId: string = result?.conversationId ?? "";
 
-    // Conversation id formatı: "ebook_<id>_<ts>_<rand>"
-    // E-kitap ID'sini ayıkla
-    const ebookIdMatch = conversationId.match(/^ebook_(\d+)_/);
-    if (!ebookIdMatch) {
-      console.error("[payment/ebook/callback] Geçersiz conversationId:", conversationId);
-      return NextResponse.redirect(
-        `${paymentBaseUrl()}/odeme/basarisiz?reason=oturum_hatasi`,
-        { status: 303 },
-      );
-    }
-    const ebookId = parseInt(ebookIdMatch[1], 10);
-
-    if (!isSuccess) {
+    // İlk olarak Iyzico tarafında ödeme başarılı oldu mu? Bu kontrol önce gelmeli —
+    // başarısız ödemelerde Iyzico bazen conversationId'yi boş veya kısaltılmış döner
+    if (result?.status !== "success") {
       const reason = encodeURIComponent(
-        result?.errorMessage ?? result?.errorCode ?? "odeme_basarisiz",
+        result?.errorMessage ?? result?.errorCode ?? "iyzico_baglanti_hatasi",
       );
+      console.error("[payment/ebook/callback] Iyzico status başarısız:", result?.status, result?.errorMessage);
       return NextResponse.redirect(
         `${paymentBaseUrl()}/odeme/basarisiz?reason=${reason}`,
         { status: 303 },
       );
     }
+
+    if (result?.paymentStatus !== "SUCCESS") {
+      // 3DS başarısız / kart reddedildi / iptal
+      const mdStatusReasons: Record<string, string> = {
+        "0": "3ds_dogrulama_basarisiz",
+        "2": "3ds_kart_sahibi_dogrulanamadi",
+        "3": "3ds_banka_sistem_hatasi",
+        "4": "3ds_kayitli_degil",
+        "5": "3ds_banka_sistem_hatasi",
+        "6": "3ds_genel_hata",
+        "7": "3ds_sistem_hatasi",
+        "8": "3ds_bilinmeyen_kart",
+      };
+      const reasonCode = mdStatusReasons[String(result?.mdStatus ?? "")] ?? "kart_reddedildi";
+      const errorMsg = encodeURIComponent(
+        result?.errorMessage ?? result?.errorCode ?? reasonCode,
+      );
+      console.error("[payment/ebook/callback] paymentStatus başarısız:", result?.paymentStatus, "mdStatus:", result?.mdStatus);
+      return NextResponse.redirect(
+        `${paymentBaseUrl()}/odeme/basarisiz?reason=${errorMsg}`,
+        { status: 303 },
+      );
+    }
+
+    // Conversation id formatı: "ebook_<id>_<ts>_<rand>"
+    // E-kitap ID'sini ayıkla
+    const ebookIdMatch = conversationId.match(/^ebook_(\d+)_/);
+    if (!ebookIdMatch) {
+      console.error("[payment/ebook/callback] Beklenmeyen conversationId:", conversationId, "tam response:", result);
+      return NextResponse.redirect(
+        `${paymentBaseUrl()}/odeme/basarisiz?reason=conversation_id_uyumsuz`,
+        { status: 303 },
+      );
+    }
+    const ebookId = parseInt(ebookIdMatch[1], 10);
 
     // Email, isim için Iyzico response'dan oku
     const buyerEmail: string | undefined = result?.buyer?.email;
