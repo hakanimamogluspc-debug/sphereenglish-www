@@ -61,15 +61,19 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              // Iyzico checkout script + GA
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://www.iyzipay.com https://sandbox-merchant.iyzipay.com https://merchant.iyzipay.com https://cpp.iyzipay.com https://sandbox-cpp.iyzipay.com https://static.iyzipay.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://static.iyzipay.com",
               "img-src 'self' data: https:",
-              "font-src 'self' data: https://fonts.gstatic.com",
-              "connect-src 'self' https://app.sphereenglish.com https://www.google-analytics.com https://region1.google-analytics.com",
-              "frame-src 'none'",
+              "font-src 'self' data: https://fonts.gstatic.com https://static.iyzipay.com",
+              // Iyzico ile XHR/WebSocket
+              "connect-src 'self' https://app.sphereenglish.com https://www.google-analytics.com https://region1.google-analytics.com https://www.iyzipay.com https://*.iyzipay.com",
+              // Iyzico 3D Secure ve checkout form iframe'leri
+              "frame-src 'self' https://www.iyzipay.com https://*.iyzipay.com https://cpp.iyzipay.com https://sandbox-cpp.iyzipay.com",
+              "child-src 'self' https://www.iyzipay.com https://*.iyzipay.com",
               "object-src 'none'",
               "base-uri 'self'",
-              "form-action 'self' https://app.sphereenglish.com",
+              "form-action 'self' https://app.sphereenglish.com https://www.iyzipay.com https://*.iyzipay.com",
               "upgrade-insecure-requests",
             ].join('; '),
           },
