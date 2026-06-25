@@ -4,6 +4,11 @@ import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import EbookGallery from './EbookGallery';
+import BuyEbookButton from './BuyEbookButton';
+
+// Cache'i tamamen kapat — admin değişikliği anında yansısın
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const API_BASE = process.env.INTERNAL_API_BASE_URL ?? 'http://sphere-english_sphere-english-app:3000';
 
@@ -58,7 +63,7 @@ interface FetchResult {
 async function getEbook(slug: string): Promise<FetchResult | null> {
   try {
     const r = await fetch(`${API_BASE.replace(/\/$/, '')}/api/ebooks/${slug}`, {
-      next: { revalidate: 60 },
+      cache: 'no-store',
     });
     if (!r.ok) return null;
     return await r.json();
@@ -349,12 +354,7 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
                 </div>
               </div>
 
-              <button
-                disabled
-                className="w-full py-3.5 rounded-xl font-bold text-[14px] text-white bg-[#0ea5e9] hover:bg-[#0284c7] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                Satın Al & Hemen İndir (Yakında)
-              </button>
+              <BuyEbookButton slug={ebook.slug} title={ebook.title} price={ebook.price_try} />
               <p className="text-center text-[11px] text-gray-500 mt-3">
                 🔒 Iyzico 3D Secure · Kart bilgileri bize ulaşmaz
               </p>
