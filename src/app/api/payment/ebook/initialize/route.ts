@@ -4,19 +4,29 @@ import {
   iyzicoCall,
   newConversationId,
   paymentBaseUrl,
+  signInternalPayload,
 } from "@/lib/iyzico";
 
 /**
  * E-kitap Iyzico Checkout Form Initialize.
  *
  * Body:
- *   { slug, email, name, phone? }
+ *   {
+ *     slug, email, name, phone,
+ *     invoiceType: 'individual' | 'corporate',
+ *     taxId, taxOffice?, companyName?,
+ *     billingAddress, billingCity, billingDistrict, billingPostalCode?
+ *   }
  *
  * Response:
  *   { token, checkoutFormContent, paymentPageUrl, conversationId }
  *
- * Backend api-server'dan kitap bilgisi (fiyat, başlık) çekilir,
- * Iyzico checkout form üretilir. Conversation id ile callback'te eşleme yapılır.
+ * Akış:
+ *   1) api-server'dan ebook bilgisini çek
+ *   2) Conversation ID üret: ebook_<id>_<ts>_<rand>
+ *   3) api-server'a /internal/ebook-purchase/pre-create ile pending kayıt yaz (billing info dahil)
+ *   4) Iyzico checkout form initialize et — gerçek billing adresi ile
+ *   5) checkoutFormContent ile client'a dön
  */
 const API_BASE = process.env.INTERNAL_API_BASE_URL ?? "http://sphere-english_sphere-english-app:3000";
 
@@ -42,6 +52,25 @@ async function getEbook(slug: string): Promise<PublicEbook | null> {
   }
 }
 
+async function preCreatePurchase(payload: any): Promise<{ ok: boolean; purchaseId?: number; error?: string }> {
+  try {
+    const signature = signInternalPayload(payload);
+    const r = await fetch(`${API_BASE.replace(/\/$/, "")}/api/internal/ebook-purchase/pre-create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Internal-Signature": signature,
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) return { ok: false, error: data?.error || `pre-create ${r.status}` };
+    return { ok: true, purchaseId: data?.purchaseId };
+  } catch (e: any) {
+    return { ok: false, error: e?.message || "pre-create bağlantı hatası" };
+  }
+}
+
 export async function POST(req: NextRequest) {
   let body: any;
   try {
@@ -50,24 +79,58 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Geçersiz JSON" }, { status: 400 });
   }
 
+  // ── Alıcı bilgileri ──
   const slug = String(body?.slug ?? "").trim();
   const email = String(body?.email ?? "").trim().toLowerCase();
   const fullName = String(body?.name ?? "").trim();
-  const phone = String(body?.phone ?? "").trim() || "+905000000000";
+  const phone = String(body?.phone ?? "").trim();
 
+  // ── Fatura bilgileri ──
+  const invoiceType = (String(body?.invoiceType ?? "individual").trim() === "corporate"
+    ? "corporate"
+    : "individual") as "individual" | "corporate";
+  const taxId = String(body?.taxId ?? "").replace(/\D/g, "").trim();
+  const taxOffice = String(body?.taxOffice ?? "").trim();
+  const companyName = String(body?.companyName ?? "").trim();
+  const billingAddress = String(body?.billingAddress ?? "").trim();
+  const billingCity = String(body?.billingCity ?? "").trim();
+  const billingDistrict = String(body?.billingDistrict ?? "").trim();
+  const billingPostalCode = String(body?.billingPostalCode ?? "").trim();
+
+  // ── Server-side validasyon ──
   if (!slug) return NextResponse.json({ error: "slug gerekli" }, { status: 400 });
   if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
     return NextResponse.json({ error: "Geçerli e-posta gerekli" }, { status: 400 });
   if (!fullName || fullName.length < 2)
     return NextResponse.json({ error: "Ad Soyad gerekli" }, { status: 400 });
+  if (phone.replace(/\D/g, "").length < 10)
+    return NextResponse.json({ error: "Geçerli telefon gerekli (10+ hane)" }, { status: 400 });
 
+  if (invoiceType === "individual") {
+    if (taxId.length !== 11)
+      return NextResponse.json({ error: "TC kimlik no 11 hane olmalı" }, { status: 400 });
+  } else {
+    if (taxId.length !== 10)
+      return NextResponse.json({ error: "VKN 10 hane olmalı" }, { status: 400 });
+    if (!taxOffice)
+      return NextResponse.json({ error: "Vergi dairesi gerekli" }, { status: 400 });
+    if (!companyName)
+      return NextResponse.json({ error: "Şirket unvanı gerekli" }, { status: 400 });
+  }
+
+  if (!billingAddress || billingAddress.length < 10)
+    return NextResponse.json({ error: "Açık adres gerekli (10+ karakter)" }, { status: 400 });
+  if (!billingCity) return NextResponse.json({ error: "İl gerekli" }, { status: 400 });
+  if (!billingDistrict) return NextResponse.json({ error: "İlçe gerekli" }, { status: 400 });
+
+  // ── Kitabı al ──
   const ebook = await getEbook(slug);
   if (!ebook) return NextResponse.json({ error: "Kitap bulunamadı" }, { status: 404 });
 
   const price = parseFloat(ebook.price_try);
   if (!(price > 0)) return NextResponse.json({ error: "Kitap fiyatı geçersiz" }, { status: 500 });
 
-  // Conversation id: kitap satın alma akışını ayırt etmek için "ebook_" prefix
+  // ── Conversation ID + buyer parse ──
   const conversationId = newConversationId("ebook_" + ebook.id);
   const nameParts = fullName.split(/\s+/);
   const firstName = nameParts[0] || "Sphere";
@@ -75,6 +138,38 @@ export async function POST(req: NextRequest) {
 
   const fwd = req.headers.get("x-forwarded-for") ?? "";
   const ip = fwd.split(",")[0]?.trim() || "127.0.0.1";
+
+  // ── api-server'a pre-create yaz (pending purchase) ──
+  const preCreate = await preCreatePurchase({
+    ebookId: ebook.id,
+    buyerEmail: email,
+    buyerName: fullName,
+    buyerPhone: phone,
+    amountPaid: price,
+    currency: "TRY",
+    iyzicoConversationId: conversationId,
+    invoiceType,
+    taxId,
+    taxOffice: invoiceType === "corporate" ? taxOffice : null,
+    companyName: invoiceType === "corporate" ? companyName : null,
+    billingAddress,
+    billingCity,
+    billingDistrict,
+    billingPostalCode: billingPostalCode || null,
+  });
+
+  if (!preCreate.ok) {
+    console.error("[payment/ebook/initialize] pre-create başarısız:", preCreate.error);
+    return NextResponse.json(
+      { error: "Sipariş kaydı oluşturulamadı: " + (preCreate.error ?? "bilinmeyen hata") },
+      { status: 500 },
+    );
+  }
+
+  // ── Iyzico için gerçek adres bilgisi ──
+  // Hem buyer hem shipping/billing address gerçek olsun — fatura ve risk skoru için önemli
+  const cleanCity = billingCity || "İstanbul";
+  const fullAddressLine = `${billingAddress}, ${billingDistrict}/${billingCity}`.slice(0, 200);
 
   const callbackUrl = `${paymentBaseUrl()}/api/payment/ebook/callback`;
 
@@ -92,25 +187,28 @@ export async function POST(req: NextRequest) {
       id: email,
       name: firstName,
       surname: lastName,
-      gsmNumber: phone,
+      gsmNumber: phone || "+905000000000",
       email,
-      identityNumber: "11111111111",
-      registrationAddress: "Sphere English — Dijital ürün",
+      identityNumber: invoiceType === "individual" ? taxId : "11111111111",
+      registrationAddress: fullAddressLine,
       ip,
-      city: "Balıkesir",
+      city: cleanCity,
       country: "Turkey",
+      zipCode: billingPostalCode || undefined,
     },
     shippingAddress: {
-      contactName: fullName,
-      city: "Balıkesir",
+      contactName: invoiceType === "corporate" ? companyName : fullName,
+      city: cleanCity,
       country: "Turkey",
-      address: "Dijital ürün — fiziksel teslimat yok",
+      address: fullAddressLine,
+      zipCode: billingPostalCode || undefined,
     },
     billingAddress: {
-      contactName: fullName,
-      city: "Balıkesir",
+      contactName: invoiceType === "corporate" ? companyName : fullName,
+      city: cleanCity,
       country: "Turkey",
-      address: "Dijital ürün — fatura e-posta ile gönderilir",
+      address: fullAddressLine,
+      zipCode: billingPostalCode || undefined,
     },
     basketItems: [
       {

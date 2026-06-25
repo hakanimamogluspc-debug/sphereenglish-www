@@ -64,12 +64,36 @@ async function handle(req: NextRequest) {
 
     const conversationId: string = result?.conversationId ?? "";
 
+    // Iyzico response'unda conversationId varsa - başarısız durumlarda pending kaydı failed olarak işaretle
+    async function markFailedIfPossible(errorMsg: string) {
+      const convId = result?.conversationId;
+      if (!convId) return;
+      try {
+        const payload = {
+          iyzicoConversationId: convId,
+          iyzicoPaymentId: String(result?.paymentId ?? ""),
+          paymentError: errorMsg,
+        };
+        const signature = signInternalPayload(payload);
+        await fetch(`${INTERNAL_API.replace(/\/$/, "")}/api/internal/ebook-purchase/mark-failed`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Internal-Signature": signature,
+          },
+          body: JSON.stringify(payload),
+        });
+      } catch (e: any) {
+        console.error("[payment/ebook/callback] mark-failed çağrısı hata:", e?.message);
+      }
+    }
+
     // İlk olarak Iyzico tarafında ödeme başarılı oldu mu? Bu kontrol önce gelmeli —
     // başarısız ödemelerde Iyzico bazen conversationId'yi boş veya kısaltılmış döner
     if (result?.status !== "success") {
-      const reason = encodeURIComponent(
-        result?.errorMessage ?? result?.errorCode ?? "iyzico_baglanti_hatasi",
-      );
+      const errorMsg = result?.errorMessage ?? result?.errorCode ?? "iyzico_baglanti_hatasi";
+      await markFailedIfPossible(errorMsg);
+      const reason = encodeURIComponent(errorMsg);
       console.error("[payment/ebook/callback] Iyzico status başarısız:", result?.status, result?.errorMessage);
       return NextResponse.redirect(
         `${paymentBaseUrl()}/odeme/basarisiz?type=ebook&reason=${reason}`,
@@ -90,12 +114,11 @@ async function handle(req: NextRequest) {
         "8": "3ds_bilinmeyen_kart",
       };
       const reasonCode = mdStatusReasons[String(result?.mdStatus ?? "")] ?? "kart_reddedildi";
-      const errorMsg = encodeURIComponent(
-        result?.errorMessage ?? result?.errorCode ?? reasonCode,
-      );
+      const errorMsg = result?.errorMessage ?? result?.errorCode ?? reasonCode;
+      await markFailedIfPossible(errorMsg);
       console.error("[payment/ebook/callback] paymentStatus başarısız:", result?.paymentStatus, "mdStatus:", result?.mdStatus);
       return NextResponse.redirect(
-        `${paymentBaseUrl()}/odeme/basarisiz?type=ebook&reason=${errorMsg}`,
+        `${paymentBaseUrl()}/odeme/basarisiz?type=ebook&reason=${encodeURIComponent(errorMsg)}`,
         { status: 303 },
       );
     }
