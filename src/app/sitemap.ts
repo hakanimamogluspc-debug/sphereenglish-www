@@ -9,6 +9,25 @@ import {
 } from '@/payload/api';
 
 const BASE_URL = 'https://www.sphereenglish.com';
+const API_BASE = process.env.INTERNAL_API_BASE_URL ?? 'https://app.sphereenglish.com';
+
+/** api-server'dan aktif e-kitap slug'larını çek — sitemap'e dinamik ekle */
+async function fetchEbookSlugs(): Promise<{ slug: string; updated_at?: string }[]> {
+  try {
+    const r = await fetch(`${API_BASE.replace(/\/$/, '')}/api/ebooks`, {
+      cache: 'no-store',
+    });
+    if (!r.ok) return [];
+    const data = await r.json();
+    const list = (data?.ebooks ?? []) as any[];
+    return list
+      .filter((e) => e?.slug)
+      .map((e) => ({ slug: e.slug, updated_at: e.updated_at }));
+  } catch (err) {
+    console.warn('[sitemap] e-kitap slug listesi alınamadı:', err);
+    return [];
+  }
+}
 
 const FALLBACK_SOLUTION_SLUGS = [
   'toplanti-ingilizcesi',
@@ -49,6 +68,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/mesafeli-satis-sozlesmesi`, lastModified: today, changeFrequency: 'yearly', priority: 0.4 },
     { url: `${BASE_URL}/teslimat-iade`, lastModified: today, changeFrequency: 'yearly', priority: 0.4 },
   ];
+
+  // E-kitap detay sayfaları (dinamik — api-server'dan slug listesi)
+  const ebookSlugs = await fetchEbookSlugs();
+  const ebookDetailUrls: MetadataRoute.Sitemap = ebookSlugs.map(({ slug, updated_at }) => ({
+    url: `${BASE_URL}/e-kitaplar/${slug}`,
+    lastModified: updated_at || today,
+    changeFrequency: 'monthly' as const,
+    priority: 0.75,
+  }));
 
   // Solutions: prefer Payload, fall back to hardcoded list
   let solutionSlugs: string[] = [];
@@ -106,5 +134,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticUrls, ...cozumlerUrls, ...blogUrls];
+  return [...staticUrls, ...ebookDetailUrls, ...cozumlerUrls, ...blogUrls];
 }
