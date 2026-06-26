@@ -1,8 +1,10 @@
 import React from 'react';
 import type { Metadata, Viewport } from 'next';
 import '../../styles/tailwind.css';
+import { Suspense } from 'react';
 import ChatWidget from '../../components/ChatWidget/ChatWidget';
 import WebMCPProvider from '../../components/WebMCPProvider';
+import AnalyticsTracker from '../../components/AnalyticsTracker';
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-ELDF1FF5S1';
 const BASE_URL = 'https://www.sphereenglish.com';
@@ -358,6 +360,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {children}
         <ChatWidget />
         <WebMCPProvider />
+        <Suspense fallback={null}>
+          <AnalyticsTracker />
+        </Suspense>
       </body>
     </html>
   );
