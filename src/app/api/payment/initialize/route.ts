@@ -4,6 +4,7 @@ import {
   getIyzicoClient,
   iyzicoCall,
   newConversationId,
+  notifyApiServerOfPreCreate,
   paymentBaseUrl,
 } from "@/lib/iyzico";
 
@@ -34,13 +35,42 @@ export async function POST(req: NextRequest) {
   const planCode = String(body?.planCode ?? "").trim();
   const email = String(body?.email ?? "").trim().toLowerCase();
   const fullName = String(body?.name ?? "").trim();
-  const phone = String(body?.phone ?? "").trim() || "+905000000000";
+  const phone = String(body?.phone ?? "").trim();
+
+  // ── Fatura bilgileri ──
+  const invoiceType: "individual" | "corporate" =
+    String(body?.invoiceType ?? "individual") === "corporate" ? "corporate" : "individual";
+  const taxId = String(body?.taxId ?? "").replace(/\D/g, "").trim();
+  const taxOffice = String(body?.taxOffice ?? "").trim();
+  const companyName = String(body?.companyName ?? "").trim();
+  const billingAddress = String(body?.billingAddress ?? "").trim();
+  const billingCity = String(body?.billingCity ?? "").trim();
+  const billingDistrict = String(body?.billingDistrict ?? "").trim();
+  const billingPostalCode = String(body?.billingPostalCode ?? "").trim();
 
   if (!planCode) return NextResponse.json({ error: "planCode gerekli" }, { status: 400 });
   if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
     return NextResponse.json({ error: "Geçerli bir e-posta gerekli" }, { status: 400 });
   if (!fullName || fullName.length < 2)
     return NextResponse.json({ error: "Ad Soyad gerekli" }, { status: 400 });
+  if (phone.replace(/\D/g, "").length < 10)
+    return NextResponse.json({ error: "Geçerli telefon gerekli (10+ hane)" }, { status: 400 });
+
+  // Fatura validasyonu (server-side)
+  if (invoiceType === "individual") {
+    if (taxId.length !== 11)
+      return NextResponse.json({ error: "TC kimlik no 11 hane olmalı" }, { status: 400 });
+  } else {
+    if (taxId.length !== 10)
+      return NextResponse.json({ error: "VKN 10 hane olmalı" }, { status: 400 });
+    if (!taxOffice) return NextResponse.json({ error: "Vergi dairesi gerekli" }, { status: 400 });
+    if (!companyName)
+      return NextResponse.json({ error: "Şirket unvanı gerekli" }, { status: 400 });
+  }
+  if (!billingAddress || billingAddress.length < 10)
+    return NextResponse.json({ error: "Açık adres gerekli (10+ karakter)" }, { status: 400 });
+  if (!billingCity) return NextResponse.json({ error: "İl gerekli" }, { status: 400 });
+  if (!billingDistrict) return NextResponse.json({ error: "İlçe gerekli" }, { status: 400 });
 
   const plan = getPlan(planCode);
   if (!plan) return NextResponse.json({ error: "Bilinmeyen plan kodu" }, { status: 400 });
@@ -54,7 +84,34 @@ export async function POST(req: NextRequest) {
   const fwd = req.headers.get("x-forwarded-for") ?? "";
   const ip = fwd.split(",")[0]?.trim() || "127.0.0.1";
 
+  // ── api-server'a pre-create yaz (fatura draft) ──
+  // Callback'te activate aynı conversationId ile bu draft'tan fatura bilgilerini okuyacak
+  const preCreate = await notifyApiServerOfPreCreate({
+    conversationId,
+    planCode,
+    email,
+    name: fullName,
+    phone: phone || "+905000000000",
+    invoiceType,
+    taxId,
+    taxOffice: invoiceType === "corporate" ? taxOffice : undefined,
+    companyName: invoiceType === "corporate" ? companyName : undefined,
+    billingAddress,
+    billingCity,
+    billingDistrict,
+    billingPostalCode: billingPostalCode || undefined,
+  });
+  if (!preCreate.ok) {
+    console.error("[payment/initialize] pre-create başarısız:", preCreate.error);
+    return NextResponse.json(
+      { error: "Sipariş kaydı oluşturulamadı: " + (preCreate.error ?? "bilinmeyen") },
+      { status: 500 },
+    );
+  }
+
   const callbackUrl = `${paymentBaseUrl()}/api/payment/callback`;
+  const fullAddressLine = `${billingAddress}, ${billingDistrict}/${billingCity}`.slice(0, 200);
+  const cleanCity = billingCity || "İstanbul";
 
   const request = {
     locale: "tr",
@@ -70,25 +127,28 @@ export async function POST(req: NextRequest) {
       id: email,                              // Iyzico'da kullanıcı kimliği — email'i kullanıyoruz
       name: firstName,
       surname: lastName,
-      gsmNumber: phone,
+      gsmNumber: phone || "+905000000000",
       email,
-      identityNumber: "11111111111",          // TC opsiyonel ama dummy şart
-      registrationAddress: "Sphere English - Dijital eğitim hizmeti",
+      identityNumber: invoiceType === "individual" ? taxId : "11111111111",
+      registrationAddress: fullAddressLine,
       ip,
-      city: "Balıkesir",
+      city: cleanCity,
       country: "Turkey",
+      zipCode: billingPostalCode || undefined,
     },
     shippingAddress: {
-      contactName: fullName,
-      city: "Balıkesir",
+      contactName: invoiceType === "corporate" ? companyName : fullName,
+      city: cleanCity,
       country: "Turkey",
-      address: "Dijital ürün — fiziksel teslimat yok",
+      address: fullAddressLine,
+      zipCode: billingPostalCode || undefined,
     },
     billingAddress: {
-      contactName: fullName,
-      city: "Balıkesir",
+      contactName: invoiceType === "corporate" ? companyName : fullName,
+      city: cleanCity,
       country: "Turkey",
-      address: "Dijital ürün — fatura e-posta ile gönderilir",
+      address: fullAddressLine,
+      zipCode: billingPostalCode || undefined,
     },
     basketItems: [
       {

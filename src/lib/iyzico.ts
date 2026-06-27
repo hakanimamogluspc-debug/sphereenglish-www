@@ -76,6 +76,45 @@ export function signInternalPayload(body: object): string {
 }
 
 /**
+ * Abonelik formu sonrası, Iyzico'ya request atmadan ÖNCE çağrılır.
+ * api-server'a fatura bilgilerini draft olarak yazar. Callback'te activate
+ * aynı conversationId ile bu draft'tan fatura bilgilerini okur.
+ */
+export async function notifyApiServerOfPreCreate(payload: {
+  conversationId: string;
+  planCode: string;
+  email: string;
+  name: string;
+  phone: string;
+  invoiceType: "individual" | "corporate";
+  taxId: string;
+  taxOffice?: string;
+  companyName?: string;
+  billingAddress: string;
+  billingCity: string;
+  billingDistrict: string;
+  billingPostalCode?: string;
+}): Promise<{ ok: boolean; error?: string }> {
+  const base = process.env.INTERNAL_API_BASE_URL ?? "http://api-server:3000";
+  const signature = signInternalPayload(payload);
+  try {
+    const r = await fetch(`${base.replace(/\/$/, "")}/api/internal/subscription/pre-create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Internal-Signature": signature,
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) return { ok: false, error: (data as any)?.error ?? `HTTP ${r.status}` };
+    return { ok: true };
+  } catch (e: any) {
+    return { ok: false, error: e?.message ?? "pre-create bağlantı hatası" };
+  }
+}
+
+/**
  * Başarılı bir ödeme sonrası api-server'a kullanıcı/abonelik aktivasyonu bildirir.
  * api-server: user yoksa oluşturur, subscription'ı active yapar, magic-link gönderir.
  */

@@ -41,6 +41,18 @@ export default function AbonelikClient({ initialPlanCode, initialEmail, initialN
   const [error, setError] = useState<string | null>(null);
   const [checkoutHtml, setCheckoutHtml] = useState<string | null>(null);
 
+  // ── Fatura bilgileri ──
+  const [invoiceType, setInvoiceType] = useState<'individual' | 'corporate'>('individual');
+  const [taxId, setTaxId] = useState('');
+  const [taxOffice, setTaxOffice] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [billingAddress, setBillingAddress] = useState('');
+  const [billingCity, setBillingCity] = useState('');
+  const [billingDistrict, setBillingDistrict] = useState('');
+  const [billingPostalCode, setBillingPostalCode] = useState('');
+  const [agreeKvkk, setAgreeKvkk] = useState(false);
+  const [agreeEArchive, setAgreeEArchive] = useState(false);
+
   // Plan kataloğunu çek
   useEffect(() => {
     fetch('/api/payment/plans')
@@ -86,6 +98,52 @@ export default function AbonelikClient({ initialPlanCode, initialEmail, initialN
       setError('Ad Soyad girin.');
       return;
     }
+    if (!phone || phone.replace(/\D/g, '').length < 10) {
+      setError('Geçerli bir telefon numarası girin (en az 10 hane).');
+      return;
+    }
+
+    // ── Fatura validasyonu ──
+    const taxIdDigits = taxId.replace(/\D/g, '');
+    if (invoiceType === 'individual') {
+      if (taxIdDigits.length !== 11) {
+        setError('TC kimlik numarası 11 hane olmalı.');
+        return;
+      }
+    } else {
+      if (taxIdDigits.length !== 10) {
+        setError('Vergi numarası (VKN) 10 hane olmalı.');
+        return;
+      }
+      if (!taxOffice || taxOffice.trim().length < 2) {
+        setError('Vergi dairesi girin.');
+        return;
+      }
+      if (!companyName || companyName.trim().length < 2) {
+        setError('Şirket unvanı girin.');
+        return;
+      }
+    }
+    if (!billingAddress || billingAddress.trim().length < 10) {
+      setError('Açık adres girin (en az 10 karakter).');
+      return;
+    }
+    if (!billingCity || billingCity.trim().length < 2) {
+      setError('İl girin.');
+      return;
+    }
+    if (!billingDistrict || billingDistrict.trim().length < 2) {
+      setError('İlçe girin.');
+      return;
+    }
+    if (!agreeKvkk) {
+      setError('KVKK aydınlatma metnini onaylamanız gerekir.');
+      return;
+    }
+    if (!agreeEArchive) {
+      setError('e-Arşiv fatura onayı vermeniz gerekir.');
+      return;
+    }
 
     setBusy(true);
     try {
@@ -96,7 +154,16 @@ export default function AbonelikClient({ initialPlanCode, initialEmail, initialN
           planCode: selectedCode,
           email: email.trim().toLowerCase(),
           name: name.trim(),
-          phone: phone.trim() || undefined,
+          phone: phone.trim(),
+          // Fatura bilgileri
+          invoiceType,
+          taxId: taxIdDigits,
+          taxOffice: invoiceType === 'corporate' ? taxOffice.trim() : undefined,
+          companyName: invoiceType === 'corporate' ? companyName.trim() : undefined,
+          billingAddress: billingAddress.trim(),
+          billingCity: billingCity.trim(),
+          billingDistrict: billingDistrict.trim(),
+          billingPostalCode: billingPostalCode.trim() || undefined,
         }),
       });
       const data = await r.json();
@@ -235,16 +302,181 @@ export default function AbonelikClient({ initialPlanCode, initialEmail, initialN
               />
             </div>
             <div>
-              <label className="block text-[12px] font-semibold text-[#1B365D] mb-1.5">
-                Telefon <span className="text-gray-400 font-normal">(opsiyonel)</span>
-              </label>
+              <label className="block text-[12px] font-semibold text-[#1B365D] mb-1.5">Telefon</label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                required
                 placeholder="+90 5xx xxx xx xx"
                 className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0ea5e9]/20 text-[14px]"
               />
+            </div>
+          </div>
+
+          {/* ─── Fatura Bilgileri ─────────────────────────────────── */}
+          <div className="mt-6 pt-6 border-t border-gray-100">
+            <h3 className="text-[16px] font-bold text-[#1B365D] mb-1">Fatura Bilgileri</h3>
+            <p className="text-[12px] text-gray-500 mb-4">e-Arşiv fatura için gerekli — KDV dahil tutara işlenir.</p>
+
+            {/* Fatura Tipi */}
+            <div className="mb-4">
+              <label className="block text-[12px] font-semibold text-[#1B365D] mb-1.5">Fatura Tipi</label>
+              <div className="grid grid-cols-2 gap-2">
+                <label className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 cursor-pointer transition-colors ${
+                  invoiceType === 'individual' ? 'border-[#0ea5e9] bg-[#0ea5e9]/5' : 'border-gray-200 hover:border-gray-300'
+                }`}>
+                  <input
+                    type="radio"
+                    name="invoiceType"
+                    checked={invoiceType === 'individual'}
+                    onChange={() => setInvoiceType('individual')}
+                    className="accent-[#0ea5e9]"
+                  />
+                  <span className="text-[13px] font-semibold text-[#1B365D]">Bireysel</span>
+                </label>
+                <label className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 cursor-pointer transition-colors ${
+                  invoiceType === 'corporate' ? 'border-[#0ea5e9] bg-[#0ea5e9]/5' : 'border-gray-200 hover:border-gray-300'
+                }`}>
+                  <input
+                    type="radio"
+                    name="invoiceType"
+                    checked={invoiceType === 'corporate'}
+                    onChange={() => setInvoiceType('corporate')}
+                    className="accent-[#0ea5e9]"
+                  />
+                  <span className="text-[13px] font-semibold text-[#1B365D]">Kurumsal</span>
+                </label>
+              </div>
+            </div>
+
+            {/* TC veya VKN */}
+            <div className="mb-3">
+              <label className="block text-[12px] font-semibold text-[#1B365D] mb-1.5">
+                {invoiceType === 'individual' ? 'TC Kimlik No' : 'Vergi Numarası (VKN)'}
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={invoiceType === 'individual' ? 11 : 10}
+                value={taxId}
+                onChange={(e) => setTaxId(e.target.value.replace(/\D/g, ''))}
+                required
+                placeholder={invoiceType === 'individual' ? '11 hane' : '10 hane'}
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0ea5e9]/20 text-[14px]"
+              />
+            </div>
+
+            {/* Kurumsal alanlar */}
+            {invoiceType === 'corporate' && (
+              <>
+                <div className="mb-3">
+                  <label className="block text-[12px] font-semibold text-[#1B365D] mb-1.5">Vergi Dairesi</label>
+                  <input
+                    type="text"
+                    value={taxOffice}
+                    onChange={(e) => setTaxOffice(e.target.value)}
+                    required
+                    placeholder="Ankara Kurumlar"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0ea5e9]/20 text-[14px]"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="block text-[12px] font-semibold text-[#1B365D] mb-1.5">Şirket Unvanı</label>
+                  <input
+                    type="text"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    required
+                    placeholder="ABC İletişim Hizmetleri A.Ş."
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0ea5e9]/20 text-[14px]"
+                  />
+                </div>
+              </>
+            )}
+
+            {/* Açık Adres */}
+            <div className="mb-3">
+              <label className="block text-[12px] font-semibold text-[#1B365D] mb-1.5">Açık Adres</label>
+              <textarea
+                value={billingAddress}
+                onChange={(e) => setBillingAddress(e.target.value)}
+                required
+                rows={2}
+                placeholder="Mahalle, cadde/sokak, bina no, daire no"
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0ea5e9]/20 text-[14px]"
+              />
+            </div>
+
+            {/* İl / İlçe / Posta Kodu */}
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              <div>
+                <label className="block text-[12px] font-semibold text-[#1B365D] mb-1.5">İl</label>
+                <input
+                  type="text"
+                  value={billingCity}
+                  onChange={(e) => setBillingCity(e.target.value)}
+                  required
+                  placeholder="Ankara"
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0ea5e9]/20 text-[14px]"
+                />
+              </div>
+              <div>
+                <label className="block text-[12px] font-semibold text-[#1B365D] mb-1.5">İlçe</label>
+                <input
+                  type="text"
+                  value={billingDistrict}
+                  onChange={(e) => setBillingDistrict(e.target.value)}
+                  required
+                  placeholder="Çankaya"
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0ea5e9]/20 text-[14px]"
+                />
+              </div>
+              <div>
+                <label className="block text-[12px] font-semibold text-[#1B365D] mb-1.5">
+                  Posta Kodu <span className="text-gray-400 font-normal">(ops.)</span>
+                </label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={5}
+                  value={billingPostalCode}
+                  onChange={(e) => setBillingPostalCode(e.target.value.replace(/\D/g, ''))}
+                  placeholder="06520"
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0ea5e9]/20 text-[14px]"
+                />
+              </div>
+            </div>
+
+            {/* Onaylar */}
+            <div className="pt-3 border-t border-gray-100 space-y-2.5">
+              <label className="flex items-start gap-2 cursor-pointer text-[12px] text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={agreeKvkk}
+                  onChange={(e) => setAgreeKvkk(e.target.checked)}
+                  className="mt-0.5 accent-[#0ea5e9]"
+                />
+                <span>
+                  <a href="/gizlilik-politikasi" target="_blank" className="text-[#0ea5e9] underline">KVKK Aydınlatma Metni</a>
+                  ,{' '}
+                  <a href="/kullanim-kosullari" target="_blank" className="text-[#0ea5e9] underline">Kullanım Koşulları</a>
+                  {' '}ve{' '}
+                  <a href="/mesafeli-satis-sozlesmesi" target="_blank" className="text-[#0ea5e9] underline">Mesafeli Satış Sözleşmesi</a>
+                  ni okudum, kabul ediyorum.
+                </span>
+              </label>
+              <label className="flex items-start gap-2 cursor-pointer text-[12px] text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={agreeEArchive}
+                  onChange={(e) => setAgreeEArchive(e.target.checked)}
+                  className="mt-0.5 accent-[#0ea5e9]"
+                />
+                <span>
+                  Bu sipariş için <strong>e-Arşiv fatura</strong>nın e-posta adresime iletilmesini kabul ediyorum.
+                </span>
+              </label>
             </div>
           </div>
 
