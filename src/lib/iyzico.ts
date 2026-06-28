@@ -94,6 +94,9 @@ export async function notifyApiServerOfPreCreate(payload: {
   billingCity: string;
   billingDistrict: string;
   billingPostalCode?: string;
+  couponCode?: string | null;
+  couponDiscountKurus?: number;
+  affiliateCode?: string | null;
 }): Promise<{ ok: boolean; error?: string }> {
   const base = process.env.INTERNAL_API_BASE_URL ?? "http://api-server:3000";
   const signature = signInternalPayload(payload);
@@ -128,6 +131,8 @@ export async function notifyApiServerOfPayment(payload: {
   iyzicoConversationId: string;
   paidAt: string;
   affiliateCode?: string | null;
+  couponCode?: string | null;
+  couponDiscountKurus?: number;
 }): Promise<{ ok: boolean; userId?: number; magicLinkSent?: boolean; error?: string }> {
   const base = process.env.INTERNAL_API_BASE_URL ?? "http://api-server:3000";
   const signature = signInternalPayload(payload);

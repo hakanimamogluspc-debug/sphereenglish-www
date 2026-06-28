@@ -52,6 +52,59 @@ export default function AbonelikClient({ initialPlanCode, initialEmail, initialN
   const [billingPostalCode, setBillingPostalCode] = useState('');
   const [agreeKvkk, setAgreeKvkk] = useState(false);
   const [agreeEArchive, setAgreeEArchive] = useState(false);
+  // ── Kupon / Affiliate kodu ──
+  const [couponInput, setCouponInput] = useState('');
+  const [couponCode, setCouponCode] = useState<string | null>(null);
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponAffiliate, setCouponAffiliate] = useState<string | null>(null);
+  const [couponMessage, setCouponMessage] = useState<string | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [couponBusy, setCouponBusy] = useState(false);
+
+  async function applyCoupon() {
+    if (!selectedPlan) return;
+    const code = couponInput.trim().toUpperCase().replace(/[^A-Z0-9-_]/g, '');
+    if (!code || code.length < 3) {
+      setCouponError('Kod en az 3 karakter olmalı');
+      return;
+    }
+    setCouponBusy(true); setCouponError(null); setCouponMessage(null);
+    try {
+      const scope = selectedPlan.billingType === 'monthly' ? 'subscription_monthly' : 'subscription_yearly';
+      const r = await fetch('/api/coupons/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, scope, amountKurus: Math.round(selectedPlan.amount * 100) }),
+      });
+      const data = await r.json();
+      if (data?.ok) {
+        if (data.type === 'coupon') {
+          setCouponCode(data.code);
+          setCouponDiscount(Number(data.discountKurus ?? 0) / 100);
+          setCouponMessage(data.message || 'Kupon uygulandı');
+          setCouponAffiliate(null);
+        } else if (data.type === 'affiliate') {
+          setCouponCode(null);
+          setCouponDiscount(0);
+          setCouponAffiliate(data.affiliateCode);
+          setCouponMessage(`Partner kodu: ${data.partnerName}`);
+        }
+      } else {
+        setCouponError(data?.error || 'Geçersiz kod');
+        setCouponCode(null); setCouponDiscount(0); setCouponAffiliate(null);
+      }
+    } catch (e: any) {
+      setCouponError('Doğrulama hatası: ' + e?.message);
+    } finally {
+      setCouponBusy(false);
+    }
+  }
+
+  function clearCoupon() {
+    setCouponInput(''); setCouponCode(null); setCouponDiscount(0);
+    setCouponAffiliate(null); setCouponMessage(null); setCouponError(null);
+  }
+
 
   // Plan kataloğunu çek
   useEffect(() => {
@@ -164,6 +217,7 @@ export default function AbonelikClient({ initialPlanCode, initialEmail, initialN
           billingCity: billingCity.trim(),
           billingDistrict: billingDistrict.trim(),
           billingPostalCode: billingPostalCode.trim() || undefined,
+          couponCode: couponCode || couponAffiliate || undefined,
         }),
       });
       const data = await r.json();
@@ -486,13 +540,67 @@ export default function AbonelikClient({ initialPlanCode, initialEmail, initialN
             </div>
           )}
 
+          {/* ── Kupon Kodu ── */}
+          <div className="mt-4 mb-2 p-4 border border-slate-200 rounded-lg bg-slate-50">
+            <label className="text-sm font-semibold text-slate-700 block mb-2">Kupon kodun var mı?</label>
+            {!couponCode && !couponAffiliate ? (
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={couponInput}
+                  onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                  placeholder="ÖRN: HOSGELDIN10"
+                  className="flex-1 px-3 py-2 border border-slate-300 rounded-md text-sm font-mono uppercase focus:ring-2 focus:ring-[#082567] focus:border-transparent"
+                  disabled={couponBusy}
+                />
+                <button
+                  type="button"
+                  onClick={applyCoupon}
+                  disabled={couponBusy || !couponInput.trim()}
+                  className="px-4 py-2 bg-[#082567] text-white rounded-md text-sm font-semibold hover:bg-[#051840] disabled:opacity-50"
+                >
+                  {couponBusy ? '...' : 'Uygula'}
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 p-2 rounded">
+                <div className="text-sm">
+                  <strong className="text-emerald-800">
+                    {couponCode ? `Kupon: ${couponCode}` : `Partner Kodu: ${couponAffiliate}`}
+                  </strong>
+                  {couponMessage && <div className="text-xs text-emerald-700 mt-0.5">{couponMessage}</div>}
+                </div>
+                <button type="button" onClick={clearCoupon} className="text-xs text-red-600 hover:text-red-800">
+                  Kaldır
+                </button>
+              </div>
+            )}
+            {couponError && <div className="text-xs text-red-600 mt-2">{couponError}</div>}
+            {couponDiscount > 0 && (
+              <div className="mt-3 pt-3 border-t border-slate-200 text-sm">
+                <div className="flex justify-between text-slate-600">
+                  <span>Plan tutarı:</span>
+                  <span className="line-through">{formatTRY(selectedPlan.amount)}</span>
+                </div>
+                <div className="flex justify-between text-emerald-700 font-medium">
+                  <span>İndirim:</span>
+                  <span>-{formatTRY(couponDiscount)}</span>
+                </div>
+                <div className="flex justify-between text-[#082567] font-bold text-base pt-2 border-t border-slate-200 mt-2">
+                  <span>Ödenecek tutar:</span>
+                  <span>{formatTRY(selectedPlan.amount - couponDiscount)}</span>
+                </div>
+              </div>
+            )}
+          </div>
+
           <button
             type="submit"
             disabled={busy}
             className="w-full mt-6 py-3.5 rounded-xl font-bold text-[14px] text-white transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ background: TIER_STYLE[selectedPlan.tier].color }}
           >
-            {busy ? 'Hazırlanıyor…' : `Iyzico ile Güvenli Öde — ${formatTRY(selectedPlan.amount)}`}
+            {busy ? 'Hazırlanıyor…' : `Iyzico ile Güvenli Öde — ${formatTRY(selectedPlan.amount - couponDiscount)}`}
           </button>
 
           <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-gray-500">

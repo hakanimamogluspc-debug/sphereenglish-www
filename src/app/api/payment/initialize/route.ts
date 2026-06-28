@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from "next/server";
 import { getPlan } from "@/lib/plans";
 import {
@@ -33,6 +34,10 @@ export async function POST(req: NextRequest) {
   }
 
   const planCode = String(body?.planCode ?? "").trim();
+  const couponCodeRaw = String(body?.couponCode ?? "").trim().toUpperCase().replace(/[^A-Z0-9-_]/g, "");
+  // Cookie'den affiliate kodu (alternatif)
+  const cookieStore = await cookies();
+  const cookieRef = cookieStore.get("sphere_ref")?.value ?? null;
   const email = String(body?.email ?? "").trim().toLowerCase();
   const fullName = String(body?.name ?? "").trim();
   const phone = String(body?.phone ?? "").trim();
@@ -75,6 +80,43 @@ export async function POST(req: NextRequest) {
   const plan = getPlan(planCode);
   if (!plan) return NextResponse.json({ error: "Bilinmeyen plan kodu" }, { status: 400 });
 
+  // ── Kupon / Affiliate validate (varsa) ──
+  let finalAmount = plan.amount;
+  let appliedCouponCode: string | null = null;
+  let appliedAffiliateCode: string | null = cookieRef;
+  let couponDiscountKurus = 0;
+
+  if (couponCodeRaw) {
+    try {
+      const scope = plan.billingType === "recurring" ? "subscription_monthly" : "subscription_yearly";
+      const r = await fetch(`${process.env.INTERNAL_API_BASE_URL ?? "http://api-server:3000"}/api/coupons/validate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: couponCodeRaw,
+          scope,
+          amountKurus: Math.round(plan.amount * 100),
+        }),
+      });
+      const data: any = await r.json().catch(() => ({}));
+      if (data?.ok) {
+        if (data.type === "coupon") {
+          finalAmount = (data.finalAmountKurus ?? Math.round(plan.amount * 100)) / 100;
+          couponDiscountKurus = Number(data.discountKurus ?? 0);
+          appliedCouponCode = data.code;
+        } else if (data.type === "affiliate") {
+          appliedAffiliateCode = data.affiliateCode;
+        }
+      } else if (data?.error) {
+        return NextResponse.json({ error: `Kupon: ${data.error}` }, { status: 400 });
+      }
+    } catch (e: any) {
+      console.error("[payment/initialize] coupon validate err:", e?.message);
+      // Kupon hatasında ödemeye geçme — kullanıcı şaşırır
+      return NextResponse.json({ error: "Kupon doğrulanamadı" }, { status: 502 });
+    }
+  }
+
   const conversationId = newConversationId("www");
   const nameParts = fullName.split(/\s+/);
   const firstName = nameParts[0] || "Sphere";
@@ -100,6 +142,9 @@ export async function POST(req: NextRequest) {
     billingCity,
     billingDistrict,
     billingPostalCode: billingPostalCode || undefined,
+    couponCode: appliedCouponCode,
+    couponDiscountKurus,
+    affiliateCode: appliedAffiliateCode,
   });
   if (!preCreate.ok) {
     console.error("[payment/initialize] pre-create başarısız:", preCreate.error);
@@ -116,8 +161,8 @@ export async function POST(req: NextRequest) {
   const request = {
     locale: "tr",
     conversationId,
-    price: plan.amount.toFixed(2),
-    paidPrice: plan.amount.toFixed(2),
+    price: finalAmount.toFixed(2),
+    paidPrice: finalAmount.toFixed(2),
     currency: "TRY",
     basketId: `B-${Date.now()}`,
     paymentGroup: plan.billingType === "recurring" ? "SUBSCRIPTION" : "PRODUCT",
@@ -156,7 +201,7 @@ export async function POST(req: NextRequest) {
         name: plan.label,
         category1: "Eğitim",
         itemType: "VIRTUAL",
-        price: plan.amount.toFixed(2),
+        price: finalAmount.toFixed(2),
       },
     ],
   };
