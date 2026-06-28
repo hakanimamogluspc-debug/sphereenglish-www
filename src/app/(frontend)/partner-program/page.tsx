@@ -14,14 +14,14 @@ const LMS_URL = "https://app.sphereenglish.com";
 
 export default function PartnerProgramPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-emerald-50/40 via-white to-white">
+    <main className="min-h-screen bg-gradient-to-b from-sapphire-light/60 via-white to-white">
       {/* Hero */}
       <section className="py-16 md:py-24 px-6 max-w-5xl mx-auto text-center">
-        <div className="inline-block px-4 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-medium mb-4">
+        <div className="inline-block px-4 py-1 rounded-full bg-sapphire-light text-sapphire text-xs font-medium mb-4">
           🤝 Sphere Partner Programı
         </div>
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-5 text-slate-900">
-          Tavsiye et, <span className="text-emerald-600">birlikte büyüyelim</span>
+          Tavsiye et, <span className="text-sapphire">birlikte büyüyelim</span>
         </h1>
         <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-8">
           Sphere English'i kitlene tanıt; her aboneliğin <strong>ilk ödemesinin %20'sini</strong>
@@ -30,13 +30,13 @@ export default function PartnerProgramPage() {
         <div className="flex gap-3 justify-center flex-wrap">
           <a
             href={`${LMS_URL}/partner/apply`}
-            className="inline-flex items-center gap-2 bg-emerald-600 text-white px-7 py-3 rounded-lg hover:bg-emerald-700 font-medium shadow-lg"
+            className="inline-flex items-center gap-2 bg-sapphire text-white px-7 py-3 rounded-lg hover:bg-sapphire-dark font-medium shadow-lg"
           >
             Hemen Başvur →
           </a>
           <a
             href="#hesapla"
-            className="inline-flex items-center gap-2 bg-white text-emerald-700 border border-emerald-300 px-7 py-3 rounded-lg hover:bg-emerald-50 font-medium"
+            className="inline-flex items-center gap-2 bg-white text-sapphire border border-sapphire/30 px-7 py-3 rounded-lg hover:bg-sapphire-light font-medium"
           >
             Ne kadar kazanırım?
           </a>
@@ -51,20 +51,20 @@ export default function PartnerProgramPage() {
         <h2 className="text-3xl font-bold text-center mb-10">Komisyon Yapısı</h2>
         <div className="grid md:grid-cols-2 gap-4">
           <Card title="Abonelikler" icon="💎">
-            <div className="text-3xl font-bold text-emerald-600 mb-1">%20</div>
+            <div className="text-3xl font-bold text-sapphire mb-1">%20</div>
             <p className="text-sm text-slate-600 mb-3">İlk ödemeden komisyon</p>
-            <div className="text-2xl font-bold text-blue-600 mb-1">+ %10</div>
+            <div className="text-2xl font-bold text-sapphire-mid mb-1">+ %10</div>
             <p className="text-sm text-slate-600 mb-3">Sonraki 11 yenilemeden</p>
-            <div className="text-xs bg-emerald-50 p-3 rounded-md text-emerald-900">
+            <div className="text-xs bg-sapphire-light p-3 rounded-md text-sapphire-dark">
               <strong>Örnek:</strong> Pro yıllık (1099 TL/ay × 12 ay × %17 yıllık indirim = ~10.949 TL)
               <br />
               İlk yıl komisyonun: <strong>2.189 TL</strong>
             </div>
           </Card>
           <Card title="E-kitaplar" icon="📚">
-            <div className="text-3xl font-bold text-emerald-600 mb-1">%20</div>
+            <div className="text-3xl font-bold text-sapphire mb-1">%20</div>
             <p className="text-sm text-slate-600 mb-3">Tek seferlik satış komisyonu</p>
-            <div className="text-xs bg-emerald-50 p-3 rounded-md text-emerald-900 mt-12">
+            <div className="text-xs bg-sapphire-light p-3 rounded-md text-sapphire-dark mt-12">
               <strong>Örnek:</strong> 199 TL'lik e-kitap satışından komisyonun: <strong>39,80 TL</strong>
             </div>
           </Card>
@@ -142,7 +142,7 @@ export default function PartnerProgramPage() {
         <p className="text-slate-600 mb-8">İlk satıştan komisyon kazanmak 5 dakikalık başvuru kadar yakın.</p>
         <a
           href={`${LMS_URL}/partner/apply`}
-          className="inline-flex items-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-lg hover:bg-emerald-700 font-medium text-lg shadow-xl"
+          className="inline-flex items-center gap-2 bg-sapphire text-white px-8 py-4 rounded-lg hover:bg-sapphire-dark font-medium text-lg shadow-xl"
         >
           Partner Başvurusunu Doldur →
         </a>
@@ -175,7 +175,7 @@ function MiniStat({ label, value }: { label: string; value: string }) {
 function Step({ n, title, desc }: { n: number; title: string; desc: string }) {
   return (
     <div className="text-center">
-      <div className="w-12 h-12 mx-auto rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-lg mb-3">
+      <div className="w-12 h-12 mx-auto rounded-full bg-sapphire text-white flex items-center justify-center font-bold text-lg mb-3">
         {n}
       </div>
       <h3 className="text-lg font-semibold mb-2">{title}</h3>
@@ -189,7 +189,7 @@ function Faq({ q, children }: { q: string; children: React.ReactNode }) {
     <details className="bg-white border border-slate-200 rounded-lg p-4 group">
       <summary className="font-semibold cursor-pointer text-slate-900 list-none flex justify-between items-center">
         {q}
-        <span className="text-emerald-600 group-open:rotate-45 transition">+</span>
+        <span className="text-sapphire group-open:rotate-45 transition">+</span>
       </summary>
       <p className="mt-3 text-sm text-slate-600 leading-relaxed">{children}</p>
     </details>
