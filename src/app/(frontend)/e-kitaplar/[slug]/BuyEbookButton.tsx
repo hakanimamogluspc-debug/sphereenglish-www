@@ -67,6 +67,54 @@ export default function BuyEbookButton({ slug, title, price }: Props) {
   const [form, setForm] = useState<FormData>(INITIAL_FORM);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Kupon
+  const [couponInput, setCouponInput] = useState('');
+  const [couponCode, setCouponCode] = useState<string | null>(null);
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponAffiliate, setCouponAffiliate] = useState<string | null>(null);
+  const [couponMessage, setCouponMessage] = useState<string | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [couponBusy, setCouponBusy] = useState(false);
+
+  const priceNum = parseFloat(price);
+
+  async function applyCoupon() {
+    const code = couponInput.trim().toUpperCase().replace(/[^A-Z0-9-_]/g, '');
+    if (!code || code.length < 3) { setCouponError('Kod en az 3 karakter'); return; }
+    setCouponBusy(true); setCouponError(null); setCouponMessage(null);
+    try {
+      const r = await fetch('/api/coupons/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, scope: 'ebook', amountKurus: Math.round(priceNum * 100) }),
+      });
+      const data = await r.json();
+      if (data?.ok) {
+        if (data.type === 'coupon') {
+          setCouponCode(data.code);
+          setCouponDiscount(Number(data.discountKurus ?? 0) / 100);
+          setCouponMessage(data.message || 'Kupon uygulandı');
+          setCouponAffiliate(null);
+        } else if (data.type === 'affiliate') {
+          setCouponCode(null); setCouponDiscount(0);
+          setCouponAffiliate(data.affiliateCode);
+          setCouponMessage(`Partner kodu: ${data.partnerName}`);
+        }
+      } else {
+        setCouponError(data?.error || 'Geçersiz kod');
+        setCouponCode(null); setCouponDiscount(0); setCouponAffiliate(null);
+      }
+    } catch (e: any) {
+      setCouponError('Hata: ' + e?.message);
+    } finally { setCouponBusy(false); }
+  }
+
+  function clearCoupon() {
+    setCouponInput(''); setCouponCode(null); setCouponDiscount(0);
+    setCouponAffiliate(null); setCouponMessage(null); setCouponError(null);
+  }
+
   const [checkoutHtml, setCheckoutHtml] = useState<string | null>(null);
 
   // Iyzico checkout HTML'ini sayfaya inject et
@@ -153,6 +201,7 @@ export default function BuyEbookButton({ slug, title, price }: Props) {
           billingCity: form.billingCity.trim(),
           billingDistrict: form.billingDistrict.trim(),
           billingPostalCode: form.billingPostalCode.trim() || undefined,
+          couponCode: couponCode || couponAffiliate || undefined,
         }),
       });
       const data = await r.json();
@@ -500,6 +549,41 @@ export default function BuyEbookButton({ slug, title, price }: Props) {
                   ← Geri
                 </button>
               )}
+              <div className="mt-4 mb-2 p-3 border border-slate-200 rounded-md bg-slate-50">
+                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Kupon kodun var mı?</label>
+                {!couponCode && !couponAffiliate ? (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                      placeholder="HOSGELDIN10"
+                      className="flex-1 px-2 py-1.5 border border-slate-300 rounded text-xs font-mono uppercase"
+                      disabled={couponBusy}
+                    />
+                    <button type="button" onClick={applyCoupon} disabled={couponBusy || !couponInput.trim()}
+                      className="px-3 py-1.5 bg-[#082567] text-white rounded text-xs font-semibold disabled:opacity-50">
+                      {couponBusy ? '...' : 'Uygula'}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 p-2 rounded">
+                    <div className="text-xs">
+                      <strong className="text-emerald-800">{couponCode ? `Kupon: ${couponCode}` : `Partner: ${couponAffiliate}`}</strong>
+                      {couponMessage && <div className="text-[10px] text-emerald-700 mt-0.5">{couponMessage}</div>}
+                    </div>
+                    <button type="button" onClick={clearCoupon} className="text-[10px] text-red-600 hover:text-red-800">Kaldır</button>
+                  </div>
+                )}
+                {couponError && <div className="text-[10px] text-red-600 mt-1.5">{couponError}</div>}
+                {couponDiscount > 0 && (
+                  <div className="mt-2 pt-2 border-t border-slate-200 text-xs">
+                    <div className="flex justify-between"><span>Fiyat:</span><span className="line-through">{priceNum.toFixed(2)} TL</span></div>
+                    <div className="flex justify-between text-emerald-700"><span>İndirim:</span><span>-{couponDiscount.toFixed(2)} TL</span></div>
+                    <div className="flex justify-between font-bold text-sm pt-1 mt-1 border-t border-slate-200"><span>Ödenecek:</span><span>{(priceNum - couponDiscount).toFixed(2)} TL</span></div>
+                  </div>
+                )}
+              </div>
               <button
                 type="submit"
                 disabled={busy}

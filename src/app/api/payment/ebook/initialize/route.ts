@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from "next/server";
 import {
   getIyzicoClient,
@@ -81,6 +82,9 @@ export async function POST(req: NextRequest) {
 
   // ── Alıcı bilgileri ──
   const slug = String(body?.slug ?? "").trim();
+  const couponCodeRaw = String(body?.couponCode ?? "").trim().toUpperCase().replace(/[^A-Z0-9-_]/g, "");
+  const cookieStore = await cookies();
+  const cookieRef = cookieStore.get("sphere_ref")?.value ?? null;
   const email = String(body?.email ?? "").trim().toLowerCase();
   const fullName = String(body?.name ?? "").trim();
   const phone = String(body?.phone ?? "").trim();
@@ -130,6 +134,37 @@ export async function POST(req: NextRequest) {
   const price = parseFloat(ebook.price_try);
   if (!(price > 0)) return NextResponse.json({ error: "Kitap fiyatı geçersiz" }, { status: 500 });
 
+  // Kupon / Affiliate validate
+  let finalAmount = price;
+  let appliedCouponCode: string | null = null;
+  let appliedAffiliateCode: string | null = cookieRef;
+  let couponDiscountKurus = 0;
+
+  if (couponCodeRaw) {
+    try {
+      const r = await fetch(`${process.env.INTERNAL_API_BASE_URL ?? "http://api-server:3000"}/api/coupons/validate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: couponCodeRaw, scope: "ebook", amountKurus: Math.round(price * 100) }),
+      });
+      const data: any = await r.json().catch(() => ({}));
+      if (data?.ok) {
+        if (data.type === "coupon") {
+          finalAmount = (data.finalAmountKurus ?? Math.round(price * 100)) / 100;
+          couponDiscountKurus = Number(data.discountKurus ?? 0);
+          appliedCouponCode = data.code;
+        } else if (data.type === "affiliate") {
+          appliedAffiliateCode = data.affiliateCode;
+        }
+      } else if (data?.error) {
+        return NextResponse.json({ error: `Kupon: ${data.error}` }, { status: 400 });
+      }
+    } catch (e: any) {
+      console.error("[ebook/initialize] coupon validate err:", e?.message);
+      return NextResponse.json({ error: "Kupon doğrulanamadı" }, { status: 502 });
+    }
+  }
+
   // ── Conversation ID + buyer parse ──
   const conversationId = newConversationId("ebook_" + ebook.id);
   const nameParts = fullName.split(/\s+/);
@@ -145,7 +180,7 @@ export async function POST(req: NextRequest) {
     buyerEmail: email,
     buyerName: fullName,
     buyerPhone: phone,
-    amountPaid: price,
+    amountPaid: finalAmount,
     currency: "TRY",
     iyzicoConversationId: conversationId,
     invoiceType,
@@ -156,6 +191,10 @@ export async function POST(req: NextRequest) {
     billingCity,
     billingDistrict,
     billingPostalCode: billingPostalCode || null,
+    couponCode: appliedCouponCode,
+    couponDiscountKurus,
+    affiliateCode: appliedAffiliateCode,
+    originalPriceKurus: Math.round(price * 100),
   });
 
   if (!preCreate.ok) {
@@ -176,8 +215,8 @@ export async function POST(req: NextRequest) {
   const request = {
     locale: "tr",
     conversationId,
-    price: price.toFixed(2),
-    paidPrice: price.toFixed(2),
+    price: finalAmount.toFixed(2),
+    paidPrice: finalAmount.toFixed(2),
     currency: "TRY",
     basketId: `EBOOK-${ebook.id}-${Date.now()}`,
     paymentGroup: "PRODUCT",
@@ -216,7 +255,7 @@ export async function POST(req: NextRequest) {
         name: ebook.title,
         category1: "Dijital Kitap",
         itemType: "VIRTUAL",
-        price: price.toFixed(2),
+        price: finalAmount.toFixed(2),
       },
     ],
   };
