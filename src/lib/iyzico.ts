@@ -127,6 +127,7 @@ export async function notifyApiServerOfPayment(payload: {
   iyzicoPaymentId: string;
   iyzicoConversationId: string;
   paidAt: string;
+  affiliateCode?: string | null;
 }): Promise<{ ok: boolean; userId?: number; magicLinkSent?: boolean; error?: string }> {
   const base = process.env.INTERNAL_API_BASE_URL ?? "http://api-server:3000";
   const signature = signInternalPayload(payload);

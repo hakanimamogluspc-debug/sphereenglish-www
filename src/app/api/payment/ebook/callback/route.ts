@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "node:crypto";
 import {
@@ -134,6 +135,8 @@ async function handle(req: NextRequest) {
       );
     }
     const ebookId = parseInt(ebookIdMatch[1], 10);
+    const _cookieStore = await cookies();
+    const _affRef = _cookieStore.get('sphere_ref')?.value ?? null;
 
     // Email, isim için Iyzico response'dan oku
     const buyerEmail: string | undefined = result?.buyer?.email;
@@ -153,6 +156,7 @@ async function handle(req: NextRequest) {
       iyzicoConversationId: conversationId,
       downloadToken,
       paidAt: new Date().toISOString(),
+      affiliateCode: _affRef,
     };
     const signature = signInternalPayload(payload);
 

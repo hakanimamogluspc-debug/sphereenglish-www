@@ -1,78 +1,68 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from "next/server";
+
+const COOKIE_NAME = "sphere_ref";
+const COOKIE_MAX_AGE_SEC = 60 * 24 * 60 * 60; // 60 gün
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://app.sphereenglish.com/api-server/api";
 
 /**
- * Markdown for Agents — content negotiation
- *
- * AI agent'lar HTML yerine markdown istediklerinde (Accept: text/markdown)
- * önceden hazırlanmış markdown versiyonuna yönlendirir.
- *
- * Spec: https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/
- *
- * Eşleme: URL path → /content/{path}.md
- *   /          → /content/home.md
- *   /home      → /content/home.md
- *   /ai-studio → /content/ai-studio.md
- *   ...
+ * Affiliate ?ref=KOD yakalama:
+ * - URL'de ?ref=KOD varsa cookie set et (60 gün)
+ * - Fire-and-forget: API'ye track çağrısı at (best-effort)
  */
+export async function middleware(req: NextRequest) {
+  const url = new URL(req.url);
+  const ref = url.searchParams.get("ref");
 
-const MARKDOWN_PATHS: Record<string, string> = {
-  '/': '/content/home.md',
-  '/home': '/content/home.md',
-  '/hakkimizda': '/content/hakkimizda.md',
-  '/ai-studio': '/content/ai-studio.md',
-  '/nasil-calisir': '/content/nasil-calisir.md',
-  '/cozumler': '/content/cozumler.md',
-  '/iletisim': '/content/iletisim.md',
-};
-
-function wantsMarkdown(accept: string | null): boolean {
-  if (!accept) return false;
-  const lower = accept.toLowerCase();
-  // text/markdown veya text/x-markdown istenmiş ve text/html üzerinde tercih ediliyor
-  if (!lower.includes('text/markdown') && !lower.includes('text/x-markdown')) return false;
-  // text/html daha öncelikli ise normal HTML dön (tarayıcı isteği gibi davran)
-  const mdMatch = lower.match(/text\/(?:x-)?markdown(?:;q=([0-9.]+))?/);
-  const htmlMatch = lower.match(/text\/html(?:;q=([0-9.]+))?/);
-  const mdQ = mdMatch ? (mdMatch[1] ? parseFloat(mdMatch[1]) : 1) : 0;
-  const htmlQ = htmlMatch ? (htmlMatch[1] ? parseFloat(htmlMatch[1]) : 1) : 0;
-  return mdQ >= htmlQ;
-}
-
-export function middleware(req: NextRequest) {
-  const pathname = req.nextUrl.pathname;
-
-  // Sadece tanınan public sayfalarda content negotiation
-  const mdPath = MARKDOWN_PATHS[pathname];
-  if (!mdPath) {
+  if (!ref) {
     return NextResponse.next();
   }
 
-  if (!wantsMarkdown(req.headers.get('accept'))) {
-    // Normal HTML akışına devam — ama Vary: Accept header'ı ile cache uyarısı ver
-    const res = NextResponse.next();
-    res.headers.set('Vary', 'Accept');
-    return res;
+  // Kod normalize: UPPER + alphanumeric, max 40
+  const code = ref.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 40);
+  if (!code || code.length < 3) {
+    return NextResponse.next();
   }
 
-  // Markdown isteniyor — public klasöründeki .md dosyasına yönlendir
-  const url = req.nextUrl.clone();
-  url.pathname = mdPath;
-  const res = NextResponse.rewrite(url);
-  res.headers.set('Content-Type', 'text/markdown; charset=utf-8');
-  res.headers.set('Vary', 'Accept');
-  // Custom: response'un üretildiği path
-  res.headers.set('x-markdown-source', pathname);
+  // Aynı cookie zaten varsa skip (rate-limit için)
+  const existing = req.cookies.get(COOKIE_NAME)?.value;
+  const res = NextResponse.next();
+
+  if (existing !== code) {
+    res.cookies.set({
+      name: COOKIE_NAME,
+      value: code,
+      maxAge: COOKIE_MAX_AGE_SEC,
+      path: "/",
+      sameSite: "lax",
+      // domain: "sphereenglish.com",  // prod'da subdomain'ler arası paylaşım için
+    });
+
+    // Tracking call (fire-and-forget, response'u bekleme)
+    try {
+      void fetch(`${API_BASE}/affiliate/track`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code,
+          landingPath: url.pathname,
+          referrer: req.headers.get("referer") ?? null,
+          utmSource: url.searchParams.get("utm_source"),
+          utmMedium: url.searchParams.get("utm_medium"),
+          utmCampaign: url.searchParams.get("utm_campaign"),
+          visitorId: existing || code,
+        }),
+      });
+    } catch {
+      // ignore network errors
+    }
+  }
+
   return res;
 }
 
 export const config = {
   matcher: [
-    '/',
-    '/home',
-    '/hakkimizda',
-    '/ai-studio',
-    '/nasil-calisir',
-    '/cozumler',
-    '/iletisim',
+    // Tüm sayfa istekleri, ama static dosyaları ve API'yi atla
+    "/((?!_next/static|_next/image|favicon.ico|api/|.*\\.svg|.*\\.png|.*\\.jpg).*)",
   ],
 };

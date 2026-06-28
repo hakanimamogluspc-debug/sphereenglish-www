@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from "next/server";
 import {
   getIyzicoClient,
@@ -100,6 +101,8 @@ async function handle(req: NextRequest) {
 
     // Başarılı — api-server'a bildir (email varsa)
     if (buyerEmailFromIyzico) {
+      const _cookieStore = await cookies();
+      const _affRef = _cookieStore.get('sphere_ref')?.value ?? null;
       const activate = await notifyApiServerOfPayment({
         email: buyerEmailFromIyzico,
         name: `${result?.buyer?.name ?? ""} ${result?.buyer?.surname ?? ""}`.trim() || "Kullanıcı",
@@ -109,6 +112,7 @@ async function handle(req: NextRequest) {
         iyzicoPaymentId: String(result.paymentId ?? ""),
         iyzicoConversationId: conversationId,
         paidAt: new Date().toISOString(),
+        affiliateCode: _affRef,
       });
 
       if (!activate.ok) {
