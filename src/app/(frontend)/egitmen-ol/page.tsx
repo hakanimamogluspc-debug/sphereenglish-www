@@ -22,11 +22,18 @@ export default function EgitmenOlPage() {
           <h1 className="text-[36px] lg:text-[48px] font-extrabold tracking-[-0.025em] text-[#1B365D] leading-[1.1] mb-4">
             Sphere English Ekibinde Eğitmen Ol
           </h1>
-          <p className="text-[16px] text-gray-600 leading-relaxed max-w-2xl mx-auto">
-            Alanında uzman İngilizce öğretmenleri ile çalışmayı, Sphere English ekibinde yer almasını çok
-            isteriz. Uzaktan eğitim noktasında kendinize güveniyor ve online ders vermek isterseniz aşağıdaki
-            formu doldurup CV ile bize gönderin. Sizi aramızda görmek bize mutluluk verecek.
-          </p>
+          <div className="text-[16px] text-gray-600 leading-relaxed max-w-2xl mx-auto space-y-4">
+            <p>
+              Sphere English olarak, alanında yetkin ve online eğitim deneyimine sahip İngilizce
+              eğitmenlerini ekibimize dahil etmekten memnuniyet duyarız.
+            </p>
+            <p>
+              Eğer uzaktan eğitim konusunda yetkinliğinize güveniyor ve profesyonel bir online eğitim
+              deneyiminin parçası olmak istiyorsanız, başvurunuzu CV&rsquo;niz ile birlikte aşağıdaki form
+              üzerinden iletebilirsiniz.
+            </p>
+            <p>Sizi tanımaktan memnuniyet duyarız.</p>
+          </div>
         </div>
       </section>
 
