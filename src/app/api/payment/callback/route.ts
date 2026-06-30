@@ -111,12 +111,15 @@ async function handle(req: NextRequest) {
     const buyerEmailFromIyzico: string | undefined =
       result?.buyer?.email || result?.buyerEmail;
 
-    // Başarılı — api-server'a bildir (email varsa)
-    if (buyerEmailFromIyzico) {
+    // Başarılı — api-server'a HER ZAMAN bildir.
+    // Iyzico bazen buyer.email döndürmüyor, ama api-server pre-create draft'ından
+    // conversationId ile email'i resolve edebilir. Bu sayede ödeme alındığı halde
+    // abonelik aktif olmama riski ortadan kalkar.
+    {
       const _cookieStore = await cookies();
       const _affRef = _cookieStore.get('sphere_ref')?.value ?? null;
       const activate = await notifyApiServerOfPayment({
-        email: buyerEmailFromIyzico,
+        email: buyerEmailFromIyzico ?? "", // boşsa server pre-create'ten alacak
         name: `${result?.buyer?.name ?? ""} ${result?.buyer?.surname ?? ""}`.trim() || "Kullanıcı",
         planCode,
         amount: Number(result.paidPrice ?? plan.amount),
@@ -128,7 +131,10 @@ async function handle(req: NextRequest) {
       });
 
       if (!activate.ok) {
-        console.warn("[payment/callback] api-server activate başarısız:", activate.error);
+        console.warn("[payment/callback] api-server activate başarısız:", activate.error, {
+          hasEmailFromIyzico: !!buyerEmailFromIyzico,
+          conversationId,
+        });
         // Yine de kullanıcıya başarı sayfasını gösterelim ama "manuel inceleme gerek" uyarısıyla
         return NextResponse.redirect(
           `${paymentBaseUrl()}/odeme/basarili?conv=${conversationId}&warn=manuel`,
