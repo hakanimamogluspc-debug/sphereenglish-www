@@ -117,7 +117,9 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const conversationId = newConversationId("www");
+  // conversationId ve basketId aynı string — Iyzico response'da conversationId
+  // boş gelirse basketId'yi fallback olarak kullanmak için
+  const conversationId = `SUB-${plan.code}-${Date.now()}`;
   const nameParts = fullName.split(/\s+/);
   const firstName = nameParts[0] || "Sphere";
   const lastName = nameParts.slice(1).join(" ") || "Kullanıcı";
@@ -164,7 +166,7 @@ export async function POST(req: NextRequest) {
     price: finalAmount.toFixed(2),
     paidPrice: finalAmount.toFixed(2),
     currency: "TRY",
-    basketId: `B-${Date.now()}`,
+    basketId: conversationId, // conversationId ile aynı string — callback fallback için
     paymentGroup: plan.billingType === "recurring" ? "SUBSCRIPTION" : "PRODUCT",
     callbackUrl,
     enabledInstallments: [1, 2, 3, 6, 9],

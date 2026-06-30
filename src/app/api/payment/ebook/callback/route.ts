@@ -63,7 +63,9 @@ async function handle(req: NextRequest) {
       paymentId: result?.paymentId,
     }, null, 2));
 
-    const conversationId: string = result?.conversationId ?? "";
+    // Iyzico bazen conversationId döndürmüyor ama basketId her zaman geliyor.
+    // Aynı string olduğu için ikisini de aynı amaçla kullanabiliriz.
+    const conversationId: string = result?.conversationId || result?.basketId || "";
 
     // Iyzico response'unda conversationId varsa - başarısız durumlarda pending kaydı failed olarak işaretle
     async function markFailedIfPossible(errorMsg: string) {

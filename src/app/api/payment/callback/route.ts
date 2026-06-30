@@ -52,7 +52,8 @@ async function handle(req: NextRequest) {
     );
 
     const isSuccess = result?.status === "success" && result?.paymentStatus === "SUCCESS";
-    const conversationId: string = result?.conversationId ?? "";
+    // Iyzico response'da conversationId her zaman dönmüyor, basketId güvenilir
+    const conversationId: string = result?.conversationId || result?.basketId || "";
     const buyerEmail: string = result?.itemTransactions?.[0]?.subMerchantPayoutRate
       ? "" // ihtiyaç yok
       : "";

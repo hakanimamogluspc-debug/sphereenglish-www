@@ -166,7 +166,10 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Conversation ID + buyer parse ──
-  const conversationId = newConversationId("ebook_" + ebook.id);
+  // ÖNEMLİ: conversationId ve basketId AYNI string. Iyzico response'da conversationId
+  // bazen boş geliyor ama basketId her zaman dönüyor. Aynı string kullanınca callback'te
+  // hangisi gelirse gelsin pending lookup çalışır.
+  const conversationId = `EBOOK-${ebook.id}-${Date.now()}`;
   const nameParts = fullName.split(/\s+/);
   const firstName = nameParts[0] || "Sphere";
   const lastName = nameParts.slice(1).join(" ") || "Kullanıcı";
@@ -218,7 +221,7 @@ export async function POST(req: NextRequest) {
     price: finalAmount.toFixed(2),
     paidPrice: finalAmount.toFixed(2),
     currency: "TRY",
-    basketId: `EBOOK-${ebook.id}-${Date.now()}`,
+    basketId: conversationId, // conversationId ile aynı string — callback eşleştirmesi için
     paymentGroup: "PRODUCT",
     callbackUrl,
     enabledInstallments: [1, 2, 3, 6],
