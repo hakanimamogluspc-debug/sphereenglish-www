@@ -72,6 +72,18 @@ async function handle(req: NextRequest) {
     }
 
     if (!plan) {
+      // Bu callback ABONELİK için. E-kitap basketId'si "ebook_<id>" formatında gelir
+      // → erken çık, ebook callback handle eder. Hata değil, yanlış callback'e gelmiş.
+      if (/^ebook_/i.test(planCode) || /^EBOOK-/i.test(String(result?.basketId ?? ""))) {
+        console.info(
+          "[payment/callback] E-kitap ödemesi yanlış callback'e geldi, ebook callback'e yönlendir:",
+          planCode,
+        );
+        return NextResponse.redirect(
+          `${paymentBaseUrl()}/api/payment/ebook/callback?token=${encodeURIComponent(token)}`,
+          { status: 307 }, // 307: method preserve (POST kalır)
+        );
+      }
       console.error("[payment/callback] Plan bulunamadı:", planCode, result);
       return NextResponse.redirect(
         `${paymentBaseUrl()}/odeme/basarisiz?reason=plan_bulunamadi`,

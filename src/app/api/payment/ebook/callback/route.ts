@@ -124,17 +124,51 @@ async function handle(req: NextRequest) {
       );
     }
 
-    // Conversation id formatı: "ebook_<id>_<ts>_<rand>"
-    // E-kitap ID'sini ayıkla
-    const ebookIdMatch = conversationId.match(/^ebook_(\d+)_/);
-    if (!ebookIdMatch) {
-      console.error("[payment/ebook/callback] Beklenmeyen conversationId:", conversationId, "tam response:", result);
+    // ebookId resolve — 3 katmanlı fallback chain:
+    //   1) conversationId formatından (eski format: "ebook_<id>_<ts>_<rand>")
+    //   2) basketId formatından (Iyzico response'da garantili: "EBOOK-<id>-<ts>")
+    //   3) itemTransactions[0].itemId formatından ("ebook_<id>")
+    // Iyzico checkoutForm.retrieve response'u conversationId'yi her zaman döndürmez,
+    // ama basketId + itemTransactions her başarılı ödemede gelir.
+    let ebookId: number | null = null;
+
+    const convMatch = conversationId.match(/^ebook_(\d+)_/i);
+    if (convMatch) ebookId = parseInt(convMatch[1], 10);
+
+    if (!ebookId && result?.basketId) {
+      const basketMatch = String(result.basketId).match(/^EBOOK-(\d+)-/i);
+      if (basketMatch) {
+        ebookId = parseInt(basketMatch[1], 10);
+        console.info(
+          `[payment/ebook/callback] ebookId basketId'den resolve edildi: ${ebookId} (basketId=${result.basketId})`,
+        );
+      }
+    }
+
+    if (!ebookId && Array.isArray(result?.itemTransactions) && result.itemTransactions[0]?.itemId) {
+      const itemMatch = String(result.itemTransactions[0].itemId).match(/^ebook_(\d+)$/i);
+      if (itemMatch) {
+        ebookId = parseInt(itemMatch[1], 10);
+        console.info(
+          `[payment/ebook/callback] ebookId itemTransactions'tan resolve edildi: ${ebookId}`,
+        );
+      }
+    }
+
+    if (!ebookId) {
+      console.error(
+        "[payment/ebook/callback] ebookId 3 yöntemle de bulunamadı. conversationId:",
+        JSON.stringify(conversationId),
+        "basketId:",
+        result?.basketId,
+        "itemTransactions:",
+        result?.itemTransactions,
+      );
       return NextResponse.redirect(
-        `${paymentBaseUrl()}/odeme/basarisiz?type=ebook&reason=conversation_id_uyumsuz`,
+        `${paymentBaseUrl()}/odeme/basarisiz?type=ebook&reason=ebook_id_bulunamadi`,
         { status: 303 },
       );
     }
-    const ebookId = parseInt(ebookIdMatch[1], 10);
     const _cookieStore = await cookies();
     const _affRef = _cookieStore.get('sphere_ref')?.value ?? null;
 
