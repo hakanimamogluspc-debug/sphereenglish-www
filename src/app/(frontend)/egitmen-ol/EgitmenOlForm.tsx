@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { trackMetaEvent } from '@/lib/analytics/meta-pixel';
 
 const EXPERIENCE_OPTIONS = [
   { value: '0', label: 'Tecrübem Yok' },
@@ -137,6 +138,15 @@ export default function EgitmenOlForm() {
         return;
       }
       setDone(true);
+      // Meta Pixel — Eğitmen başvurusu = SubmitApplication + Lead
+      trackMetaEvent('SubmitApplication', {
+        content_category: 'teacher_application',
+      });
+      trackMetaEvent('Lead', {
+        content_category: 'teacher_application',
+        value: 0,
+        currency: 'TRY',
+      });
     } catch (err: any) {
       setError(err?.message || 'Beklenmeyen hata.');
     } finally {

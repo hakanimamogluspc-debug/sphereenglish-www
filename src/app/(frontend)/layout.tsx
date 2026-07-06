@@ -6,6 +6,7 @@ import ChatWidget from '../../components/ChatWidget/ChatWidget';
 import WebMCPProvider from '../../components/WebMCPProvider';
 import AnalyticsTracker from '../../components/AnalyticsTracker';
 import MetaPixelRouteTracker from '../../components/MetaPixelRouteTracker';
+import ContactClickTracker from '../../components/ContactClickTracker';
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-ELDF1FF5S1';
 const BASE_URL = 'https://www.sphereenglish.com';
@@ -366,6 +367,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </Suspense>
         {/* Meta Pixel SPA route değişimlerinde PageView tetikleyici */}
         <MetaPixelRouteTracker />
+        {/* WhatsApp/telefon/mail linki tıklamalarında Contact event */}
+        <ContactClickTracker />
       </body>
     </html>
   );

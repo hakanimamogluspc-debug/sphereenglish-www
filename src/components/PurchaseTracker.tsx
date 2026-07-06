@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { trackPurchase } from '@/lib/analytics/meta-pixel';
+import { trackPurchase, trackMetaEvent } from '@/lib/analytics/meta-pixel';
 
 /**
  * Ödeme başarılı sayfasında Meta Pixel Purchase event tetikleyici.
@@ -35,6 +35,17 @@ export default function PurchaseTracker(props: {
       type: props.type,
       orderId: props.orderId,
     });
+
+    // Subscription satın alma ise Subscribe event de tetikle (LTV tracking)
+    if (props.type === 'subscription') {
+      trackMetaEvent('Subscribe', {
+        value: props.priceTry,
+        currency: 'TRY',
+        content_name: props.productName,
+        content_ids: [props.productId],
+        predicted_ltv: props.priceTry * 12, // Yıllık tahmini LTV
+      });
+    }
   }, [props.productId, props.priceTry, props.type, props.productName, props.orderId]);
 
   return null;

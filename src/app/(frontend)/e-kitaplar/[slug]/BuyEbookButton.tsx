@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { trackAddToCart, trackInitiateCheckout } from '@/lib/analytics/meta-pixel';
+import { trackAddToCart, trackInitiateCheckout, trackMetaEvent } from '@/lib/analytics/meta-pixel';
 
 interface Props {
   slug: string;
@@ -221,6 +221,14 @@ export default function BuyEbookButton({ slug, title, price }: Props) {
         return;
       }
       setCheckoutHtml((data as CheckoutResponse).checkoutFormContent);
+      // Meta Pixel — Iyzico modal başarıyla açıldı = AddPaymentInfo
+      // (kullanıcı ödeme bilgilerini girmeye hazır)
+      trackMetaEvent('AddPaymentInfo', {
+        content_ids: [`ebook-${slug}`],
+        content_category: 'ebook',
+        value: Number(price ?? 0) - Number(couponDiscount ?? 0),
+        currency: 'TRY',
+      });
     } catch (err: any) {
       setError(err?.message || 'Beklenmedik hata');
     } finally {
