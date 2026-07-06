@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import EbookGallery from './EbookGallery';
 import BuyEbookButton from './BuyEbookButton';
+import EbookViewTracker from '@/components/EbookViewTracker';
 
 // Cache'i tamamen kapat — admin değişikliği anında yansısın
 export const dynamic = 'force-dynamic';
@@ -224,6 +225,12 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
 
   return (
     <main className="bg-white min-h-screen">
+      {/* Meta Pixel ViewContent — retargeting audience için */}
+      <EbookViewTracker
+        ebookId={ebook.id}
+        title={ebook.title}
+        priceTry={Number(ebook.price_try ?? 0)}
+      />
       <Header />
       <script
         type="application/ld+json"

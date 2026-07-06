@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { trackAddToCart, trackInitiateCheckout } from '@/lib/analytics/meta-pixel';
 
 interface Props {
   slug: string;
@@ -184,6 +185,15 @@ export default function BuyEbookButton({ slug, title, price }: Props) {
     if (err) return setError(err);
 
     setBusy(true);
+
+    // Meta Pixel — Iyzico checkout başlatılıyor = InitiateCheckout
+    const finalPrice = Number(price ?? 0) - Number(couponDiscount ?? 0);
+    trackInitiateCheckout({
+      productId: `ebook-${slug}`,
+      priceTry: finalPrice > 0 ? finalPrice : Number(price ?? 0),
+      type: 'ebook',
+    });
+
     try {
       const r = await fetch('/api/payment/ebook/initialize', {
         method: 'POST',
@@ -241,7 +251,16 @@ export default function BuyEbookButton({ slug, title, price }: Props) {
   return (
     <>
       <button
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setOpen(true);
+          // Meta Pixel — "Satın Al" tıklandı = AddToCart
+          trackAddToCart({
+            productId: `ebook-${slug}`,
+            productName: title,
+            priceTry: Number(price ?? 0),
+            type: 'ebook',
+          });
+        }}
         className="w-full py-3.5 rounded-xl font-bold text-[14px] text-white bg-[#0ea5e9] hover:bg-[#0284c7] transition-colors"
       >
         Satın Al &amp; Hemen İndir — {formatTRY(price)}
