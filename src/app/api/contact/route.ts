@@ -1,21 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  TransactionalEmailsApi,
-  TransactionalEmailsApiApiKeys,
-  SendSmtpEmail,
-} from '@getbrevo/brevo';
 import crypto from 'crypto';
+
+/**
+ * İletişim formu — Sphere backend'e lead kaydı + Meta CAPI Lead eventi.
+ *
+ * Akış:
+ *   1) Sphere API (/api/marketing/contact) — contact_leads tablosuna yaz +
+ *      admin notify sistemi tetiklenir (Resend ile info@ + admin mail).
+ *   2) Meta Conversions API — Lead event (opsiyonel, token varsa).
+ *
+ * Not: Brevo entegrasyonu kaldırıldı — Sphere admin notify (Resend) tek
+ * mail sistemi. Karmaşıklık azaldı, tek yerden yönetim.
+ */
 
 const SPHERE_API_URL = 'https://app.sphereenglish.com/api/marketing/contact';
 const META_PIXEL_ID  = '2156406151837976';
 const META_API_VER   = 'v19.0';
 
-async function sendMetaLead({
-  email, firstName, lastName, phone, clientIp, clientUserAgent, fbc, fbp,
-}: {
-  email: string; firstName?: string; lastName?: string; phone?: string;
-  clientIp?: string; clientUserAgent?: string; fbc?: string; fbp?: string;
-}) {
+async function sendMetaLead(opts: {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  clientIp?: string;
+  clientUserAgent?: string;
+  fbc?: string;
+  fbp?: string;
+}): Promise<void> {
   const token = process.env.META_CONVERSIONS_API_TOKEN;
   if (!token) return;
 
@@ -23,14 +34,14 @@ async function sendMetaLead({
     crypto.createHash('sha256').update(v.trim().toLowerCase()).digest('hex');
 
   const userData: Record<string, string> = {};
-  if (email)     userData.em = sha256(email);
-  if (firstName) userData.fn = sha256(firstName);
-  if (lastName)  userData.ln = sha256(lastName);
-  if (phone)     userData.ph = sha256(phone.replace(/\D/g, ''));
-  if (clientIp)  userData.client_ip_address = clientIp;
-  if (clientUserAgent) userData.client_user_agent = clientUserAgent;
-  if (fbc) userData.fbc = fbc;
-  if (fbp) userData.fbp = fbp;
+  if (opts.email)           userData.em = sha256(opts.email);
+  if (opts.firstName)       userData.fn = sha256(opts.firstName);
+  if (opts.lastName)        userData.ln = sha256(opts.lastName);
+  if (opts.phone)           userData.ph = sha256(opts.phone.replace(/\D/g, ''));
+  if (opts.clientIp)        userData.client_ip_address = opts.clientIp;
+  if (opts.clientUserAgent) userData.client_user_agent = opts.clientUserAgent;
+  if (opts.fbc) userData.fbc = opts.fbc;
+  if (opts.fbp) userData.fbp = opts.fbp;
 
   const body = {
     data: [{
@@ -48,7 +59,7 @@ async function sendMetaLead({
       { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
     );
     if (!res.ok) console.error('[Meta CAPI] Hata:', await res.text());
-    else console.log('[Meta CAPI] Lead eventi gönderildi:', email ? sha256(email).slice(0, 8) + '...' : '?');
+    else console.log('[Meta CAPI] Lead eventi gönderildi:', opts.email ? sha256(opts.email).slice(0, 8) + '...' : '?');
   } catch (e) {
     console.error('[Meta CAPI] Bağlantı hatası:', e);
   }
@@ -63,27 +74,46 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Zorunlu alanlar eksik.' }, { status: 400 });
     }
 
-    // ── 1. Lead'i Sphere English veritabanına kaydet (arka planda) ──
-    fetch(SPHERE_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name,
-        email,
-        phone: '',
-        company,
-        message: `Sektör: ${sector || '—'} | Çalışan: ${teamSize || '—'} | Mesaj: ${message || '—'}`,
-        source: 'website-iletisim',
-      }),
-    }).catch((err) => console.error('Lead kayıt hatası:', err));
+    // ── 1. Sphere API'ye lead kaydet (contact_leads tablosuna yaz + admin mail) ──
+    // Await ediyoruz — fail olursa kullanıcıya doğru mesaj gösterelim.
+    try {
+      const sphereRes = await fetch(SPHERE_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          phone: '',
+          company,
+          message: `Sektör: ${sector || '—'} | Çalışan: ${teamSize || '—'} | Mesaj: ${message || '—'}`,
+          source: 'website-iletisim',
+        }),
+      });
+      if (!sphereRes.ok) {
+        const errText = await sphereRes.text().catch(() => '');
+        console.error('[contact] Sphere API hatası:', sphereRes.status, errText);
+        return NextResponse.json(
+          { error: 'Form kaydedilemedi, lütfen daha sonra tekrar deneyin.' },
+          { status: 502 },
+        );
+      }
+      console.log(`[contact] Lead kaydedildi: ${email} (${company})`);
+    } catch (fetchErr: any) {
+      console.error('[contact] Sphere API bağlantı hatası:', fetchErr?.message ?? fetchErr);
+      return NextResponse.json(
+        { error: 'Sunucuya ulaşılamıyor, lütfen daha sonra tekrar deneyin.' },
+        { status: 502 },
+      );
+    }
 
-    // ── 2. Meta Conversions API — Lead eventi (ad/soyad/e-posta ile gelişmiş eşleştirme) ──
-    const nameParts  = name.trim().split(' ');
-    const firstName  = nameParts[0] || undefined;
-    const lastName   = nameParts.length > 1 ? nameParts.slice(1).join(' ') : undefined;
+    // ── 2. Meta Conversions API — Lead event (opsiyonel, background) ──
+    const nameParts   = name.trim().split(' ');
+    const firstName   = nameParts[0] || undefined;
+    const lastName    = nameParts.length > 1 ? nameParts.slice(1).join(' ') : undefined;
     const forwardedIp = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
     const clientIp    = forwardedIp || req.headers.get('x-real-ip') || undefined;
-    sendMetaLead({
+
+    void sendMetaLead({
       email,
       firstName,
       lastName,
@@ -91,85 +121,14 @@ export async function POST(req: NextRequest) {
       clientUserAgent: req.headers.get('user-agent') || undefined,
       fbc: req.cookies.get('_fbc')?.value,
       fbp: req.cookies.get('_fbp')?.value,
-    }).catch(() => {});
+    });
 
-    // ── 3. Brevo ile e-posta gönder (opsiyonel — Sphere admin notify zaten Resend ile gönderiyor) ──
-    const apiKey = (process.env.BREVO_API_KEY || '').trim();
-    if (!apiKey) {
-      // Brevo yoksa hata değil — Sphere backend mail'i Resend ile göndermiş olmalı
-      console.warn('[contact] BREVO_API_KEY yok, sadece Sphere admin notify kullanılıyor');
-      return NextResponse.json({ success: true, provider: 'sphere-only' }, { status: 200 });
-    }
-
-    const emailApi = new TransactionalEmailsApi();
-    emailApi.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);
-
-    const htmlContent = `
-      <html>
-        <body style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="background: #082567; padding: 24px; border-radius: 4px; margin-bottom: 24px;">
-            <h1 style="color: white; margin: 0; font-size: 22px;">Yeni Teklif Talebi</h1>
-            <p style="color: rgba(255,255,255,0.7); margin: 8px 0 0; font-size: 14px;">sphereenglish.com üzerinden gönderildi</p>
-          </div>
-          <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-              <td style="padding: 12px 0; border-bottom: 1px solid #eee; font-weight: bold; width: 140px; color: #555; font-size: 14px;">Ad Soyad</td>
-              <td style="padding: 12px 0; border-bottom: 1px solid #eee; font-size: 14px;">${name}</td>
-            </tr>
-            <tr>
-              <td style="padding: 12px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #555; font-size: 14px;">E-posta</td>
-              <td style="padding: 12px 0; border-bottom: 1px solid #eee; font-size: 14px;"><a href="mailto:${email}" style="color: #082567;">${email}</a></td>
-            </tr>
-            <tr>
-              <td style="padding: 12px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #555; font-size: 14px;">Şirket</td>
-              <td style="padding: 12px 0; border-bottom: 1px solid #eee; font-size: 14px;">${company}</td>
-            </tr>
-            <tr>
-              <td style="padding: 12px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #555; font-size: 14px;">Sektör</td>
-              <td style="padding: 12px 0; border-bottom: 1px solid #eee; font-size: 14px;">${sector || '—'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 12px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #555; font-size: 14px;">Çalışan Sayısı</td>
-              <td style="padding: 12px 0; border-bottom: 1px solid #eee; font-size: 14px;">${teamSize || '—'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 12px 0; font-weight: bold; color: #555; font-size: 14px; vertical-align: top;">Mesaj</td>
-              <td style="padding: 12px 0; font-size: 14px;">${message ? message.replace(/\n/g, '<br>') : '—'}</td>
-            </tr>
-          </table>
-          <div style="margin-top: 24px; padding: 16px; background: #f5f5f5; border-radius: 4px; font-size: 12px; color: #888;">
-            Bu e-posta Sphere English teklif formu aracılığıyla otomatik olarak gönderilmiştir.
-          </div>
-        </body>
-      </html>
-    `;
-
-    const sendSmtpEmail: SendSmtpEmail = {
-      sender: { name: 'Sphere English Form', email: 'info@sphereenglish.com' },
-      to: [{ email: 'info@sphereenglish.com', name: 'Sphere English' }],
-      replyTo: { email: email, name: name },
-      subject: `Yeni Teklif Talebi — ${company}`,
-      htmlContent,
-      textContent: `Yeni Teklif Talebi\n\nAd Soyad: ${name}\nE-posta: ${email}\nŞirket: ${company}\nSektör: ${sector || '—'}\nÇalışan Sayısı: ${teamSize || '—'}\nMesaj: ${message || '—'}`,
-    };
-
-    try {
-      const result = await emailApi.sendTransacEmail(sendSmtpEmail);
-      console.log('[contact] Brevo mail OK. Message ID:', result.body?.messageId);
-      return NextResponse.json({ success: true, provider: 'brevo+sphere' }, { status: 200 });
-    } catch (brevoErr: any) {
-      // Brevo fail olsa bile Sphere admin notify zaten Resend ile mail gönderdi
-      // Kullanıcıya başarı göster — form gerçekten submit edildi
-      const errBody = brevoErr?.response?.body || brevoErr?.body;
-      console.error('[contact] Brevo başarısız (Sphere admin notify yedek çalışıyor):', JSON.stringify(errBody || brevoErr));
-      return NextResponse.json({ success: true, provider: 'sphere-fallback' }, { status: 200 });
-    }
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error: any) {
-    // Sadece body parse veya validation hatası — gerçek bir 500
     console.error('[contact] fatal error:', error?.message || error);
     return NextResponse.json(
       { error: `Form gönderilemedi: ${error?.message || 'Bilinmeyen hata'}` },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
