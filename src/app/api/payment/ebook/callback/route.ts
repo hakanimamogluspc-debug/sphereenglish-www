@@ -215,10 +215,14 @@ async function handle(req: NextRequest) {
       );
     }
 
-    return NextResponse.redirect(
-      `${paymentBaseUrl()}/odeme/basarili?type=ebook&token=${downloadToken}`,
-      { status: 303 },
-    );
+    // Meta Pixel Purchase event için value/product params
+    const priceTry = Number(result.paidPrice ?? 0);
+    const purchaseUrl =
+      `${paymentBaseUrl()}/odeme/basarili?type=ebook&token=${downloadToken}` +
+      `&value=${priceTry}` +
+      `&productId=${encodeURIComponent('ebook-' + ebookId)}`;
+
+    return NextResponse.redirect(purchaseUrl, { status: 303 });
   } catch (e: any) {
     console.error("[payment/ebook/callback] HATA:", e?.message ?? e);
     return NextResponse.redirect(

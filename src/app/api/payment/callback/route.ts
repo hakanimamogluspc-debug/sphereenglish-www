@@ -144,10 +144,15 @@ async function handle(req: NextRequest) {
       }
     }
 
-    return NextResponse.redirect(
-      `${paymentBaseUrl()}/odeme/basarili?conv=${conversationId}`,
-      { status: 303 },
-    );
+    // Meta Pixel Purchase event için value/product params
+    const priceTry = Number(result.paidPrice ?? plan.amount ?? 0);
+    const purchaseUrl =
+      `${paymentBaseUrl()}/odeme/basarili?conv=${conversationId}` +
+      `&value=${priceTry}` +
+      `&productId=${encodeURIComponent('subscription-' + planCode)}` +
+      `&productName=${encodeURIComponent(plan.label ?? plan.code ?? 'Pro Abonelik')}`;
+
+    return NextResponse.redirect(purchaseUrl, { status: 303 });
   } catch (e: any) {
     console.error("[payment/callback] HATA:", e?.message ?? e);
     return NextResponse.redirect(

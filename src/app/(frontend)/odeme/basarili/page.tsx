@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import PurchaseTracker from '@/components/PurchaseTracker';
 
 export const metadata: Metadata = {
   title: 'Ödeme Başarılı | Sphere English',
@@ -11,7 +12,15 @@ export const metadata: Metadata = {
 export default function OdemeBasariliPage({
   searchParams,
 }: {
-  searchParams: { conv?: string; warn?: string; type?: string; token?: string };
+  searchParams: {
+    conv?: string;
+    warn?: string;
+    type?: string;
+    token?: string;
+    value?: string;
+    productId?: string;
+    productName?: string;
+  };
 }) {
   const conv = searchParams.conv ?? '';
   const warn = searchParams.warn;
@@ -22,8 +31,23 @@ export default function OdemeBasariliPage({
     ? `https://app.sphereenglish.com/api-server/api/ebooks/download?token=${encodeURIComponent(token)}`
     : null;
 
+  // Meta Pixel Purchase event params (query param'lardan gelir)
+  const priceTry = Number(searchParams.value ?? 0);
+  const productId = searchParams.productId ?? (isEbook ? 'ebook' : 'subscription');
+  const productName = searchParams.productName ?? (isEbook ? 'E-Kitap' : 'Pro Abonelik');
+
   return (
     <main className="bg-white min-h-screen">
+      {/* Meta Pixel Purchase event — client-side, tek seferlik */}
+      {priceTry > 0 && !warn && (
+        <PurchaseTracker
+          type={isEbook ? 'ebook' : 'subscription'}
+          productId={productId}
+          productName={productName}
+          priceTry={priceTry}
+          orderId={conv}
+        />
+      )}
       <Header />
       <section className="max-w-2xl mx-auto px-6 py-20 lg:py-28 text-center">
         <div className="mx-auto mb-6 w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center">
@@ -41,8 +65,8 @@ export default function OdemeBasariliPage({
             : 'Aboneliğin aktif edildi. E-posta adresine giriş bilgileri ve makbuz gönderildi.'}
         </p>
 
-        {/* E-kitap için indirme butonu */}
-        {isEbook && downloadUrl && (
+        {/* E-kitap için indirme butonu — SADECE activate başarılı olduğunda (warn yoksa) */}
+        {isEbook && downloadUrl && warn !== 'manuel' && (
           <div className="mb-8">
             <a
               href={downloadUrl}
@@ -57,11 +81,17 @@ export default function OdemeBasariliPage({
         )}
 
         {warn === 'manuel' && (
-          <div className="mb-6 mx-auto max-w-md p-4 rounded-xl bg-amber-50 border border-amber-200 text-[13px] text-amber-900 text-left">
-            <strong>Bilgi:</strong> Ödemen başarıyla alındı ancak hesap aktivasyonunda kısa bir gecikme
-            yaşanıyor. Birkaç dakika içinde aktif olacak. Sorun yaşarsan{' '}
-            <a className="underline" href="mailto:info@sphereenglish.com">info@sphereenglish.com</a> ile
-            iletişime geç.
+          <div className="mb-6 mx-auto max-w-lg p-5 rounded-xl bg-amber-50 border border-amber-200 text-[13px] text-amber-900 text-left">
+            <p className="font-semibold mb-2">📬 İndirme bağlantısı maile gönderiliyor</p>
+            <p className="mb-2">
+              Ödemen başarıyla alındı, ancak hesap aktivasyonunda kısa bir gecikme yaşanıyor. PDF indirme
+              bağlantısı <strong>birkaç dakika içinde e-posta adresine</strong> gönderilecek.
+            </p>
+            <p className="text-[12px]">
+              Eğer 15 dakika içinde mail almazsan veya hemen yardım gerekirse{' '}
+              <a className="underline font-semibold" href="mailto:info@sphereenglish.com">info@sphereenglish.com</a>{' '}
+              ile iletişime geç — siparişini doğrulayıp linki manuel göndereceğiz.
+            </p>
           </div>
         )}
 
