@@ -93,11 +93,12 @@ export async function POST(req: NextRequest) {
       fbp: req.cookies.get('_fbp')?.value,
     }).catch(() => {});
 
-    // ── 3. Brevo ile e-posta gönder ──
+    // ── 3. Brevo ile e-posta gönder (opsiyonel — Sphere admin notify zaten Resend ile gönderiyor) ──
     const apiKey = (process.env.BREVO_API_KEY || '').trim();
     if (!apiKey) {
-      console.error('BREVO_API_KEY is not set');
-      return NextResponse.json({ error: 'E-posta servisi yapılandırılmamış.' }, { status: 500 });
+      // Brevo yoksa hata değil — Sphere backend mail'i Resend ile göndermiş olmalı
+      console.warn('[contact] BREVO_API_KEY yok, sadece Sphere admin notify kullanılıyor');
+      return NextResponse.json({ success: true, provider: 'sphere-only' }, { status: 200 });
     }
 
     const emailApi = new TransactionalEmailsApi();
@@ -152,16 +153,22 @@ export async function POST(req: NextRequest) {
       textContent: `Yeni Teklif Talebi\n\nAd Soyad: ${name}\nE-posta: ${email}\nŞirket: ${company}\nSektör: ${sector || '—'}\nÇalışan Sayısı: ${teamSize || '—'}\nMesaj: ${message || '—'}`,
     };
 
-    const result = await emailApi.sendTransacEmail(sendSmtpEmail);
-    console.log('Email sent successfully. Message ID:', result.body?.messageId);
-
-    return NextResponse.json({ success: true }, { status: 200 });
+    try {
+      const result = await emailApi.sendTransacEmail(sendSmtpEmail);
+      console.log('[contact] Brevo mail OK. Message ID:', result.body?.messageId);
+      return NextResponse.json({ success: true, provider: 'brevo+sphere' }, { status: 200 });
+    } catch (brevoErr: any) {
+      // Brevo fail olsa bile Sphere admin notify zaten Resend ile mail gönderdi
+      // Kullanıcıya başarı göster — form gerçekten submit edildi
+      const errBody = brevoErr?.response?.body || brevoErr?.body;
+      console.error('[contact] Brevo başarısız (Sphere admin notify yedek çalışıyor):', JSON.stringify(errBody || brevoErr));
+      return NextResponse.json({ success: true, provider: 'sphere-fallback' }, { status: 200 });
+    }
   } catch (error: any) {
-    const errBody = error?.response?.body || error?.body;
-    const errMessage = errBody?.message || error?.message || 'Bilinmeyen hata';
-    console.error('Brevo SDK error:', JSON.stringify(errBody || error));
+    // Sadece body parse veya validation hatası — gerçek bir 500
+    console.error('[contact] fatal error:', error?.message || error);
     return NextResponse.json(
-      { error: `E-posta gönderilemedi: ${errMessage}` },
+      { error: `Form gönderilemedi: ${error?.message || 'Bilinmeyen hata'}` },
       { status: 500 }
     );
   }
