@@ -202,7 +202,10 @@ export default async function BundleDetailPage({ params }: { params: { slug: str
                   <BuyBundleButton
                     slug={bundle.slug}
                     title={bundle.title}
+                    subtitle={bundle.subtitle}
+                    coverImageUrl={bundle.cover_image_url}
                     price={price}
+                    listPrice={listPrice}
                     itemCount={bundle.items.length}
                   />
                 </div>

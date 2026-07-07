@@ -7,6 +7,8 @@ import WebMCPProvider from '../../components/WebMCPProvider';
 import AnalyticsTracker from '../../components/AnalyticsTracker';
 import MetaPixelRouteTracker from '../../components/MetaPixelRouteTracker';
 import ContactClickTracker from '../../components/ContactClickTracker';
+import { CartProvider } from '../../lib/cart/cart-context';
+import MiniCartDrawer from '../../components/MiniCartDrawer';
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-ELDF1FF5S1';
 const BASE_URL = 'https://www.sphereenglish.com';
@@ -359,16 +361,20 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             src="https://www.facebook.com/tr?id=2156406151837976&ev=PageView&noscript=1"
           />
         </noscript>
-        {children}
-        <ChatWidget />
-        <WebMCPProvider />
-        <Suspense fallback={null}>
-          <AnalyticsTracker />
-        </Suspense>
-        {/* Meta Pixel SPA route değişimlerinde PageView tetikleyici */}
-        <MetaPixelRouteTracker />
-        {/* WhatsApp/telefon/mail linki tıklamalarında Contact event */}
-        <ContactClickTracker />
+        <CartProvider>
+          {children}
+          <ChatWidget />
+          <WebMCPProvider />
+          <Suspense fallback={null}>
+            <AnalyticsTracker />
+          </Suspense>
+          {/* Sağdan açılan sepet drawer'ı */}
+          <MiniCartDrawer />
+          {/* Meta Pixel SPA route değişimlerinde PageView tetikleyici */}
+          <MetaPixelRouteTracker />
+          {/* WhatsApp/telefon/mail linki tıklamalarında Contact event */}
+          <ContactClickTracker />
+        </CartProvider>
       </body>
     </html>
   );

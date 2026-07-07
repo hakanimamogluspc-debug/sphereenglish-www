@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import Image from 'next/image';
+import CartIcon from '@/components/CartIcon';
 
 const cozumlerMenu = [
   {
@@ -203,6 +204,7 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
               </div>
             )}
           </div>
+          <CartIcon className="ml-1" />
           <a
             href="https://app.sphereenglish.com"
             target="_blank"
@@ -220,6 +222,11 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
             TEKLİF AL
           </Link>
         </nav>
+
+        {/* Mobile actions */}
+        <div className="md:hidden flex items-center gap-1">
+          <CartIcon />
+        </div>
 
         {/* Mobile menu button */}
         <button
