@@ -72,6 +72,35 @@ async function getEbooks(): Promise<Ebook[]> {
   }
 }
 
+interface BundleListItem {
+  id: number;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  description: string | null;
+  cover_image_url: string | null;
+  price_try: string;
+  list_price_try: string | null;
+  currency: string;
+  is_featured: boolean;
+  item_count: number;
+  items_preview: Array<{ id: number; slug: string; title: string; cover_image_url: string | null }>;
+}
+
+async function getBundles(): Promise<BundleListItem[]> {
+  try {
+    const r = await fetch(`${API_BASE.replace(/\/$/, '')}/api/bundles`, {
+      cache: 'no-store',
+    });
+    if (!r.ok) return [];
+    const data = await r.json();
+    return data.bundles ?? [];
+  } catch (err) {
+    console.error('[e-kitaplar] bundles fetch error:', err);
+    return [];
+  }
+}
+
 function formatTRY(amount: number | string) {
   const n = typeof amount === 'string' ? parseFloat(amount) : amount;
   return new Intl.NumberFormat('tr-TR', {
@@ -82,7 +111,7 @@ function formatTRY(amount: number | string) {
 }
 
 export default async function EKitaplarPage() {
-  const ebooks = await getEbooks();
+  const [ebooks, bundles] = await Promise.all([getEbooks(), getBundles()]);
 
   // SEO için JSON-LD CollectionPage + ItemList schema
   const collectionLd = {
@@ -156,8 +185,144 @@ export default async function EKitaplarPage() {
         </div>
       </section>
 
+      {/* ─── PAKETLER — birden fazla kitap indirimli ────────────────────── */}
+      {bundles.length > 0 && (
+        <section className="max-w-6xl mx-auto px-6 lg:px-10 pt-12 pb-4">
+          <div className="flex items-end justify-between flex-wrap gap-4 mb-6">
+            <div>
+              <p className="text-[11px] font-bold tracking-[0.22em] text-emerald-600 uppercase mb-2">
+                Paketler · Kazançlı
+              </p>
+              <h2 className="text-[28px] lg:text-[36px] font-extrabold text-[#1B365D] leading-tight">
+                Serinin Tamamı — Tek Fiyat
+              </h2>
+              <p className="text-[14px] text-gray-500 mt-2">
+                Kitapları tek tek almak yerine set olarak alın, %20-47 indirimden yararlanın.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {bundles.map((bundle) => {
+              const price = Number(bundle.price_try);
+              const listPrice = bundle.list_price_try ? Number(bundle.list_price_try) : null;
+              const savings = listPrice ? Math.round(((listPrice - price) / listPrice) * 100) : 0;
+
+              return (
+                <Link
+                  key={bundle.id}
+                  href={`/e-kitaplar/paketler/${bundle.slug}`}
+                  className="group relative flex flex-col md:flex-row gap-5 p-6 rounded-2xl bg-gradient-to-br from-white to-emerald-50/40 border-2 border-emerald-200/60 hover:border-emerald-500 hover:shadow-xl transition-all duration-300"
+                >
+                  {/* Yıldız + %indirim rozeti */}
+                  <div className="absolute -top-3 -right-3 flex items-center gap-2">
+                    {savings > 0 && (
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold text-white bg-emerald-500 shadow-lg">
+                        %{savings} İNDİRİM
+                      </span>
+                    )}
+                    {bundle.is_featured && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-amber-900 bg-amber-300 shadow-md">
+                        ⭐ Öne Çıkan
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Sol: kapak veya kitap grid'i */}
+                  <div className="flex-shrink-0">
+                    {bundle.cover_image_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={bundle.cover_image_url}
+                        alt={bundle.title}
+                        className="w-32 md:w-40 aspect-[3/4] object-cover rounded-lg border border-gray-200 group-hover:scale-105 transition-transform"
+                        loading="lazy"
+                      />
+                    ) : (
+                      // Kitap kapak grid'i (paket kapağı yoksa alternatif)
+                      <div className="w-32 md:w-40 aspect-[3/4] rounded-lg bg-gradient-to-br from-emerald-100 to-teal-100 border border-emerald-200 grid grid-cols-2 gap-1 p-2">
+                        {bundle.items_preview.slice(0, 4).map((item, idx) => (
+                          <div
+                            key={idx}
+                            className="rounded overflow-hidden bg-white/60 aspect-[3/4]"
+                          >
+                            {item.cover_image_url ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={item.cover_image_url}
+                                alt={item.title}
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                              />
+                            ) : null}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Sağ: bilgi */}
+                  <div className="flex-1 flex flex-col">
+                    <div className="flex items-baseline gap-2 mb-2">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100">
+                        📦 {bundle.item_count} KİTAP
+                      </span>
+                    </div>
+                    <h3 className="text-[20px] md:text-[22px] font-bold text-[#1B365D] leading-tight mb-1 group-hover:text-emerald-700 transition-colors">
+                      {bundle.title}
+                    </h3>
+                    {bundle.subtitle && (
+                      <p className="text-[13px] text-gray-600 leading-relaxed line-clamp-2 mb-3">
+                        {bundle.subtitle}
+                      </p>
+                    )}
+
+                    {/* Fiyat */}
+                    <div className="mt-auto pt-3 flex items-end justify-between gap-3 flex-wrap">
+                      <div>
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-[28px] font-extrabold text-emerald-700 leading-none">
+                            {formatTRY(price)}
+                          </span>
+                          {listPrice && listPrice > price && (
+                            <span className="text-[14px] text-gray-400 line-through">
+                              {formatTRY(listPrice)}
+                            </span>
+                          )}
+                        </div>
+                        {listPrice && listPrice > price && (
+                          <div className="text-[11px] text-emerald-600 font-semibold mt-1">
+                            💰 {formatTRY(listPrice - price)} kazanç
+                          </div>
+                        )}
+                      </div>
+                      <span className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-emerald-600 group-hover:bg-emerald-700 text-white font-bold text-[13px] transition-colors">
+                        Paketi İncele →
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       {/* Kitap listesi */}
       <section className="max-w-6xl mx-auto px-6 lg:px-10 py-12">
+        {bundles.length > 0 && ebooks.length > 0 && (
+          <div className="mb-8 pt-6 border-t border-gray-100">
+            <p className="text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase mb-2">
+              Tek Tek Al
+            </p>
+            <h2 className="text-[28px] lg:text-[36px] font-extrabold text-[#1B365D] leading-tight">
+              Kitap Kataloğu
+            </h2>
+            <p className="text-[14px] text-gray-500 mt-2">
+              İhtiyacına uygun tek kitabı seç, PDF olarak anında indir.
+            </p>
+          </div>
+        )}
         {ebooks.length === 0 ? (
           <div className="text-center py-20 bg-gray-50 rounded-3xl">
             <p className="text-[16px] text-gray-500">Kitaplar yakında yayınlanacak.</p>
