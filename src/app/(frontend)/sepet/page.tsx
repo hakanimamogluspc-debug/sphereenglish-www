@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { ShoppingBag, Trash2, Package, ArrowLeft, Tag, Loader2, Check, AlertCircle } from 'lucide-react';
 import { useCart, formatTRY } from '@/lib/cart/cart-context';
+import CartCheckoutModal from './CartCheckoutModal';
 
 export default function SepetPage() {
   const { items, itemCount, subtotal, totalListPrice, savings, removeItem, clearCart } = useCart();
@@ -277,8 +278,8 @@ export default function SepetPage() {
                   </span>
                 </div>
 
-                {/* Checkout MVP — WhatsApp/Mail yönlendirme */}
-                <CheckoutMvp
+                {/* Checkout — Iyzico multi-item */}
+                <CheckoutButton
                   items={items}
                   finalTotal={finalTotal}
                   appliedCouponCode={appliedCoupon?.code ?? null}
@@ -309,8 +310,8 @@ export default function SepetPage() {
   );
 }
 
-// ─── MVP Checkout — Faz 5'e kadar WhatsApp/Mail fallback ────────────────
-function CheckoutMvp({
+// ─── Checkout Button — Iyzico multi-item modal aç ───────────────────────
+function CheckoutButton({
   items,
   finalTotal,
   appliedCouponCode,
@@ -319,87 +320,25 @@ function CheckoutMvp({
   finalTotal: number;
   appliedCouponCode: string | null;
 }) {
-  const [showInfo, setShowInfo] = useState(false);
-
-  function handleClick() {
-    // Meta Pixel — InitiateCheckout
-    if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
-      try {
-        (window as any).fbq('track', 'InitiateCheckout', {
-          content_ids: items.map((i) => `${i.type}-${i.slug}`),
-          content_type: 'product',
-          num_items: items.length,
-          value: finalTotal,
-          currency: 'TRY',
-        });
-      } catch {
-        /* ignore */
-      }
-    }
-    setShowInfo(true);
-  }
-
-  const itemLines = items
-    .map((i, idx) => `${idx + 1}. ${i.title} (${i.type === 'bundle' ? 'Paket' : 'Kitap'})`)
-    .join('\n');
-  const waMessage = encodeURIComponent(
-    `Merhaba, aşağıdaki ürünleri satın almak istiyorum:\n\n${itemLines}\n\nToplam: ${finalTotal.toLocaleString(
-      'tr-TR',
-    )} TL${appliedCouponCode ? `\nKupon: ${appliedCouponCode}` : ''}\n\nBilgi verebilir misiniz?`,
-  );
+  const [open, setOpen] = useState(false);
 
   return (
     <>
       <button
-        onClick={handleClick}
-        className="w-full inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[15px] transition shadow-md"
+        onClick={() => setOpen(true)}
+        disabled={items.length === 0}
+        className="w-full inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold text-[15px] transition shadow-md"
       >
-        Ödeme Yap
+        <ShoppingBag className="w-4 h-4" /> Ödeme Yap · {formatTRY(finalTotal)}
       </button>
 
-      {showInfo && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6">
-            <div className="text-center mb-4">
-              <div className="w-14 h-14 rounded-full bg-emerald-100 mx-auto flex items-center justify-center mb-3">
-                <span className="text-2xl">🛒</span>
-              </div>
-              <h3 className="text-[20px] font-bold text-[#1B365D] mb-2">
-                Sepet Ödeme Sistemi Yakında
-              </h3>
-              <p className="text-[14px] text-gray-600 leading-relaxed">
-                Çoklu ürün ödeme akışımız test aşamasında. Bu siparişi hemen tamamlamak istiyorsan
-                aşağıdaki kanallardan ulaş — sana özel ödeme linki göndereceğiz.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <a
-                href={`https://wa.me/905066085810?text=${waMessage}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-emerald-500 text-white font-semibold hover:bg-emerald-600 transition"
-              >
-                💬 WhatsApp ile Sipariş Ver
-              </a>
-              <a
-                href={`mailto:info@sphereenglish.com?subject=${encodeURIComponent(
-                  'Sepet Siparişi',
-                )}&body=${waMessage}`}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-white border-2 border-gray-200 text-[#1B365D] font-semibold hover:bg-gray-50 transition"
-              >
-                ✉️ E-posta Gönder
-              </a>
-              <button
-                onClick={() => setShowInfo(false)}
-                className="w-full py-2 text-[12px] text-gray-500 hover:text-gray-700"
-              >
-                Kapat
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <CartCheckoutModal
+        open={open}
+        onClose={() => setOpen(false)}
+        items={items}
+        couponCode={appliedCouponCode}
+        finalTotal={finalTotal}
+      />
     </>
   );
 }
