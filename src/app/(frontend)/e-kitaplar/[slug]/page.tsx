@@ -361,7 +361,14 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
                 </div>
               </div>
 
-              <BuyEbookButton slug={ebook.slug} title={ebook.title} price={ebook.price_try} />
+              <BuyEbookButton
+                slug={ebook.slug}
+                title={ebook.title}
+                subtitle={ebook.subtitle}
+                coverImageUrl={ebook.cover_image_url}
+                price={ebook.price_try}
+                listPriceTry={ebook.list_price_try}
+              />
               <p className="text-center text-[11px] text-gray-500 mt-3">
                 🔒 Iyzico 3D Secure · Kart bilgileri bize ulaşmaz
               </p>

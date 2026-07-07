@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import AddToCartButton from '@/components/AddToCartButton';
 
 export const metadata: Metadata = {
   title: 'E-Kitaplar — Sphere English Dijital Kitap Kataloğu | İş İngilizcesi PDF Kitaplar',
@@ -277,8 +278,8 @@ export default async function EKitaplarPage() {
                       </p>
                     )}
 
-                    {/* Fiyat */}
-                    <div className="mt-auto pt-3 flex items-end justify-between gap-3 flex-wrap">
+                    {/* Fiyat + aksiyonlar */}
+                    <div className="mt-auto pt-3 flex flex-col gap-3">
                       <div>
                         <div className="flex items-baseline gap-2">
                           <span className="text-[28px] font-extrabold text-emerald-700 leading-none">
@@ -296,9 +297,21 @@ export default async function EKitaplarPage() {
                           </div>
                         )}
                       </div>
-                      <span className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-emerald-600 group-hover:bg-emerald-700 text-white font-bold text-[13px] transition-colors">
-                        Paketi İncele →
-                      </span>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <AddToCartButton
+                          type="bundle"
+                          slug={bundle.slug}
+                          title={bundle.title}
+                          subtitle={bundle.subtitle}
+                          coverImageUrl={bundle.cover_image_url}
+                          price={price}
+                          listPrice={listPrice}
+                          itemCount={bundle.item_count}
+                        />
+                        <span className="text-[12px] text-emerald-700 font-semibold hover:underline">
+                          Detayı gör →
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </Link>
@@ -377,7 +390,7 @@ export default async function EKitaplarPage() {
                     )}
                   </div>
 
-                  {/* Fiyat + CTA */}
+                  {/* Fiyat */}
                   <div className="mt-auto flex items-end justify-between gap-3 pt-4 border-t border-gray-100">
                     <div>
                       {b.list_price_try && parseFloat(b.list_price_try) > parseFloat(b.price_try) && (
@@ -392,6 +405,20 @@ export default async function EKitaplarPage() {
                     <span className="text-[12px] font-bold text-[#0ea5e9] group-hover:translate-x-1 transition-transform">
                       İncele →
                     </span>
+                  </div>
+
+                  {/* Sepete Ekle */}
+                  <div className="mt-3">
+                    <AddToCartButton
+                      type="ebook"
+                      slug={b.slug}
+                      title={b.title}
+                      subtitle={b.subtitle}
+                      coverImageUrl={b.cover_image_url}
+                      price={parseFloat(b.price_try)}
+                      listPrice={b.list_price_try ? parseFloat(b.list_price_try) : null}
+                      className="w-full"
+                    />
                   </div>
                 </div>
               </Link>

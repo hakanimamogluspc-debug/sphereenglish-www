@@ -2,11 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { trackAddToCart, trackInitiateCheckout, trackMetaEvent } from '@/lib/analytics/meta-pixel';
+import AddToCartButton from '@/components/AddToCartButton';
 
 interface Props {
   slug: string;
   title: string;
+  subtitle?: string | null;
+  coverImageUrl?: string | null;
   price: string;
+  listPriceTry?: string | null;
 }
 
 interface CheckoutResponse {
@@ -62,7 +66,7 @@ function formatTRY(amount: number | string) {
   }).format(n);
 }
 
-export default function BuyEbookButton({ slug, title, price }: Props) {
+export default function BuyEbookButton({ slug, title, subtitle, coverImageUrl, price, listPriceTry }: Props) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [form, setForm] = useState<FormData>(INITIAL_FORM);
@@ -258,21 +262,36 @@ export default function BuyEbookButton({ slug, title, price }: Props) {
 
   return (
     <>
-      <button
-        onClick={() => {
-          setOpen(true);
-          // Meta Pixel — "Satın Al" tıklandı = AddToCart
-          trackAddToCart({
-            productId: `ebook-${slug}`,
-            productName: title,
-            priceTry: Number(price ?? 0),
-            type: 'ebook',
-          });
-        }}
-        className="w-full py-3.5 rounded-xl font-bold text-[14px] text-white bg-[#0ea5e9] hover:bg-[#0284c7] transition-colors"
-      >
-        Satın Al &amp; Hemen İndir — {formatTRY(price)}
-      </button>
+      <div className="space-y-2">
+        {/* Sepete Ekle — birden fazla kitap alacaklar için */}
+        <AddToCartButton
+          type="ebook"
+          slug={slug}
+          title={title}
+          subtitle={subtitle}
+          coverImageUrl={coverImageUrl}
+          price={Number(price ?? 0)}
+          listPrice={listPriceTry ? Number(listPriceTry) : null}
+          variant="full"
+          className="w-full"
+        />
+
+        {/* Ya da doğrudan tekil ödeme (mevcut modal akışı) */}
+        <button
+          onClick={() => {
+            setOpen(true);
+            trackAddToCart({
+              productId: `ebook-${slug}`,
+              productName: title,
+              priceTry: Number(price ?? 0),
+              type: 'ebook',
+            });
+          }}
+          className="w-full py-3 rounded-xl font-bold text-[13px] text-[#0ea5e9] border-2 border-[#0ea5e9] hover:bg-[#0ea5e9]/5 transition-colors"
+        >
+          Ya da Hemen Satın Al — {formatTRY(price)}
+        </button>
+      </div>
 
       {/* Form modal */}
       {open && !checkoutHtml && (
