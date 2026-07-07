@@ -73,31 +73,33 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
           : 'bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between" style={{ height: '100px' }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between gap-4" style={{ height: '80px' }}>
         {/* Logo */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 flex-shrink-0">
           <Link href="/">
             <Image
               src="/assets/images/Ad_5_-1774053772671.png"
               alt="Sphere English Logo"
-              width={420}
-              height={105}
+              width={240}
+              height={60}
               className="hidden md:block object-contain"
-              style={{ maxHeight: '132px', width: 'auto' }}
+              style={{ maxHeight: '56px', width: 'auto' }}
+              priority
             />
             <Image
               src="/assets/images/Ad_5_-1774053772671.png"
               alt="Sphere English"
-              width={120}
-              height={120}
+              width={140}
+              height={44}
               className="md:hidden object-contain"
-              style={{ maxHeight: '96px', width: 'auto' }}
+              style={{ maxHeight: '44px', width: 'auto' }}
+              priority
             />
           </Link>
         </div>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-7 text-[11px] font-bold tracking-[0.18em]" style={{ color: '#1B365D' }}>
+        <nav className="hidden md:flex items-center gap-4 lg:gap-5 xl:gap-6 text-[11px] font-bold tracking-[0.14em] whitespace-nowrap" style={{ color: '#1B365D' }}>
           <Link href="/ai-studio" className="px-4 py-2 rounded-full text-[11px] font-bold tracking-[0.18em] transition-all hover:opacity-90" style={{ color: '#0ea5e9', background: '#0ea5e912' }}>AI STUDIO</Link>
 
           {/* Çözümler Dropdown */}
