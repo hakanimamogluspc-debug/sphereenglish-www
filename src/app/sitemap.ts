@@ -57,8 +57,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/blog`, lastModified: today, changeFrequency: 'daily', priority: 0.9 },
     { url: `${BASE_URL}/iletisim`, lastModified: today, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE_URL}/ai-studio`, lastModified: today, changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE_URL}/fiyatlandirma`, lastModified: today, changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${BASE_URL}/abonelik`, lastModified: today, changeFrequency: 'weekly', priority: 0.7 },
+    // Fiyatlandırma + abonelik: satış açılınca sitemap'e eklenecek
+    ...(process.env.NEXT_PUBLIC_SHOW_PRICING === 'true'
+      ? [
+          { url: `${BASE_URL}/fiyatlandirma`, lastModified: today, changeFrequency: 'weekly' as const, priority: 0.9 },
+          { url: `${BASE_URL}/abonelik`, lastModified: today, changeFrequency: 'weekly' as const, priority: 0.7 },
+        ]
+      : []),
     { url: `${BASE_URL}/egitmen-ol`, lastModified: today, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/e-kitaplar`, lastModified: today, changeFrequency: 'weekly', priority: 0.85 },
     // Hukuki / Iyzico onay sayfaları

@@ -443,12 +443,14 @@ export default async function EKitaplarPage() {
               geliştirin.
             </p>
             <div className="flex flex-wrap gap-3">
-              <Link
-                href="/fiyatlandirma"
-                className="inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-[13px] text-[#1B365D] bg-white hover:bg-gray-100 transition-colors"
-              >
-                Sphere Abonelik Planları
-              </Link>
+              {process.env.NEXT_PUBLIC_SHOW_PRICING === 'true' && (
+                <Link
+                  href="/fiyatlandirma"
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-[13px] text-[#1B365D] bg-white hover:bg-gray-100 transition-colors"
+                >
+                  Sphere Abonelik Planları
+                </Link>
+              )}
               <Link
                 href="/iletisim"
                 className="inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-[13px] text-white border border-white/30 hover:bg-white/10 transition-colors"

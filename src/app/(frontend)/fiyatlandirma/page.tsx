@@ -1,23 +1,36 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import FiyatlandirmaClient from './FiyatlandirmaClient';
 
-export const metadata: Metadata = {
-  title: 'Fiyatlandırma | Sphere English — Kurumsal İş İngilizcesi Eğitim Platformu',
-  description:
-    'Sphere English bireysel ve kurumsal İngilizce eğitim paketleri. Şeffaf fiyatlandırma, aylık ve peşin paket seçenekleri, kurumsal teklif imkanı.',
-  alternates: { canonical: 'https://www.sphereenglish.com/fiyatlandirma' },
-  robots: { index: true, follow: true },
-  openGraph: {
-    title: 'Fiyatlandırma — Sphere English',
-    description: 'Şeffaf fiyatlandırma, esnek planlar, kurumsal indirimler.',
-    url: 'https://www.sphereenglish.com/fiyatlandirma',
-    type: 'website',
-  },
-};
+// Feature flag: fiyatlandırma/abonelik paketleri henüz satışa açık değil.
+// Açmak için: NEXT_PUBLIC_SHOW_PRICING=true env variable ekle (Easypanel).
+const SHOW_PRICING = process.env.NEXT_PUBLIC_SHOW_PRICING === 'true';
+
+export const metadata: Metadata = SHOW_PRICING
+  ? {
+      title: 'Fiyatlandırma | Sphere English — Kurumsal İş İngilizcesi Eğitim Platformu',
+      description:
+        'Sphere English bireysel ve kurumsal İngilizce eğitim paketleri. Şeffaf fiyatlandırma, aylık ve peşin paket seçenekleri, kurumsal teklif imkanı.',
+      alternates: { canonical: 'https://www.sphereenglish.com/fiyatlandirma' },
+      robots: { index: true, follow: true },
+      openGraph: {
+        title: 'Fiyatlandırma — Sphere English',
+        description: 'Şeffaf fiyatlandırma, esnek planlar, kurumsal indirimler.',
+        url: 'https://www.sphereenglish.com/fiyatlandirma',
+        type: 'website',
+      },
+    }
+  : {
+      title: 'Sayfa bulunamadı | Sphere English',
+      robots: { index: false, follow: false },
+    };
 
 export default function FiyatlandirmaPage() {
+  // Feature flag kapalıysa 404 dön
+  if (!SHOW_PRICING) notFound();
+
   return (
     <main className="bg-white min-h-screen">
       <Header />

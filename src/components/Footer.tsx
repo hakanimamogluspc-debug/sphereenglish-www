@@ -62,7 +62,9 @@ export default function Footer() {
               <Link href="/hakkimizda" className="text-[14px] text-white/70 hover:text-white transition-colors">Hakkımızda</Link>
               <Link href="/nasil-calisir" className="text-[14px] text-white/70 hover:text-white transition-colors">Nasıl Çalışır</Link>
               <Link href="/cozumler" className="text-[14px] text-white/70 hover:text-white transition-colors">Çözümler</Link>
-              <Link href="/fiyatlandirma" className="text-[14px] text-white/70 hover:text-white transition-colors">Fiyatlandırma</Link>
+              {process.env.NEXT_PUBLIC_SHOW_PRICING === 'true' && (
+                <Link href="/fiyatlandirma" className="text-[14px] text-white/70 hover:text-white transition-colors">Fiyatlandırma</Link>
+              )}
               <Link href="/e-kitaplar" className="text-[14px] text-white/70 hover:text-white transition-colors">E-Kitaplar</Link>
               <Link href="/abonelik" className="text-[14px] text-white/70 hover:text-white transition-colors">Abonelik</Link>
               <Link href="/egitmen-ol" className="text-[14px] text-white/70 hover:text-white transition-colors">Eğitmen Ol</Link>
