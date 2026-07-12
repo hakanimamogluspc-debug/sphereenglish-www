@@ -73,26 +73,26 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
           : 'bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between gap-4" style={{ height: '80px' }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between gap-4" style={{ height: '92px' }}>
         {/* Logo */}
         <div className="flex items-center gap-2.5 flex-shrink-0">
           <Link href="/">
             <Image
               src="/assets/images/Ad_5_-1774053772671.png"
               alt="Sphere English Logo"
-              width={240}
-              height={60}
+              width={320}
+              height={80}
               className="hidden md:block object-contain"
-              style={{ maxHeight: '56px', width: 'auto' }}
+              style={{ maxHeight: '76px', width: 'auto' }}
               priority
             />
             <Image
               src="/assets/images/Ad_5_-1774053772671.png"
               alt="Sphere English"
-              width={140}
-              height={44}
+              width={180}
+              height={56}
               className="md:hidden object-contain"
-              style={{ maxHeight: '44px', width: 'auto' }}
+              style={{ maxHeight: '56px', width: 'auto' }}
               priority
             />
           </Link>

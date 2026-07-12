@@ -68,7 +68,7 @@ export default function SepetPage() {
     <main className="bg-white min-h-screen">
       <Header />
 
-      <div className="max-w-5xl mx-auto px-6 lg:px-10 pt-24 lg:pt-28 pb-16">
+      <div className="max-w-5xl mx-auto px-6 lg:px-10 pt-28 lg:pt-32 pb-16">
         {/* Breadcrumb */}
         <Link
           href="/e-kitaplar"
