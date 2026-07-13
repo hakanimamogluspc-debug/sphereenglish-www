@@ -224,15 +224,24 @@ export default function BuyEbookButton({ slug, title, subtitle, coverImageUrl, p
         setBusy(false);
         return;
       }
-      setCheckoutHtml((data as CheckoutResponse).checkoutFormContent);
-      // Meta Pixel — Iyzico modal başarıyla açıldı = AddPaymentInfo
-      // (kullanıcı ödeme bilgilerini girmeye hazır)
+      // Meta Pixel — AddPaymentInfo
       trackMetaEvent('AddPaymentInfo', {
         content_ids: [`ebook-${slug}`],
         content_category: 'ebook',
         value: Number(price ?? 0) - Number(couponDiscount ?? 0),
         currency: 'TRY',
       });
+
+      // Mobilde tam sayfa Iyzico hosted checkout (responsive garanti).
+      // Desktop'ta inline modal.
+      const paymentPageUrl = (data as any).paymentPageUrl as string | undefined;
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+      if (isMobile && paymentPageUrl) {
+        window.location.href = paymentPageUrl;
+        return;
+      }
+
+      setCheckoutHtml((data as CheckoutResponse).checkoutFormContent);
     } catch (err: any) {
       setError(err?.message || 'Beklenmedik hata');
     } finally {

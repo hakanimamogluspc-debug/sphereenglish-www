@@ -228,9 +228,7 @@ export default function CartCheckoutModal({
         setBusy(false);
         return;
       }
-      setCheckoutHtml(data.checkoutFormContent);
-
-      // Meta Pixel — AddPaymentInfo
+      // Meta Pixel — AddPaymentInfo (redirect öncesi)
       trackMetaEvent('AddPaymentInfo', {
         content_ids: items.map((i) => `${i.type}-${i.slug}`),
         content_category: 'ebook',
@@ -238,6 +236,16 @@ export default function CartCheckoutModal({
         value: finalTotal,
         currency: 'TRY',
       });
+
+      // Mobilde tam sayfa Iyzico hosted checkout (responsive garanti).
+      // Desktop'ta inline modal (mevcut deneyim korunur).
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+      if (isMobile && data.paymentPageUrl) {
+        window.location.href = data.paymentPageUrl;
+        return;
+      }
+
+      setCheckoutHtml(data.checkoutFormContent);
     } catch (err: any) {
       setError(err?.message || 'Beklenmedik hata');
     } finally {
