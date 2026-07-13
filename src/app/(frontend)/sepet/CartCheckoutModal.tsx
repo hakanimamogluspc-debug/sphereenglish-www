@@ -270,10 +270,10 @@ export default function CartCheckoutModal({
   if (checkoutHtml) {
     return (
       <div
-        className="fixed inset-0 z-50 flex items-stretch sm:items-center justify-center sm:p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4"
         style={{ background: 'rgba(0,0,0,0.7)' }}
       >
-        <div className="relative bg-white shadow-2xl w-full sm:max-w-md h-full sm:h-auto sm:max-h-[92vh] sm:rounded-2xl overflow-y-auto overflow-x-hidden">
+        <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[95vh] overflow-y-auto overflow-x-hidden">
           <button
             onClick={closeCheckout}
             className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 hover:text-gray-900 shadow-sm"
