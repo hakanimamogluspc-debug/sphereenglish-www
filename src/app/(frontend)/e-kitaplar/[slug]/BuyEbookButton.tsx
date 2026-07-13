@@ -650,20 +650,21 @@ export default function BuyEbookButton({ slug, title, subtitle, coverImageUrl, p
         </div>
       )}
 
-      {/* Iyzico checkout modal */}
+      {/* Iyzico checkout modal — mobile tam ekran, desktop merkezli */}
       {checkoutHtml && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-stretch sm:items-center justify-center sm:p-4"
           style={{ background: 'rgba(0,0,0,0.7)' }}
         >
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[92vh] overflow-y-auto">
+          <div className="relative bg-white shadow-2xl w-full sm:max-w-md h-full sm:h-auto sm:max-h-[92vh] sm:rounded-2xl overflow-y-auto overflow-x-hidden">
             <button
               onClick={closeCheckout}
-              className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 hover:text-gray-900"
+              className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 hover:text-gray-900 shadow-sm"
+              aria-label="Kapat"
             >
               ✕
             </button>
-            <div id="iyzipay-ebook-checkout-form" className="p-4" />
+            <div id="iyzipay-ebook-checkout-form" className="p-3 sm:p-4" />
           </div>
         </div>
       )}
