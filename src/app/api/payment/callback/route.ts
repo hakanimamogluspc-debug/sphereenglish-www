@@ -7,6 +7,7 @@ import {
   paymentBaseUrl,
 } from "@/lib/iyzico";
 import { getPlan } from "@/lib/plans";
+import { sendCapiSubscribe, userDataFromRequest } from "@/lib/analytics/meta-capi";
 
 /**
  * Iyzico callback handler.
@@ -146,11 +147,34 @@ async function handle(req: NextRequest) {
 
     // Meta Pixel Purchase event için value/product params
     const priceTry = Number(result.paidPrice ?? plan.amount ?? 0);
+    const eventId = `subscribe_${conversationId}`;
+
+    // CAPI Subscribe — server-side (fire-and-forget)
+    sendCapiSubscribe({
+      orderId: conversationId,
+      planCode: `subscription-${planCode}`,
+      value: priceTry,
+      predictedLtv: priceTry * 12, // 12 aylık tahmini LTV
+      eventSourceUrl: `${paymentBaseUrl()}/odeme/basarili`,
+      userData: {
+        ...userDataFromRequest(req),
+        email: buyerEmailFromIyzico ?? undefined,
+        firstName: result?.buyer?.name,
+        lastName: result?.buyer?.surname,
+        phone: result?.buyer?.gsmNumber,
+        city: result?.buyer?.city,
+        country: 'TR',
+      },
+    }).then((r) => {
+      if (!r.ok) console.warn('[capi] subscription send hata:', r.error);
+    });
+
     const purchaseUrl =
       `${paymentBaseUrl()}/odeme/basarili?conv=${conversationId}` +
       `&value=${priceTry}` +
       `&productId=${encodeURIComponent('subscription-' + planCode)}` +
-      `&productName=${encodeURIComponent(plan.label ?? plan.code ?? 'Pro Abonelik')}`;
+      `&productName=${encodeURIComponent(plan.label ?? plan.code ?? 'Pro Abonelik')}` +
+      `&eventId=${encodeURIComponent(eventId)}`;
 
     return NextResponse.redirect(purchaseUrl, { status: 303 });
   } catch (e: any) {

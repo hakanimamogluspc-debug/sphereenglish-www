@@ -6,6 +6,7 @@ import {
   paymentBaseUrl,
   signInternalPayload,
 } from '@/lib/iyzico';
+import { sendCapiPurchase, userDataFromRequest } from '@/lib/analytics/meta-capi';
 
 /**
  * Iyzico'dan sepet (multi-item) ödemesi sonrası dönüş.
@@ -152,9 +153,38 @@ async function handle(req: NextRequest) {
 
     // Meta Pixel Purchase event için toplam tutar
     const priceTry = Number(result.paidPrice ?? 0);
+    const eventId = `purchase_cart_${orderId}`;
+
+    // Cart item ID'lerini basketItems'ten türet
+    const contentIds: string[] = Array.isArray(result?.itemTransactions)
+      ? result.itemTransactions.map((it: any) => String(it?.itemId ?? '')).filter(Boolean)
+      : [];
+
+    // CAPI Purchase — server-side (fire-and-forget)
+    sendCapiPurchase({
+      orderId: `cart_${orderId}`,
+      value: priceTry,
+      currency: result.currency ?? 'TRY',
+      contentIds,
+      contentName: `Sepet (${contentIds.length} kitap)`,
+      eventSourceUrl: `${paymentBaseUrl()}/odeme/basarili?type=cart`,
+      userData: {
+        ...userDataFromRequest(req),
+        email: result?.buyer?.email,
+        firstName: result?.buyer?.name,
+        lastName: result?.buyer?.surname,
+        phone: result?.buyer?.gsmNumber,
+        city: result?.buyer?.city,
+        country: 'TR',
+      },
+    }).then((r) => {
+      if (!r.ok) console.warn('[capi] cart Purchase send hata:', r.error);
+    });
+
     const purchaseUrl =
       `${paymentBaseUrl()}/odeme/basarili?type=cart&orderId=${encodeURIComponent(orderId)}` +
-      `&value=${priceTry}`;
+      `&value=${priceTry}` +
+      `&eventId=${encodeURIComponent(eventId)}`;
 
     return NextResponse.redirect(purchaseUrl, { status: 303 });
   } catch (e: any) {

@@ -16,6 +16,8 @@ export default function PurchaseTracker(props: {
   productName: string;
   priceTry: number;
   orderId?: string;
+  /** CAPI deduplication ID — callback URL'inden gelir */
+  eventId?: string;
 }) {
   const firedRef = useRef(false);
 
@@ -34,19 +36,24 @@ export default function PurchaseTracker(props: {
       priceTry: props.priceTry,
       type: props.type,
       orderId: props.orderId,
+      eventId: props.eventId,
     });
 
     // Subscription satın alma ise Subscribe event de tetikle (LTV tracking)
     if (props.type === 'subscription') {
-      trackMetaEvent('Subscribe', {
-        value: props.priceTry,
-        currency: 'TRY',
-        content_name: props.productName,
-        content_ids: [props.productId],
-        predicted_ltv: props.priceTry * 12, // Yıllık tahmini LTV
-      });
+      trackMetaEvent(
+        'Subscribe',
+        {
+          value: props.priceTry,
+          currency: 'TRY',
+          content_name: props.productName,
+          content_ids: [props.productId],
+          predicted_ltv: props.priceTry * 12, // Yıllık tahmini LTV
+        },
+        props.eventId, // aynı deduplication ID — CAPI server-side ile eşleşir
+      );
     }
-  }, [props.productId, props.priceTry, props.type, props.productName, props.orderId]);
+  }, [props.productId, props.priceTry, props.type, props.productName, props.orderId, props.eventId]);
 
   return null;
 }

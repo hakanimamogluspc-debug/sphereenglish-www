@@ -43,16 +43,23 @@ export type MetaStandardEvent =
 /**
  * Meta Pixel standart event tetikle.
  * Client-side (browser) çağrılmalı. SSR'de sessizce hiçbir şey yapmaz.
+ *
+ * @param eventID — CAPI deduplication için. Aynı event backend'den CAPI
+ *   ile de gönderilecekse, iki tarafın aynı eventID'yi kullanması Meta'nın
+ *   çift saymasını engeller.
  */
 export function trackMetaEvent(
   event: MetaStandardEvent,
   params?: Record<string, unknown>,
+  eventID?: string,
 ): void {
   if (typeof window === 'undefined') return;
   const fbq = window.fbq;
   if (typeof fbq !== 'function') return;
   try {
-    if (params) {
+    if (eventID) {
+      fbq('track', event, params ?? {}, { eventID });
+    } else if (params) {
       fbq('track', event, params);
     } else {
       fbq('track', event);
@@ -131,23 +138,30 @@ export function trackInitiateCheckout(opts: {
   });
 }
 
-/** Ödeme tamamlandı — EN KRİTİK EVENT */
+/** Ödeme tamamlandı — EN KRİTİK EVENT
+ * @param opts.eventId — CAPI deduplication için (callback URL'de gelir)
+ */
 export function trackPurchase(opts: {
   productId: string;
   productName: string;
   priceTry: number;
   type: 'ebook' | 'subscription';
   orderId?: string;
+  eventId?: string;
 }) {
-  trackMetaEvent('Purchase', {
-    content_ids: [opts.productId],
-    content_type: 'product',
-    content_name: opts.productName,
-    content_category: opts.type,
-    value: opts.priceTry,
-    currency: 'TRY',
-    order_id: opts.orderId,
-  });
+  trackMetaEvent(
+    'Purchase',
+    {
+      content_ids: [opts.productId],
+      content_type: 'product',
+      content_name: opts.productName,
+      content_category: opts.type,
+      value: opts.priceTry,
+      currency: 'TRY',
+      order_id: opts.orderId,
+    },
+    opts.eventId,
+  );
 }
 
 /** İletişim formu / lead ads dolduruldu */

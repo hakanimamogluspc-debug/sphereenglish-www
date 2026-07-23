@@ -7,6 +7,7 @@ import {
   paymentBaseUrl,
   signInternalPayload,
 } from "@/lib/iyzico";
+import { sendCapiPurchase, userDataFromRequest } from "@/lib/analytics/meta-capi";
 
 /**
  * Iyzico'dan e-kitap ödemesi sonrası dönüş.
@@ -217,10 +218,37 @@ async function handle(req: NextRequest) {
 
     // Meta Pixel Purchase event için value/product params
     const priceTry = Number(result.paidPrice ?? 0);
+    const productId = `ebook-${ebookId}`;
+    // Deduplication için deterministik event ID — hem client Pixel hem CAPI aynısını kullanır
+    const eventId = `purchase_${conversationId || result?.paymentId || crypto.randomUUID()}`;
+
+    // CAPI Purchase — server-side event (ATT kaybını telafi eder)
+    // Fire-and-forget — CAPI hatası ödeme başarısını etkilemez
+    sendCapiPurchase({
+      orderId: eventId.replace(/^purchase_/, ""),
+      value: priceTry,
+      currency: result.currency ?? "TRY",
+      contentIds: [productId],
+      contentName: `E-Kitap #${ebookId}`,
+      eventSourceUrl: `${paymentBaseUrl()}/odeme/basarili?type=ebook`,
+      userData: {
+        ...userDataFromRequest(req),
+        email: buyerEmail,
+        firstName: result?.buyer?.name,
+        lastName: result?.buyer?.surname,
+        phone: result?.buyer?.gsmNumber,
+        city: result?.buyer?.city,
+        country: "TR",
+      },
+    }).then((r) => {
+      if (!r.ok) console.warn("[capi] ebook Purchase send hata:", r.error);
+    });
+
     const purchaseUrl =
       `${paymentBaseUrl()}/odeme/basarili?type=ebook&token=${downloadToken}` +
       `&value=${priceTry}` +
-      `&productId=${encodeURIComponent('ebook-' + ebookId)}`;
+      `&productId=${encodeURIComponent(productId)}` +
+      `&eventId=${encodeURIComponent(eventId)}`;
 
     return NextResponse.redirect(purchaseUrl, { status: 303 });
   } catch (e: any) {
