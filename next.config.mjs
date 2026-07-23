@@ -62,13 +62,14 @@ const nextConfig = {
             value: [
               "default-src 'self'",
               // Iyzico checkout script (cdn, www, cpp, static, merchant tüm subdomain'ler) + GA + Iyzico'nun yan servisleri (Hotjar)
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.iyzipay.com https://*.hotjar.com https://static.hotjar.com",
-              "script-src-elem 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.iyzipay.com https://*.hotjar.com https://static.hotjar.com",
+              // Meta Pixel (fbevents.js) + GTM + GA + Iyzico + Hotjar
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.iyzipay.com https://*.hotjar.com https://static.hotjar.com https://connect.facebook.net",
+              "script-src-elem 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.iyzipay.com https://*.hotjar.com https://static.hotjar.com https://connect.facebook.net",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.iyzipay.com https://*.hotjar.com",
               "img-src 'self' data: https:",
               "font-src 'self' data: https://fonts.gstatic.com https://*.iyzipay.com https://*.hotjar.com",
-              // Iyzico ile XHR/WebSocket (Iyzico, GA, Hotjar, Sentry — Iyzico bunları kullanıyor)
-              "connect-src 'self' https://app.sphereenglish.com https://www.google.com https://analytics.google.com https://www.google-analytics.com https://region1.google-analytics.com https://*.google-analytics.com https://www.iyzipay.com https://*.iyzipay.com https://*.hotjar.com wss://*.hotjar.com https://*.ingest.sentry.io https://*.sentry.io",
+              // Meta Pixel event gönderimi (www.facebook.com/tr) + Iyzico + Google/Hotjar/Sentry
+              "connect-src 'self' https://app.sphereenglish.com https://www.google.com https://analytics.google.com https://www.google-analytics.com https://region1.google-analytics.com https://*.google-analytics.com https://www.iyzipay.com https://*.iyzipay.com https://*.hotjar.com wss://*.hotjar.com https://*.ingest.sentry.io https://*.sentry.io https://www.facebook.com https://connect.facebook.net",
               // Iyzico 3D Secure iframe + BKM ve banka 3DS gateway'leri için izin
               "frame-src 'self' https:",
               "child-src 'self' https:",
