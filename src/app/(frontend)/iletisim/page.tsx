@@ -7,6 +7,7 @@ import { trackLead } from '@/lib/analytics/meta-pixel';
 interface FormData {
   name: string;
   email: string;
+  phone: string;
   company: string;
   sector: string;
   teamSize: string;
@@ -17,6 +18,7 @@ export default function IletisimPage() {
   const [form, setForm] = useState<FormData>({
     name: '',
     email: '',
+    phone: '',
     company: '',
     sector: '',
     teamSize: '',
@@ -45,7 +47,7 @@ export default function IletisimPage() {
       setSuccess(true);
       // Meta Pixel — Lead event (kurumsal teklif talebi)
       trackLead({ source: 'iletisim_form', value: 0 });
-      setForm({ name: '', email: '', company: '', sector: '', teamSize: '', message: '' });
+      setForm({ name: '', email: '', phone: '', company: '', sector: '', teamSize: '', message: '' });
     } catch (err: any) {
       setError(err.message || 'Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
@@ -232,20 +234,37 @@ export default function IletisimPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-[11px] font-bold tracking-[0.14em] uppercase mb-1.5" style={{ color: '#1B365D' }}>
-                      Şirket Adı <span style={{ color: '#0ea5e9' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="company"
-                      value={form.company}
-                      onChange={handleChange}
-                      required
-                      placeholder="Şirketinizin adı"
-                      className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all duration-200 focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0ea5e9]/10"
-                      style={{ borderColor: '#e8f0fe', color: '#1B365D', background: '#f8fafc' }}
-                    />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] font-bold tracking-[0.14em] uppercase mb-1.5" style={{ color: '#1B365D' }}>
+                        Telefon
+                      </label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={form.phone}
+                        onChange={handleChange}
+                        placeholder="+90 5XX XXX XX XX"
+                        pattern="^[+0-9\s\-\(\)]{7,20}$"
+                        className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all duration-200 focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0ea5e9]/10"
+                        style={{ borderColor: '#e8f0fe', color: '#1B365D', background: '#f8fafc' }}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold tracking-[0.14em] uppercase mb-1.5" style={{ color: '#1B365D' }}>
+                        Şirket Adı <span style={{ color: '#0ea5e9' }}>*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="company"
+                        value={form.company}
+                        onChange={handleChange}
+                        required
+                        placeholder="Şirketinizin adı"
+                        className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all duration-200 focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0ea5e9]/10"
+                        style={{ borderColor: '#e8f0fe', color: '#1B365D', background: '#f8fafc' }}
+                      />
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

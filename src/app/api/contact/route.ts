@@ -16,7 +16,7 @@ const SPHERE_API_URL = 'https://app.sphereenglish.com/api/marketing/contact';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, email, company, sector, teamSize, message } = body;
+    const { name, email, phone, company, sector, teamSize, message } = body;
 
     if (!name || !email || !company) {
       return NextResponse.json({ error: 'Zorunlu alanlar eksik.' }, { status: 400 });
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({
           name,
           email,
-          phone: '',
+          phone: String(phone || '').trim(),
           company,
           message: `Sektör: ${sector || '—'} | Çalışan: ${teamSize || '—'} | Mesaj: ${message || '—'}`,
           source: 'website-iletisim',
@@ -72,6 +72,7 @@ export async function POST(req: NextRequest) {
       userData: {
         ...userDataFromRequest(req),
         email,
+        phone: phone || undefined,
         firstName,
         lastName,
         country: 'TR',
