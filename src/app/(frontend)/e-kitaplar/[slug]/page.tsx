@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import EbookGallery from './EbookGallery';
 import BuyEbookButton from './BuyEbookButton';
 import EbookViewTracker from '@/components/EbookViewTracker';
+import DiscountCountdown from '@/components/DiscountCountdown';
 
 // Cache'i tamamen kapat — admin değişikliği anında yansısın
 export const dynamic = 'force-dynamic';
@@ -38,6 +39,8 @@ interface Ebook {
   tags: string[] | null;
   price_try: string;
   list_price_try: string | null;
+  discount_ends_at: string | null;
+  downloads_display_count: number | null;
   currency: string;
   is_featured: boolean;
   published_at: string;
@@ -324,7 +327,13 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold text-emerald-700 bg-emerald-50">
                 ⚡ Anında indirme · PDF
               </span>
+              {ebook.discount_ends_at && <DiscountCountdown endsAt={ebook.discount_ends_at} />}
             </div>
+            {ebook.downloads_display_count && ebook.downloads_display_count > 0 && (
+              <p className="text-[13px] text-gray-500 mb-4">
+                <span className="font-bold text-[#1B365D]">{ebook.downloads_display_count.toLocaleString("tr-TR")}+ profesyonel</span> bu kitabı indirdi
+              </p>
+            )}
 
             {/* Etiketler */}
             {ebook.tags && ebook.tags.length > 0 && (

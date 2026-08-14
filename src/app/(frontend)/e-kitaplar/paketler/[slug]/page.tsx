@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import DiscountCountdown from '@/components/DiscountCountdown';
 import BuyBundleButton from './BuyBundleButton';
 
 export const dynamic = 'force-dynamic';
@@ -34,6 +35,7 @@ interface Bundle {
   price_try: string;
   list_price_try: string | null;
   currency: string;
+  discount_ends_at: string | null;
   is_featured: boolean;
   tags: string[] | null;
   seo_title: string | null;
@@ -174,11 +176,14 @@ export default async function BundleDetailPage({ params }: { params: { slug: str
 
               {/* Fiyat kutusu */}
               <div className="mt-6 p-5 rounded-2xl bg-gradient-to-br from-emerald-50 to-white border-2 border-emerald-200">
-                {savingsPercent > 0 && (
-                  <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-bold text-white bg-emerald-500 mb-3">
-                    %{savingsPercent} İNDİRİM
-                  </div>
-                )}
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  {savingsPercent > 0 && (
+                    <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-bold text-white bg-emerald-500">
+                      %{savingsPercent} İNDİRİM
+                    </div>
+                  )}
+                  {bundle.discount_ends_at && <DiscountCountdown endsAt={bundle.discount_ends_at} />}
+                </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-[36px] font-extrabold text-emerald-700 leading-none">
                     {formatTRY(price)}

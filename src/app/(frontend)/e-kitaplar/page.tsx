@@ -55,6 +55,9 @@ interface Ebook {
   tags: string[] | null;
   price_try: string;
   list_price_try: string | null;
+  discount_ends_at: string | null;
+  downloads_display_count: number | null;
+  preview_pdf_url: string | null;
   is_featured: boolean;
   published_at: string;
 }
@@ -183,6 +186,9 @@ export default async function EKitaplarPage() {
               Iyzico 3D Secure
             </span>
           </div>
+          <p className="mt-3 text-[13px] text-gray-500 font-medium">
+            <span className="text-[#1B365D] font-bold">500+ profesyonel</span> serimizi indirdi
+          </p>
         </div>
       </section>
 
@@ -420,6 +426,28 @@ export default async function EKitaplarPage() {
                       className="w-full"
                     />
                   </div>
+
+                  {/* Ücretsiz önizleme linki */}
+                  {b.preview_pdf_url && (
+                    <div className="mt-2.5 text-center">
+                      <a
+                        href={b.preview_pdf_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1 text-[12px] font-medium text-gray-600 hover:text-[#0ea5e9] hover:underline transition-colors"
+                      >
+                        📖 Ücretsiz önizle (5 sayfa)
+                      </a>
+                    </div>
+                  )}
+
+                  {/* Downloads sayacı (varsa) */}
+                  {b.downloads_display_count && b.downloads_display_count > 0 && (
+                    <p className="mt-1.5 text-center text-[11px] text-gray-400">
+                      {b.downloads_display_count.toLocaleString("tr-TR")}+ kişi indirdi
+                    </p>
+                  )}
                 </div>
               </Link>
             ))}
