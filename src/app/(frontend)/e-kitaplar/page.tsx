@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import PreviewLinkButton from '@/components/PreviewLinkButton';
 import Footer from '@/components/Footer';
 import AddToCartButton from '@/components/AddToCartButton';
 
@@ -427,21 +428,10 @@ export default async function EKitaplarPage() {
                     />
                   </div>
 
-                  {/* Ücretsiz önizleme linki — <a> Link içinde nested olmasın diye span+onClick */}
+                  {/* Ücretsiz önizleme linki — client component (server'da onClick olamaz) */}
                   {b.preview_pdf_url && (
                     <div className="mt-2.5 text-center">
-                      <span
-                        role="button"
-                        tabIndex={0}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          window.open(b.preview_pdf_url!, "_blank", "noreferrer");
-                        }}
-                        className="inline-flex items-center gap-1 text-[12px] font-medium text-gray-600 hover:text-[#0ea5e9] hover:underline transition-colors cursor-pointer"
-                      >
-                        📖 Ücretsiz önizle (5 sayfa)
-                      </span>
+                      <PreviewLinkButton url={b.preview_pdf_url} />
                     </div>
                   )}
 
