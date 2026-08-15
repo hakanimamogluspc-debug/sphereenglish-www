@@ -427,18 +427,21 @@ export default async function EKitaplarPage() {
                     />
                   </div>
 
-                  {/* Ücretsiz önizleme linki */}
+                  {/* Ücretsiz önizleme linki — <a> Link içinde nested olmasın diye span+onClick */}
                   {b.preview_pdf_url && (
                     <div className="mt-2.5 text-center">
-                      <a
-                        href={b.preview_pdf_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="inline-flex items-center gap-1 text-[12px] font-medium text-gray-600 hover:text-[#0ea5e9] hover:underline transition-colors"
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          window.open(b.preview_pdf_url!, "_blank", "noreferrer");
+                        }}
+                        className="inline-flex items-center gap-1 text-[12px] font-medium text-gray-600 hover:text-[#0ea5e9] hover:underline transition-colors cursor-pointer"
                       >
                         📖 Ücretsiz önizle (5 sayfa)
-                      </a>
+                      </span>
                     </div>
                   )}
 
