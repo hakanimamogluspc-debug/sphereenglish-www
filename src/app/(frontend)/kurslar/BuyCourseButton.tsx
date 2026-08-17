@@ -80,7 +80,7 @@ export default function BuyCourseButton({
 
   const btnBase =
     variant === "primary"
-      ? "bg-teal-600 hover:bg-teal-700"
+      ? "bg-[#0ea5e9] hover:bg-[#0284c7]"
       : "bg-[#1B365D] hover:bg-[#0F2547]";
 
   return (
@@ -97,7 +97,7 @@ export default function BuyCourseButton({
           <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className="px-5 py-4 border-b flex items-center justify-between">
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-wider text-teal-600">KAYIT</div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-[#0ea5e9]">KAYIT</div>
                 <div className="font-bold text-[#1B365D] text-lg leading-tight">{programmeTitle}</div>
               </div>
               <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
@@ -138,7 +138,7 @@ export default function BuyCourseButton({
 
               <div className="pt-2 space-y-2">
                 <button type="submit" disabled={busy}
-                  className="w-full rounded-lg bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white font-bold py-3 transition-colors">
+                  className="w-full rounded-lg bg-[#0ea5e9] hover:bg-[#0284c7] disabled:opacity-50 text-white font-bold py-3 transition-colors">
                   {busy ? "Ödeme başlatılıyor..." : `Güvenli Ödemeye Geç · ${price}`}
                 </button>
                 <p className="text-[11px] text-center text-gray-400">

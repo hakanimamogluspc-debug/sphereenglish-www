@@ -129,7 +129,7 @@ export default function RegistrationForm({ orderToken }: { orderToken: string })
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      <div className="bg-gradient-to-r from-teal-600 to-teal-700 text-white p-6">
+      <div className="bg-gradient-to-r from-[#1B365D] to-[#0ea5e9] text-white p-6">
         <div className="text-[11px] font-bold uppercase tracking-widest opacity-90 mb-1">
           ✓ ÖDEME ALINDI · SON ADIM
         </div>
@@ -142,7 +142,7 @@ export default function RegistrationForm({ orderToken }: { orderToken: string })
       </div>
 
       <form onSubmit={submit} className="p-6 space-y-4">
-        <p className="text-[13px] text-gray-600 leading-relaxed border-l-4 border-teal-500 bg-teal-50 p-3 rounded">
+        <p className="text-[13px] text-gray-600 leading-relaxed border-l-4 border-[#0ea5e9] bg-[#f0f7ff] p-3 rounded">
           Grup ataması için birkaç bilgiye ihtiyacımız var. Bilgiler <strong>gizli</strong> tutulur, sadece grup oluşturma amacıyla kullanılır.
         </p>
 
@@ -195,7 +195,7 @@ export default function RegistrationForm({ orderToken }: { orderToken: string })
         )}
 
         <button type="submit" disabled={submitting}
-          className="w-full rounded-xl bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white font-bold py-3.5 transition-colors">
+          className="w-full rounded-xl bg-[#0ea5e9] hover:bg-[#0284c7] disabled:opacity-50 text-white font-bold py-3.5 transition-colors">
           {submitting ? "Kaydediliyor..." : "Kaydı Tamamla"}
         </button>
       </form>
