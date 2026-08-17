@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import BuyCourseButton from './BuyCourseButton';
 
 export const metadata: Metadata = {
   title: 'Kurumsal İngilizce Grup Programları | Sphere English',
@@ -209,12 +210,12 @@ export default function KurslarPage() {
                     Ön kayıtta<br />ödeme yok
                   </div>
                 </div>
-                <Link
-                  href={`#kayit?prog=${p.slug}`}
-                  className={`block w-full text-center py-3.5 rounded-xl font-bold text-white ${p.slug === 'foundation' ? 'bg-teal-600 hover:bg-teal-700' : 'bg-[#1B365D] hover:bg-[#0F2547]'} transition-colors`}
-                >
-                  Ön Kayıt Ol
-                </Link>
+                <BuyCourseButton
+                  programmeSlug={p.slug}
+                  programmeTitle={p.titleTr}
+                  price={p.price}
+                  variant={p.slug === 'foundation' ? 'primary' : 'secondary'}
+                />
               </div>
             </article>
           ))}
