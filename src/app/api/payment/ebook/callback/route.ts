@@ -69,12 +69,15 @@ async function handle(req: NextRequest) {
     const conversationId: string = result?.conversationId || result?.basketId || "";
 
     // Iyzico response'unda conversationId varsa - başarısız durumlarda pending kaydı failed olarak işaretle
+    // NOT: Iyzico bazen conversationId'yi boş döndürüyor (özellikle 3DS iptal/red durumlarında)
+    // ama basketId her zaman geliyor. initialize'da conversationId === basketId yaptığımız için
+    // basketId fallback ile pending satırı yakalayabiliriz.
     async function markFailedIfPossible(errorMsg: string) {
-      const convId = result?.conversationId;
+      const convId = result?.conversationId || result?.basketId;
       if (!convId) return;
       try {
         const payload = {
-          iyzicoConversationId: convId,
+          iyzicoConversationId: convId, // basketId fallback dahil
           iyzicoPaymentId: String(result?.paymentId ?? ""),
           paymentError: errorMsg,
         };

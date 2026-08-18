@@ -9,6 +9,50 @@ import {
 import { sendCapiPurchase, userDataFromRequest } from '@/lib/analytics/meta-capi';
 
 /**
+ * Iyzico sepet callback'i başarısızsa, cart pre-create ile yazılmış pending
+ * satırlarını failed'a çevirir. Aynı iyzico_conversation_id'ye sahip TÜM
+ * ebook_purchases satırlarını hedefler (bir orderId altındaki tüm item'lar).
+ *
+ * NOT: ebook-purchase/mark-failed endpoint'i tek conversationId ile birden
+ * fazla pending satırı update edebilir (LIMIT yok) — cart için tam uygun.
+ */
+async function markCartFailed(params: {
+  internalApiBase: string;
+  conversationId: string;
+  paymentId?: string;
+  errorMsg: string;
+}) {
+  if (!params.conversationId) {
+    console.warn('[payment/cart/callback] mark-failed atlandi — conversationId bos');
+    return;
+  }
+  try {
+    const payload = {
+      iyzicoConversationId: params.conversationId,
+      iyzicoPaymentId: params.paymentId ?? '',
+      paymentError: params.errorMsg,
+    };
+    const signature = signInternalPayload(payload);
+    const r = await fetch(
+      `${params.internalApiBase.replace(/\/$/, '')}/api/internal/ebook-purchase/mark-failed`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Internal-Signature': signature,
+        },
+        body: JSON.stringify(payload),
+      },
+    );
+    if (!r.ok) {
+      console.error('[payment/cart/callback] mark-failed HTTP hata:', r.status);
+    }
+  } catch (e: any) {
+    console.error('[payment/cart/callback] mark-failed exception:', e?.message);
+  }
+}
+
+/**
  * Iyzico'dan sepet (multi-item) ödemesi sonrası dönüş.
  *
  * Iyzico ödeme tamamlanınca bu URL'e POST atar (body: { token }).
@@ -71,12 +115,18 @@ async function handle(req: NextRequest) {
       ),
     );
 
-    // conversationId veya basketId → aynı string
+    // conversationId veya basketId → aynı string (initialize'da bilerek eşit tuttuk)
     const orderId: string = result?.conversationId || result?.basketId || '';
 
     if (result?.status !== 'success') {
       const errorMsg = result?.errorMessage ?? result?.errorCode ?? 'iyzico_baglanti_hatasi';
       console.error('[payment/cart/callback] Iyzico status başarısız:', result?.status, errorMsg);
+      await markCartFailed({
+        internalApiBase: INTERNAL_API,
+        conversationId: orderId,
+        paymentId: String(result?.paymentId ?? ''),
+        errorMsg,
+      });
       return NextResponse.redirect(
         `${paymentBaseUrl()}/odeme/basarisiz?type=cart&reason=${encodeURIComponent(errorMsg)}`,
         { status: 303 },
@@ -102,6 +152,12 @@ async function handle(req: NextRequest) {
         'mdStatus:',
         result?.mdStatus,
       );
+      await markCartFailed({
+        internalApiBase: INTERNAL_API,
+        conversationId: orderId,
+        paymentId: String(result?.paymentId ?? ''),
+        errorMsg,
+      });
       return NextResponse.redirect(
         `${paymentBaseUrl()}/odeme/basarisiz?type=cart&reason=${encodeURIComponent(errorMsg)}`,
         { status: 303 },
