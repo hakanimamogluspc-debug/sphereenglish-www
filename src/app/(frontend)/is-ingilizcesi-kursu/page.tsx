@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { PROGRAMMES } from '@/lib/courses-catalog';
-import { COHORTS, cohortStatusMessage } from '@/lib/cohort-config';
+import { fetchAllCourses } from '@/lib/api/courses';
 import { GROUP_SIZE, CONTACT, OXFORD } from '@/lib/business-config';
 import {
   Users, Calendar, MessageSquare, FileText, Video, Building2,
@@ -70,29 +69,6 @@ const FAQ = [
   },
 ];
 
-// JSON-LD: ItemList (2 kurs) + BreadcrumbList
-const listJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'ItemList',
-  itemListElement: PROGRAMMES.map((p, i) => ({
-    '@type': 'ListItem',
-    position: i + 1,
-    item: {
-      '@type': 'Course',
-      name: p.titleTr,
-      description: p.tagline,
-      provider: { '@type': 'EducationalOrganization', name: 'Sphere English', url: 'https://www.sphereenglish.com' },
-      url: `https://www.sphereenglish.com/is-ingilizcesi-kursu/${p.levelSlug}`,
-      educationalLevel: p.levelCefr,
-      offers: {
-        '@type': 'Offer',
-        price: (p.priceKurus / 100).toFixed(2),
-        priceCurrency: 'TRY',
-      },
-    },
-  })),
-};
-
 const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -102,7 +78,32 @@ const breadcrumbJsonLd = {
   ],
 };
 
-export default function CourseLandingPage() {
+export default async function CourseLandingPage() {
+  const courses = await fetchAllCourses();
+
+  // JSON-LD: ItemList (kurslar)
+  const listJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: courses.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'Course',
+        name: c.title,
+        description: c.subtitle ?? '',
+        provider: { '@type': 'EducationalOrganization', name: 'Sphere English', url: 'https://www.sphereenglish.com' },
+        url: `https://www.sphereenglish.com/is-ingilizcesi-kursu/${c.level_slug}`,
+        educationalLevel: c.level_cefr ?? '',
+        offers: {
+          '@type': 'Offer',
+          price: (c.price_kurus / 100).toFixed(2),
+          priceCurrency: 'TRY',
+        },
+      },
+    })),
+  };
+
   return (
     <main className="bg-white min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(listJsonLd) }} />
@@ -172,41 +173,51 @@ export default function CourseLandingPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {PROGRAMMES.map((p) => {
-            const cohort = COHORTS.find((c) => c.programmeSlug === p.levelSlug);
-            const isWaitlist = cohort?.status === 'waitlist';
+          {courses.map((c) => {
+            const isWaitlist = c.cohort_status === 'waitlist';
+            const remainingWeeks = Math.max(0, (c.weeks.length ?? 0) - 3);
             return (
               <article
-                key={p.levelSlug}
+                key={c.id}
                 className="group flex flex-col rounded-2xl overflow-hidden bg-white border border-gray-200 hover:shadow-xl hover:border-[#0ea5e9]/40 transition-all duration-300"
               >
                 <div className="relative border-b border-gray-100 px-7 pt-6 pb-5">
                   <div className="absolute top-6 left-0 w-1 h-12 bg-[#0ea5e9]" />
                   <div className="pl-4">
                     <div className="flex flex-wrap items-center gap-2 mb-3">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1B365D] text-white text-[11px] font-bold uppercase tracking-[0.14em]">
-                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#0ea5e9]" />
-                        {p.levelBadge}
-                      </span>
-                      <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-[#0ea5e9]/10 border border-[#0ea5e9]/30 text-[#0ea5e9] text-[13px] font-extrabold tracking-wide">
-                        {p.levelCefr}
-                      </span>
-                      <span className="text-[12px] font-semibold text-gray-500">
-                        {p.levelAudience}
-                      </span>
+                      {c.level_badge && (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1B365D] text-white text-[11px] font-bold uppercase tracking-[0.14em]">
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#0ea5e9]" />
+                          {c.level_badge}
+                        </span>
+                      )}
+                      {c.level_cefr && (
+                        <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-[#0ea5e9]/10 border border-[#0ea5e9]/30 text-[#0ea5e9] text-[13px] font-extrabold tracking-wide">
+                          {c.level_cefr}
+                        </span>
+                      )}
+                      {c.level_audience && (
+                        <span className="text-[12px] font-semibold text-gray-500">
+                          {c.level_audience}
+                        </span>
+                      )}
                     </div>
                     <h3 className="text-[24px] lg:text-[28px] font-extrabold text-[#1B365D] leading-[1.15] tracking-tight">
-                      {p.titleTr}
+                      {c.title}
                     </h3>
-                    <p className="text-[12px] text-gray-400 italic mt-1.5">{p.titleEn}</p>
+                    {c.title_en && (
+                      <p className="text-[12px] text-gray-400 italic mt-1.5">{c.title_en}</p>
+                    )}
                   </div>
                 </div>
 
                 <div className="px-7 py-6 flex-1 flex flex-col">
-                  <p className="text-[14px] text-gray-600 leading-relaxed mb-6">{p.tagline}</p>
+                  {c.subtitle && (
+                    <p className="text-[14px] text-gray-600 leading-relaxed mb-6">{c.subtitle}</p>
+                  )}
 
                   <ul className="space-y-2 mb-6">
-                    {p.weeks.slice(0, 3).map((w) => (
+                    {c.weeks.slice(0, 3).map((w) => (
                       <li key={w.n} className="flex gap-3 text-[13px] text-gray-600">
                         <span className="flex-shrink-0 mt-1 w-4 h-4 rounded-full border border-[#1B365D]/25 text-[10px] font-bold text-[#1B365D] flex items-center justify-center">
                           {w.n}
@@ -214,17 +225,19 @@ export default function CourseLandingPage() {
                         <span className="leading-snug">{w.title}</span>
                       </li>
                     ))}
-                    <li className="text-[12px] text-gray-400 pl-7">+ 1 hafta daha (detay sayfasında)</li>
+                    {remainingWeeks > 0 && (
+                      <li className="text-[12px] text-gray-400 pl-7">+ {remainingWeeks} hafta daha (detay sayfasında)</li>
+                    )}
                   </ul>
 
                   <div className="mt-auto pt-5 border-t border-gray-100">
                     <div className="flex items-end justify-between mb-4">
                       <div>
                         <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-gray-400">
-                          4 HAFTALIK PROGRAM
+                          {c.duration_weeks ?? 4} HAFTALIK PROGRAM
                         </div>
                         <div className="text-[26px] font-extrabold text-[#1B365D] leading-none mt-1">
-                          {p.price}
+                          {c.price_display ?? `${(c.price_kurus / 100).toFixed(0)} TL`}
                         </div>
                       </div>
                       {isWaitlist && (
@@ -234,7 +247,7 @@ export default function CourseLandingPage() {
                       )}
                     </div>
                     <Link
-                      href={`/is-ingilizcesi-kursu/${p.levelSlug}`}
+                      href={`/is-ingilizcesi-kursu/${c.level_slug}`}
                       className="block w-full text-center py-3.5 rounded-xl font-bold text-white bg-[#0ea5e9] hover:bg-[#0284c7] transition-colors"
                     >
                       Programı İncele

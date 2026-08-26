@@ -4,41 +4,31 @@ import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BuyCourseButton from '../../kurslar/BuyCourseButton';
-import { PROGRAMMES, findProgrammeByLevelSlug } from '@/lib/courses-catalog';
-import { COHORTS, cohortStatusMessage } from '@/lib/cohort-config';
+import { fetchAllCourses, fetchCourseByLevelSlug, cohortStatusMessage } from '@/lib/api/courses';
 import { GROUP_SIZE, CONTACT, OXFORD } from '@/lib/business-config';
 import {
   Users, Calendar, MessageSquare, FileText, Video, Building2,
-  ArrowRight, CheckCircle2, Shield, BookOpen,
+  ArrowRight, CheckCircle2, BookOpen,
 } from 'lucide-react';
 
 /**
  * Kurs detay sayfası — /is-ingilizcesi-kursu/[a1-a2|b1-b2]
  *
- * Backend Iyzico akışı /kurslar/BuyCourseButton üzerinden çalışıyor (paymentSlug ile).
- * Yeni URL'de aynı satın alma component'i yeniden kullanılıyor.
+ * DB-backed: admin panelde yönetilen `marketing_courses` tablosundan çeker.
+ * level_slug URL parametresine göre lookup.
+ * BuyCourseButton içindeki paymentSlug için `course.slug` (foundation/diplomacy) kullanılır.
  */
 
 export const dynamic = 'force-dynamic';
 
-export function generateStaticParams() {
-  return PROGRAMMES.map((p) => ({ levelSlug: p.levelSlug }));
+export async function generateStaticParams() {
+  try {
+    const courses = await fetchAllCourses();
+    return courses.map((c) => ({ levelSlug: c.level_slug }));
+  } catch {
+    return [{ levelSlug: 'a1-a2' }, { levelSlug: 'b1-b2' }];
+  }
 }
-
-const SEO_META: Record<string, { title: string; description: string; h1Prefix: string }> = {
-  'a1-a2': {
-    title: 'A1-A2 İş İngilizcesi Kursu | Business English Foundation',
-    description:
-      'İş İngilizcesine sıfırdan başlayın. A1-A2 profesyoneller için 4 haftalık online Business English programı. E-posta, toplantı, telefon ve günlük iş iletişimini öğrenin.',
-    h1Prefix: 'A1–A2 İş İngilizcesi',
-  },
-  'b1-b2': {
-    title: 'B1-B2 İş İngilizcesi Kursu | Toplantı ve İletişim',
-    description:
-      'B1-B2 profesyoneller için 4 haftalık online İş İngilizcesi programı. Toplantı yönetimi, kriz iletişimi, ikna teknikleri ve zorlu mülakatlar — gerçek iş senaryoları.',
-    h1Prefix: 'B1–B2 İş İngilizcesi',
-  },
-};
 
 interface Props {
   params: Promise<{ levelSlug: string }>;
@@ -46,12 +36,17 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { levelSlug } = await params;
-  const seo = SEO_META[levelSlug];
-  if (!seo) return {};
+  const course = await fetchCourseByLevelSlug(levelSlug);
+  if (!course) return {};
+
+  const url = `https://www.sphereenglish.com/is-ingilizcesi-kursu/${levelSlug}`;
+  const title = course.seo_title ?? `${course.level_cefr ?? course.level} İş İngilizcesi Kursu | ${course.title_en ?? course.title}`;
+  const description = course.seo_description ?? (course.description ?? course.subtitle ?? '').slice(0, 200);
+
   return {
-    title: seo.title,
-    description: seo.description,
-    alternates: { canonical: `https://www.sphereenglish.com/is-ingilizcesi-kursu/${levelSlug}` },
+    title,
+    description,
+    alternates: { canonical: url },
     // TEST MODU — Eylül lansmanına kadar noindex. Lansmanda kaldır.
     robots: {
       index: false,
@@ -60,9 +55,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       googleBot: { index: false, follow: false },
     },
     openGraph: {
-      title: `${seo.title}`,
-      description: seo.description,
-      url: `https://www.sphereenglish.com/is-ingilizcesi-kursu/${levelSlug}`,
+      title,
+      description,
+      url,
     },
   };
 }
@@ -78,20 +73,20 @@ const SHARED_FEATURES = [
 
 export default async function LevelDetailPage({ params }: Props) {
   const { levelSlug } = await params;
-  const p = findProgrammeByLevelSlug(levelSlug);
-  if (!p) notFound();
+  const c = await fetchCourseByLevelSlug(levelSlug);
+  if (!c) notFound();
 
-  const cohort = COHORTS.find((c) => c.programmeSlug === p.levelSlug);
-  const isWaitlist = cohort?.status === 'waitlist';
+  const isWaitlist = c.cohort_status === 'waitlist';
+  const priceDisplay = c.price_display ?? `${(c.price_kurus / 100).toFixed(0)} TL`;
 
-  // JSON-LD: Course + BreadcrumbList
-  const url = `https://www.sphereenglish.com/is-ingilizcesi-kursu/${p.levelSlug}`;
+  // JSON-LD
+  const url = `https://www.sphereenglish.com/is-ingilizcesi-kursu/${c.level_slug}`;
   const courseJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Course',
-    name: p.titleTr,
-    alternateName: p.titleEn,
-    description: p.description,
+    name: c.title,
+    alternateName: c.title_en ?? undefined,
+    description: c.description ?? c.subtitle ?? '',
     provider: {
       '@type': 'EducationalOrganization',
       name: 'Sphere English',
@@ -99,22 +94,22 @@ export default async function LevelDetailPage({ params }: Props) {
       sameAs: 'https://www.sphereenglish.com',
     },
     url,
-    educationalLevel: p.levelCefr,
+    educationalLevel: c.level_cefr ?? c.level ?? '',
     inLanguage: 'tr',
     audience: { '@type': 'EducationalAudience', educationalRole: 'Professional' },
     hasCourseInstance: {
       '@type': 'CourseInstance',
       courseMode: 'online',
-      courseWorkload: p.durationLabel,
+      courseWorkload: c.duration_label ?? '',
       inLanguage: 'tr',
       location: { '@type': 'VirtualLocation', url: 'https://zoom.us' },
     },
     offers: {
       '@type': 'Offer',
-      price: (p.priceKurus / 100).toFixed(2),
+      price: (c.price_kurus / 100).toFixed(2),
       priceCurrency: 'TRY',
       url,
-      availability: cohort?.status === 'waitlist' ? 'https://schema.org/PreOrder' : 'https://schema.org/InStock',
+      availability: c.cohort_status === 'waitlist' ? 'https://schema.org/PreOrder' : 'https://schema.org/InStock',
       category: 'Online Course',
     },
   };
@@ -124,7 +119,7 @@ export default async function LevelDetailPage({ params }: Props) {
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: 'https://www.sphereenglish.com/' },
       { '@type': 'ListItem', position: 2, name: 'İş İngilizcesi Kursu', item: 'https://www.sphereenglish.com/is-ingilizcesi-kursu' },
-      { '@type': 'ListItem', position: 3, name: p.levelCefr, item: url },
+      { '@type': 'ListItem', position: 3, name: c.level_cefr ?? c.level ?? '', item: url },
     ],
   };
 
@@ -141,7 +136,7 @@ export default async function LevelDetailPage({ params }: Props) {
           <li className="text-gray-300">/</li>
           <li><Link href="/is-ingilizcesi-kursu" className="hover:text-[#0ea5e9]">İş İngilizcesi Kursu</Link></li>
           <li className="text-gray-300">/</li>
-          <li className="text-[#1B365D] font-semibold">{p.levelCefr}</li>
+          <li className="text-[#1B365D] font-semibold">{c.level_cefr ?? c.level}</li>
         </ol>
       </nav>
 
@@ -149,33 +144,47 @@ export default async function LevelDetailPage({ params }: Props) {
       <section className="bg-gradient-to-b from-[#f0f7ff] to-white pt-4 pb-14">
         <div className="max-w-5xl mx-auto px-6 lg:px-10">
           <div className="flex flex-wrap items-center gap-2 mb-5">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1B365D] text-white text-[11px] font-bold uppercase tracking-[0.14em]">
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#0ea5e9]" />
-              {p.levelBadge}
-            </span>
-            <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-[#0ea5e9]/10 border border-[#0ea5e9]/30 text-[#0ea5e9] text-[13px] font-extrabold tracking-wide">
-              {p.levelCefr}
-            </span>
-            <span className="text-[12px] font-semibold text-gray-500">{p.levelAudience}</span>
+            {c.level_badge && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1B365D] text-white text-[11px] font-bold uppercase tracking-[0.14em]">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#0ea5e9]" />
+                {c.level_badge}
+              </span>
+            )}
+            {c.level_cefr && (
+              <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-[#0ea5e9]/10 border border-[#0ea5e9]/30 text-[#0ea5e9] text-[13px] font-extrabold tracking-wide">
+                {c.level_cefr}
+              </span>
+            )}
+            {c.level_audience && (
+              <span className="text-[12px] font-semibold text-gray-500">{c.level_audience}</span>
+            )}
           </div>
 
           <h1 className="text-[38px] lg:text-[52px] font-extrabold tracking-[-0.025em] text-[#1B365D] leading-[1.05] mb-4">
-            {p.titleTr}
+            {c.title}
           </h1>
-          <p className="text-[14px] text-gray-500 italic mb-5">{p.titleEn}</p>
-          <p className="text-[17px] text-gray-600 max-w-3xl leading-relaxed mb-6">
-            {p.description}
-          </p>
+          {c.title_en && (
+            <p className="text-[14px] text-gray-500 italic mb-5">{c.title_en}</p>
+          )}
+          {c.description && (
+            <p className="text-[17px] text-gray-600 max-w-3xl leading-relaxed mb-6">
+              {c.description}
+            </p>
+          )}
 
           <div className="flex flex-wrap gap-3 text-[13px] text-gray-500">
+            {c.duration_label && (
+              <>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  {c.duration_label}
+                </span>
+                <span className="text-gray-300">·</span>
+              </>
+            )}
             <span className="inline-flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              {p.durationLabel}
-            </span>
-            <span className="text-gray-300">·</span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              Maks {GROUP_SIZE.max} kişi
+              Maks {c.cohort_capacity ?? GROUP_SIZE.max} kişi
             </span>
             <span className="text-gray-300">·</span>
             <span className="inline-flex items-center gap-1.5">
@@ -191,38 +200,44 @@ export default async function LevelDetailPage({ params }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Sol: Program + kime uygun */}
           <div className="lg:col-span-2 space-y-10">
-            <div>
-              <h2 className="text-[24px] font-extrabold text-[#1B365D] mb-4 tracking-tight">Kime Uygun?</h2>
-              <ul className="space-y-2.5">
-                {p.audience.map((a, i) => (
-                  <li key={i} className="flex gap-3 text-[15px] text-gray-700 leading-relaxed">
-                    <CheckCircle2 className="w-5 h-5 text-[#0ea5e9] flex-shrink-0 mt-0.5" strokeWidth={2} />
-                    <span>{a}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h2 className="text-[24px] font-extrabold text-[#1B365D] mb-6 tracking-tight">4 Haftalık Program</h2>
-              <div className="space-y-4">
-                {p.weeks.map((w) => (
-                  <div key={w.n} className="flex gap-4">
-                    <div className="flex-shrink-0 flex flex-col items-center">
-                      <div className="w-10 h-10 rounded-full border-2 border-[#1B365D]/20 bg-white text-[#1B365D] flex items-center justify-center font-bold text-[15px]">
-                        {w.n}
-                      </div>
-                      {w.n < p.weeks.length && <div className="w-px flex-1 bg-gray-200 mt-2" />}
-                    </div>
-                    <div className="flex-1 pb-4">
-                      <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#0ea5e9] mb-1">{w.n}. HAFTA</div>
-                      <div className="text-[17px] font-bold text-[#1B365D] leading-snug mb-1.5">{w.title}</div>
-                      <div className="text-[14px] text-gray-600 leading-relaxed">{w.desc}</div>
-                    </div>
-                  </div>
-                ))}
+            {c.audience.length > 0 && (
+              <div>
+                <h2 className="text-[24px] font-extrabold text-[#1B365D] mb-4 tracking-tight">Kime Uygun?</h2>
+                <ul className="space-y-2.5">
+                  {c.audience.map((a, i) => (
+                    <li key={i} className="flex gap-3 text-[15px] text-gray-700 leading-relaxed">
+                      <CheckCircle2 className="w-5 h-5 text-[#0ea5e9] flex-shrink-0 mt-0.5" strokeWidth={2} />
+                      <span>{a}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
+            )}
+
+            {c.weeks.length > 0 && (
+              <div>
+                <h2 className="text-[24px] font-extrabold text-[#1B365D] mb-6 tracking-tight">
+                  {c.duration_weeks ?? c.weeks.length} Haftalık Program
+                </h2>
+                <div className="space-y-4">
+                  {c.weeks.map((w, idx) => (
+                    <div key={w.n} className="flex gap-4">
+                      <div className="flex-shrink-0 flex flex-col items-center">
+                        <div className="w-10 h-10 rounded-full border-2 border-[#1B365D]/20 bg-white text-[#1B365D] flex items-center justify-center font-bold text-[15px]">
+                          {w.n}
+                        </div>
+                        {idx < c.weeks.length - 1 && <div className="w-px flex-1 bg-gray-200 mt-2" />}
+                      </div>
+                      <div className="flex-1 pb-4">
+                        <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#0ea5e9] mb-1">{w.n}. HAFTA</div>
+                        <div className="text-[17px] font-bold text-[#1B365D] leading-snug mb-1.5">{w.title}</div>
+                        <div className="text-[14px] text-gray-600 leading-relaxed">{w.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div>
               <h2 className="text-[24px] font-extrabold text-[#1B365D] mb-6 tracking-tight">Program Detayları</h2>
@@ -247,32 +262,32 @@ export default async function LevelDetailPage({ params }: Props) {
           <aside className="lg:sticky lg:top-24 h-fit">
             <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
               <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-gray-400 mb-1">
-                4 HAFTALIK PROGRAM
+                {c.duration_weeks ?? c.weeks.length} HAFTALIK PROGRAM
               </div>
               <div className="text-[36px] font-extrabold text-[#1B365D] leading-none mb-1">
-                {p.price}
+                {priceDisplay}
               </div>
               <div className="text-[12px] text-emerald-600 font-semibold mb-5">
                 Iyzico 3D Secure · Taksit imkanı
               </div>
 
-              {isWaitlist && cohort && (
+              {isWaitlist && (
                 <div className="mb-5 rounded-lg bg-amber-50 border border-amber-200 p-3 text-[12px] text-amber-900 leading-relaxed">
-                  {cohortStatusMessage(cohort)}
+                  {cohortStatusMessage(c)}
                 </div>
               )}
 
               <BuyCourseButton
-                programmeSlug={p.paymentSlug}
-                programmeTitle={p.titleTr}
-                price={p.price}
+                programmeSlug={c.slug}
+                programmeTitle={c.title}
+                price={priceDisplay}
                 variant="primary"
               />
 
               <ul className="mt-5 space-y-2 text-[12px] text-gray-600">
-                <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-px" />4 hafta canlı grup dersi</li>
+                <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-px" />{c.duration_weeks ?? c.weeks.length} hafta canlı grup dersi</li>
                 <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-px" />Her ders sonu case study PDF</li>
-                <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-px" />Maks {GROUP_SIZE.max} kişilik butik grup</li>
+                <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-px" />Maks {c.cohort_capacity ?? GROUP_SIZE.max} kişilik butik grup</li>
                 <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-px" />24 saat içinde iletişim</li>
               </ul>
             </div>
@@ -281,7 +296,7 @@ export default async function LevelDetailPage({ params }: Props) {
       </section>
 
       {/* Cross-sell: ilgili e-kitaplar */}
-      {p.relatedEbookSlugs.length > 0 && (
+      {c.related_ebook_slugs.length > 0 && (
         <section className="bg-[#f0f7ff]/50 border-t border-gray-100 py-14">
           <div className="max-w-5xl mx-auto px-6 lg:px-10">
             <div className="mb-8">
@@ -296,7 +311,7 @@ export default async function LevelDetailPage({ params }: Props) {
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {p.relatedEbookSlugs.map((slug) => (
+              {c.related_ebook_slugs.map((slug) => (
                 <Link
                   key={slug}
                   href={`/e-kitaplar/${slug}`}
@@ -327,7 +342,7 @@ export default async function LevelDetailPage({ params }: Props) {
             Emin değilsen WhatsApp'tan yaz — sana uygun programı beraber belirleyelim.
           </p>
           <a
-            href={`${CONTACT.whatsappUrl}?text=${encodeURIComponent(`${p.titleTr} programı hakkında bilgi almak istiyorum.`)}`}
+            href={`${CONTACT.whatsappUrl}?text=${encodeURIComponent(`${c.title} programı hakkında bilgi almak istiyorum.`)}`}
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-[#0ea5e9] hover:bg-[#0284c7] text-white font-bold text-[15px] transition-colors"
@@ -343,8 +358,11 @@ export default async function LevelDetailPage({ params }: Props) {
   );
 }
 
+/**
+ * E-kitap slug → başlık haritası (statik).
+ * DB fetch yerine — 5 kitap listesi nadiren değişir, katalog stabilse hızlı.
+ */
 function slugToTitle(slug: string): string {
-  // Basit slug → başlık dönüşümü. Gerçek başlıklar için DB fetch yapılabilir ama bu boyut için yeterli.
   const map: Record<string, string> = {
     'kurumsal-iletisim-toplantilar': 'Kurumsal İletişim & Toplantılar',
     'pazarlama-satis-musteri-iliskileri': 'Pazarlama, Satış & Müşteri İlişkileri',
