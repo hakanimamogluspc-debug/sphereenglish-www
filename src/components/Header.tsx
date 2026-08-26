@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import Image from 'next/image';
 import CartIcon from '@/components/CartIcon';
+import { primaryCtaLabel } from '@/lib/cohort-config';
 
 const cozumlerMenu = [
   {
@@ -102,6 +103,9 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
         <nav className="hidden md:flex items-center gap-4 lg:gap-5 xl:gap-6 text-[11px] font-bold tracking-[0.14em] whitespace-nowrap" style={{ color: '#1B365D' }}>
           <Link href="/ai-studio" className="px-4 py-2 rounded-full text-[11px] font-bold tracking-[0.18em] transition-all hover:opacity-90" style={{ color: '#0ea5e9', background: '#0ea5e912' }}>AI STUDIO</Link>
 
+          {/* Yeni birincil ürün — KURSLAR */}
+          <Link href="/is-ingilizcesi-kursu" className="hover:text-[#0ea5e9] transition-colors duration-200">KURSLAR</Link>
+
           {/* Çözümler Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
@@ -186,6 +190,7 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
                 <div className="absolute -top-2 right-8 w-4 h-4 bg-white border-l border-t border-[#e8f0fe] rotate-45" />
                 <ul className="flex flex-col">
                   {[
+                    { href: '/iletisim', label: 'Kurumsal Teklif Al', desc: 'Şirketiniz için özel eğitim' },
                     { href: '/hakkimizda', label: 'Hakkımızda', desc: 'Sphere\'in hikayesi ve ekibi' },
                     { href: '/egitmen-ol', label: 'Eğitmen Ol', desc: 'Kariyer fırsatları' },
                     { href: '/iletisim', label: 'İletişim', desc: 'Bize ulaşın' },
@@ -219,13 +224,18 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
           >
             GİRİŞ YAP
           </a>
-          <Link
-            href="/iletisim"
-            className="ml-1 px-5 py-2 rounded-full text-white text-[11px] font-bold tracking-[0.18em] transition-all duration-200 hover:opacity-90 hover:shadow-md"
-            style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)' }}
-          >
-            TEKLİF AL
-          </Link>
+          {(() => {
+            const cta = primaryCtaLabel();
+            return (
+              <Link
+                href={cta.href}
+                className="ml-1 px-5 py-2 rounded-full text-white text-[11px] font-bold tracking-[0.18em] transition-all duration-200 hover:opacity-90 hover:shadow-md whitespace-nowrap"
+                style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)' }}
+              >
+                {cta.label.toUpperCase()}
+              </Link>
+            );
+          })()}
         </nav>
 
         {/* Mobile actions */}
@@ -248,6 +258,8 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
       {mobileOpen && (
         <div className="md:hidden bg-white border-t border-[#e8f0fe] px-6 py-6 flex flex-col gap-5">
           <Link href="/ai-studio" className="inline-block text-[12px] font-bold tracking-[0.18em] px-4 py-2.5 rounded-full transition-all" style={{ color: '#0ea5e9', background: '#0ea5e912' }} onClick={() => setMobileOpen(false)}>AI STUDIO</Link>
+
+          <Link href="/is-ingilizcesi-kursu" className="text-[12px] font-bold tracking-[0.18em] hover:text-[#0ea5e9] transition-colors duration-200" style={{ color: '#1B365D' }} onClick={() => setMobileOpen(false)}>KURSLAR</Link>
 
           {/* Mobile Çözümler */}
           <div>
@@ -313,6 +325,7 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
             {mobileKurumsalOpen && (
               <div className="mt-3 pl-3 border-l-2 border-[#0ea5e9]/20 flex flex-col gap-3">
                 {[
+                  { href: '/iletisim', label: 'Kurumsal Teklif Al' },
                   { href: '/hakkimizda', label: 'Hakkımızda' },
                   { href: '/egitmen-ol', label: 'Eğitmen Ol' },
                   { href: '/iletisim', label: 'İletişim' },
@@ -340,14 +353,19 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
           >
             GİRİŞ YAP
           </a>
-          <Link
-            href="/iletisim"
-            className="mt-1 px-5 py-2.5 rounded-full text-white text-[11px] font-bold tracking-[0.18em] text-center transition-all duration-200 hover:opacity-90"
-            style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)' }}
-            onClick={() => setMobileOpen(false)}
-          >
-            TEKLİF AL
-          </Link>
+          {(() => {
+            const cta = primaryCtaLabel();
+            return (
+              <Link
+                href={cta.href}
+                className="mt-1 px-5 py-2.5 rounded-full text-white text-[11px] font-bold tracking-[0.18em] text-center transition-all duration-200 hover:opacity-90"
+                style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)' }}
+                onClick={() => setMobileOpen(false)}
+              >
+                {cta.label.toUpperCase()}
+              </Link>
+            );
+          })()}
         </div>
       )}
     </header>

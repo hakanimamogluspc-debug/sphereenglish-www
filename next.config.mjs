@@ -86,16 +86,27 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // apex → www (SEO canonical)
       {
         source: '/:path*',
         has: [{ type: 'host', value: 'sphereenglish.com' }],
         destination: 'https://www.sphereenglish.com/:path*',
         permanent: true,
       },
+      // Eski /home path → yeni canonical /
+      // NOT: Önceden / → /home redirect'i vardı. Ters çevirdik: / ana canonical
+      // olsun diye. Eski /home linklerinin SEO equity'sini koruyoruz.
       {
-        source: '/',
-        destination: '/home',
-        permanent: false,
+        source: '/home',
+        destination: '/',
+        permanent: true,
+      },
+      // Eski /kurslar path → yeni SEO-friendly canonical URL
+      // /kurslar zaten noindex modundaydı ama var olan linkleri koruyalım
+      {
+        source: '/kurslar',
+        destination: '/is-ingilizcesi-kursu',
+        permanent: true,
       },
     ];
   },

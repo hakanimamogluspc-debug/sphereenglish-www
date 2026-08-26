@@ -18,7 +18,7 @@ export default function robots(): MetadataRoute.Robots {
         // ai-input=yes  → AI sistemleri yanıtlarında Sphere'i kaynak olarak gösterebilir
         userAgent: '*\nContent-Signal: ai-train=yes, search=yes, ai-input=yes',
         allow: '/',
-        disallow: ['/kurslar'], // Hazırlık aşamasında — hazır olunca kaldırılacak
+        disallow: ['/kurslar', '/is-ingilizcesi-kursu'], // Hazırlık aşamasında — hazır olunca kaldırılacak
       },
       // AI Arama Tarayıcıları — açıkça izin verildi
       { userAgent: 'GPTBot', allow: '/' },

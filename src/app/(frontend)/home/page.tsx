@@ -19,18 +19,15 @@ import AICoachesSection from './components/AICoachesSection';
 import AIStudioTeaser from './components/AIStudioTeaser';
 import { fetchHomePage } from '@/payload/api';
 
+/**
+ * NOT: /home artık next.config'de 301 → / redirect ediliyor.
+ * Bu sayfa src/app/(frontend)/page.tsx üzerinden root olarak sunuluyor.
+ * Metadata orada tanımlı — burada tekrar tanımlamayın.
+ */
 export const metadata: Metadata = {
-  title: 'Kurumsal İş İngilizcesi Eğitimi | Şirketiniz için Online Dil Programı',
-  description:
-    'Türkiye genelinde şirketlere kurumsal iş İngilizcesi eğitimi veriyoruz. Yönetici, satış, İK ve teknik ekipler için Oxford University Press ortaklıklı, ölçülebilir kurumsal dil eğitimi. Ücretsiz demo randevusu alın. 50+ şirket, 500+ çalışan, %94 memnuniyet oranı.',
-  alternates: { canonical: 'https://www.sphereenglish.com/home' },
-  openGraph: {
-    title: 'Sphere English | Kurumsal İş İngilizcesi — Ölçülebilir Sonuçlar',
-    description:
-      'Oxford ortaklığıyla sertifikalı kurumsal İngilizce eğitimi. 50+ kurumsal müşteri, %94 memnuniyet.',
-    url: 'https://www.sphereenglish.com/home',
-    images: [{ url: '/assets/images/hero_online_english_lesson.png', width: 1200, height: 630 }],
-  },
+  // Bilinçli olarak boş — root page.tsx'in metadata'sı kullanılacak.
+  // Eğer bu dosya (redirect atlanırsa) render edilirse, canonical / gösterir.
+  alternates: { canonical: 'https://www.sphereenglish.com/' },
 };
 
 export default async function HomePage() {
