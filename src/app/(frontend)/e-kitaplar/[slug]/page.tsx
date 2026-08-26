@@ -331,9 +331,9 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
               </span>
               {ebook.discount_ends_at && <DiscountCountdown endsAt={ebook.discount_ends_at} />}
             </div>
-            {ebook.downloads_display_count && ebook.downloads_display_count > 0 && (
+            {(ebook.downloads_display_count ?? 0) > 0 && (
               <p className="text-[13px] text-gray-500 mb-4">
-                <span className="font-bold text-[#1B365D]">{ebook.downloads_display_count.toLocaleString("tr-TR")}+ profesyonel</span> bu kitabı indirdi
+                <span className="font-bold text-[#1B365D]">{ebook.downloads_display_count!.toLocaleString("tr-TR")}+ profesyonel</span> bu kitabı indirdi
               </p>
             )}
 

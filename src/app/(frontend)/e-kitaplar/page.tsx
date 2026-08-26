@@ -157,20 +157,47 @@ export default async function EKitaplarPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
       />
 
-      {/* Hero */}
+      {/* Hero — CRO §12: net fiyat + primary CTA ilk ekranda */}
       <section className="bg-gradient-to-b from-[#f0f7ff] to-white pt-20 pb-12">
         <div className="max-w-5xl mx-auto px-6 lg:px-10 text-center">
           <p className="text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase mb-4">
-            E-Kitap Kataloğu
+            E-Kitap Kataloğu · PDF
           </p>
           <h1 className="text-[40px] lg:text-[54px] font-extrabold tracking-[-0.025em] text-[#1B365D] leading-[1.05] mb-5">
-            İş İngilizcesi Dijital Kitap Serisi
+            İş İngilizcesinde Kullanılan
+            <br />
+            <span className="text-[#0ea5e9]">1000 Kelime — 5 Kitaplık Set</span>
           </h1>
-          <p className="text-[17px] text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            <strong className="text-[#1B365D]">İş İngilizcesinde Kullanılan 1000 Kelime</strong> serisi
-            — plaza dilini akıcı konuşmak isteyenler için sektörlere ayrılmış, Türkçe açıklamalı,
-            gerçek iş hayatından örneklerle dolu PDF kitaplar.
+          <p className="text-[16px] text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            Toplantıdan finansa, liderlikten pazarlamaya Türk iş profesyonelleri için
+            hazırlanmış <strong className="text-[#1B365D]">5 tematik PDF kitap</strong>.
+            Türkçe açıklamalı, gerçek iş hayatından örnekli.
           </p>
+
+          {/* Fiyat + CTA — ilk ekran içinde net */}
+          <div className="mt-8 inline-flex flex-col sm:flex-row items-center gap-4 sm:gap-6 px-6 py-5 rounded-2xl bg-white border-2 border-[#0ea5e9]/25 shadow-sm">
+            <div className="text-center sm:text-left">
+              <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-gray-400 mb-0.5">
+                5 KİTAPLIK SET
+              </div>
+              <div className="flex items-baseline gap-2 justify-center sm:justify-start">
+                <span className="text-[15px] text-gray-400 line-through">₺995</span>
+                <span className="text-[32px] font-extrabold text-[#1B365D] leading-none">₺799</span>
+                <span className="text-[11px] font-bold text-emerald-600 uppercase">%20 indirim</span>
+              </div>
+            </div>
+            <a
+              href="#paketler"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#0ea5e9] hover:bg-[#0284c7] text-white font-bold text-[14px] transition-colors whitespace-nowrap"
+            >
+              5 Kitaplık Seti Al — ₺799
+            </a>
+          </div>
+
+          <p className="mt-4 text-[12px] text-gray-500">
+            veya <a href="#tek-tek" className="text-[#0ea5e9] font-semibold hover:underline">tek kitap ₺199</a> · Her kitap için <a href="#tek-tek" className="text-[#0ea5e9] font-semibold hover:underline">5 sayfa ücretsiz önizleme</a>
+          </p>
+
           <div className="flex flex-wrap items-center justify-center gap-3 mt-6 text-[12px] text-gray-500">
             <span className="inline-flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
@@ -195,7 +222,7 @@ export default async function EKitaplarPage() {
 
       {/* ─── PAKETLER — birden fazla kitap indirimli ────────────────────── */}
       {bundles.length > 0 && (
-        <section className="max-w-6xl mx-auto px-6 lg:px-10 pt-12 pb-4">
+        <section id="paketler" className="max-w-6xl mx-auto px-6 lg:px-10 pt-12 pb-4 scroll-mt-24">
           <div className="flex items-end justify-between flex-wrap gap-4 mb-6">
             <div>
               <p className="text-[11px] font-bold tracking-[0.22em] text-emerald-600 uppercase mb-2">
@@ -329,7 +356,7 @@ export default async function EKitaplarPage() {
       )}
 
       {/* Kitap listesi */}
-      <section className="max-w-6xl mx-auto px-6 lg:px-10 py-12">
+      <section id="tek-tek" className="max-w-6xl mx-auto px-6 lg:px-10 py-12 scroll-mt-24">
         {bundles.length > 0 && ebooks.length > 0 && (
           <div className="mb-8 pt-6 border-t border-gray-100">
             <p className="text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase mb-2">
@@ -435,10 +462,10 @@ export default async function EKitaplarPage() {
                     </div>
                   )}
 
-                  {/* Downloads sayacı (varsa) */}
-                  {b.downloads_display_count && b.downloads_display_count > 0 && (
+                  {/* Downloads sayacı (varsa) — "0" render bug fix (§33): nullish coalescing */}
+                  {(b.downloads_display_count ?? 0) > 0 && (
                     <p className="mt-1.5 text-center text-[11px] text-gray-400">
-                      {b.downloads_display_count.toLocaleString("tr-TR")}+ kişi indirdi
+                      {b.downloads_display_count!.toLocaleString("tr-TR")}+ kişi indirdi
                     </p>
                   )}
                 </div>
