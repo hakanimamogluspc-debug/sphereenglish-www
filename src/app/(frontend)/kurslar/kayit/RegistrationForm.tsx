@@ -108,7 +108,7 @@ export default function RegistrationForm({ orderToken }: { orderToken: string })
         <p className="text-[16px] text-gray-700 leading-relaxed mb-6 max-w-md mx-auto">
           <strong>{order.programme_title}</strong> programına hoş geldin, <strong>{order.buyer_name}</strong>.
         </p>
-        <div className="bg-white rounded-xl p-5 max-w-md mx-auto border border-emerald-200 mb-6">
+        <div className="bg-white rounded-xl p-5 max-w-md mx-auto border border-emerald-200 mb-4">
           <div className="text-[11px] font-bold uppercase tracking-widest text-emerald-700 mb-2">
             SONRAKİ ADIM
           </div>
@@ -117,10 +117,22 @@ export default function RegistrationForm({ orderToken }: { orderToken: string })
             Grup ataması, ders takvimi ve giriş bilgileri e-postanla iletilecek.
           </p>
         </div>
+        <div className="bg-[#f0f7ff] rounded-xl p-4 max-w-md mx-auto border border-[#0ea5e9]/25 mb-6 text-[12px] text-gray-600 leading-relaxed">
+          <strong className="text-[#1B365D]">e-Arşiv faturanız</strong> birkaç dakika içinde e-postanıza gönderilir.
+          Kurumsal (VKN'li) fatura mı gerekli?{' '}
+          <a
+            href="https://wa.me/905066085810?text=Kurumsal%20fatura%20i%C3%A7in%20yard%C4%B1m%20istiyorum."
+            target="_blank"
+            rel="noreferrer"
+            className="text-[#0ea5e9] font-semibold underline"
+          >
+            WhatsApp ile iletişime geçin
+          </a>.
+        </div>
         <div className="text-[13px] text-gray-500">
           Sorularin için: <a href="mailto:info@sphereenglish.com" className="text-[#0ea5e9] hover:underline">info@sphereenglish.com</a>
           <br />
-          <a href="https://wa.me/905306542483" className="text-[#0ea5e9] hover:underline">WhatsApp: +90 530 654 24 83</a>
+          <a href="https://wa.me/905066085810" className="text-[#0ea5e9] hover:underline">WhatsApp: +90 506 608 58 10</a>
         </div>
         <a href="/" className="inline-block mt-8 text-[13px] text-gray-500 hover:text-[#1B365D]">← Ana sayfaya dön</a>
       </div>

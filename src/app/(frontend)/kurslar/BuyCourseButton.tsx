@@ -141,6 +141,19 @@ export default function BuyCourseButton({
                 Ödemeni tamamla — sonrasında birkaç soruya cevap ver, <b>24 saat içinde</b> seninle iletişime geçelim.
               </p>
 
+              {/* Kurumsal fatura bilgilendirme */}
+              <div className="rounded-lg bg-[#f0f7ff] border border-[#0ea5e9]/20 p-3 text-[11px] text-gray-600 leading-relaxed">
+                <strong className="text-[#1B365D]">Bireysel e-Arşiv fatura</strong> otomatik kesilir. Kurumsal (VKN'li) fatura için{' '}
+                <a
+                  href="https://wa.me/905066085810?text=Kurumsal%20kurs%20kayd%C4%B1%20i%C3%A7in%20fatura%20bilgi%20almak%20istiyorum."
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[#0ea5e9] font-semibold underline"
+                >
+                  iletişime geçin
+                </a>.
+              </div>
+
               <div>
                 <label className="text-xs font-semibold text-gray-600 block mb-1">Ad Soyad *</label>
                 <input required type="text" value={name} onChange={(e) => setName(e.target.value)}
