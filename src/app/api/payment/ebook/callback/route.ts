@@ -8,6 +8,7 @@ import {
   signInternalPayload,
 } from "@/lib/iyzico";
 import { sendCapiPurchase, userDataFromRequest } from "@/lib/analytics/meta-capi";
+import { sendGa4Purchase, ga4ClientIdFromCookie } from "@/lib/analytics/ga4-server";
 
 /**
  * Iyzico'dan e-kitap ödemesi sonrası dönüş.
@@ -245,6 +246,25 @@ async function handle(req: NextRequest) {
       },
     }).then((r) => {
       if (!r.ok) console.warn("[capi] ebook Purchase send hata:", r.error);
+    });
+
+    // GA4 Measurement Protocol Purchase — server-side (client pageview'e bağımlı değil)
+    sendGa4Purchase({
+      transactionId: eventId.replace(/^purchase_/, ""),
+      value: priceTry,
+      currency: result.currency ?? "TRY",
+      clientId: ga4ClientIdFromCookie(req.cookies.get("_ga")?.value),
+      items: [
+        {
+          item_id: productId,
+          item_name: `E-Kitap #${ebookId}`,
+          item_category: "E-Kitap",
+          price: priceTry,
+          quantity: 1,
+        },
+      ],
+    }).then((r) => {
+      if (!r.ok) console.warn("[ga4] ebook purchase hata:", r.error);
     });
 
     const purchaseUrl =

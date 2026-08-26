@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { analytics } from "@/lib/analytics/gtm";
 
 interface Props {
   programmeSlug: string;
@@ -42,6 +43,18 @@ export default function BuyCourseButton({
       return;
     }
     setBusy(true);
+    // GA4: begin_checkout for course
+    const priceTry = parseFloat(price.replace(/[^\d,.]/g, '').replace(',', '.')) || 0;
+    analytics.beginCheckout(
+      [{
+        item_id: `course-${programmeSlug}`,
+        item_name: programmeTitle,
+        item_category: 'Kurs',
+        price: priceTry,
+        quantity: 1,
+      }],
+      priceTry,
+    );
     try {
       const r = await fetch(`${API_BASE}/api/course-orders/checkout`, {
         method: "POST",
@@ -86,21 +99,41 @@ export default function BuyCourseButton({
   return (
     <>
       <button
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          analytics.courseCtaClick({
+            course_slug: programmeSlug,
+            cta_location: 'course_detail',
+            cta_label: 'buy_now',
+          });
+          setOpen(true);
+        }}
         className={`block w-full text-center py-3.5 rounded-xl font-bold text-white ${btnBase} transition-colors ${className ?? ""}`}
       >
         Şimdi Kayıt Ol · {price}
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4" onClick={() => setOpen(false)}>
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4"
+          onClick={() => setOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="course-modal-title"
+          onKeyDown={(e) => { if (e.key === 'Escape') setOpen(false); }}
+        >
           <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className="px-5 py-4 border-b flex items-center justify-between">
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-wider text-[#0ea5e9]">KAYIT</div>
-                <div className="font-bold text-[#1B365D] text-lg leading-tight">{programmeTitle}</div>
+                <div id="course-modal-title" className="font-bold text-[#1B365D] text-lg leading-tight">{programmeTitle}</div>
               </div>
-              <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+              <button
+                onClick={() => setOpen(false)}
+                className="text-gray-400 hover:text-gray-600 text-xl focus:outline-none focus:ring-2 focus:ring-[#0ea5e9] rounded p-1"
+                aria-label="Modalı kapat"
+              >
+                ×
+              </button>
             </div>
 
             <form onSubmit={submit} className="p-5 space-y-3">

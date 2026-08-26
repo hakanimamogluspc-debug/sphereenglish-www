@@ -7,6 +7,7 @@ import {
   signInternalPayload,
 } from '@/lib/iyzico';
 import { sendCapiPurchase, userDataFromRequest } from '@/lib/analytics/meta-capi';
+import { sendGa4Purchase, ga4ClientIdFromCookie } from '@/lib/analytics/ga4-server';
 
 /**
  * Iyzico sepet callback'i başarısızsa, cart pre-create ile yazılmış pending
@@ -235,6 +236,22 @@ async function handle(req: NextRequest) {
       },
     }).then((r) => {
       if (!r.ok) console.warn('[capi] cart Purchase send hata:', r.error);
+    });
+
+    // GA4 server-side purchase
+    sendGa4Purchase({
+      transactionId: `cart_${orderId}`,
+      value: priceTry,
+      currency: result.currency ?? 'TRY',
+      clientId: ga4ClientIdFromCookie(req.cookies.get('_ga')?.value),
+      items: contentIds.map((id) => ({
+        item_id: id,
+        item_name: id,
+        item_category: id.startsWith('bundle') ? 'Paket' : 'E-Kitap',
+        quantity: 1,
+      })),
+    }).then((r) => {
+      if (!r.ok) console.warn('[ga4] cart purchase hata:', r.error);
     });
 
     const purchaseUrl =

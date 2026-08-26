@@ -45,6 +45,7 @@ fbq('track', 'PageView');
           width="1"
           style={{ display: 'none' }}
           alt=""
+          aria-hidden="true"
           src={`https://www.facebook.com/tr?id=${PIXEL_ID}&ev=PageView&noscript=1`}
         />
       </noscript>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { trackAddToCart, trackInitiateCheckout, trackMetaEvent } from '@/lib/analytics/meta-pixel';
+import { analytics } from '@/lib/analytics/gtm';
 import AddToCartButton from '@/components/AddToCartButton';
 
 interface Props {
@@ -198,6 +199,18 @@ export default function BuyEbookButton({ slug, title, subtitle, coverImageUrl, p
       type: 'ebook',
     });
 
+    // GA4 — begin_checkout
+    analytics.beginCheckout(
+      [{
+        item_id: `ebook-${slug}`,
+        item_name: title,
+        item_category: 'E-Kitap',
+        price: Number(price ?? 0),
+        quantity: 1,
+      }],
+      finalPrice > 0 ? finalPrice : Number(price ?? 0),
+    );
+
     try {
       const r = await fetch('/api/payment/ebook/initialize', {
         method: 'POST',
@@ -295,6 +308,13 @@ export default function BuyEbookButton({ slug, title, subtitle, coverImageUrl, p
               priceTry: Number(price ?? 0),
               type: 'ebook',
             });
+            analytics.addToCart({
+              item_id: `ebook-${slug}`,
+              item_name: title,
+              item_category: 'E-Kitap',
+              price: Number(price ?? 0),
+              quantity: 1,
+            });
           }}
           className="w-full py-3 rounded-xl font-bold text-[13px] text-[#0ea5e9] border-2 border-[#0ea5e9] hover:bg-[#0ea5e9]/5 transition-colors"
         >
@@ -308,6 +328,10 @@ export default function BuyEbookButton({ slug, title, subtitle, coverImageUrl, p
           className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
           style={{ background: 'rgba(0,0,0,0.6)' }}
           onClick={closeAll}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="ebook-modal-title"
+          onKeyDown={(e) => { if (e.key === 'Escape') closeAll(); }}
         >
           <form
             onSubmit={(e) => {
@@ -324,7 +348,7 @@ export default function BuyEbookButton({ slug, title, subtitle, coverImageUrl, p
             {/* Başlık + adım göstergesi */}
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-[18px] font-bold text-[#1B365D]">
+                <h2 id="ebook-modal-title" className="text-[18px] font-bold text-[#1B365D]">
                   {step === 1 ? 'Alıcı Bilgileri' : 'Fatura Bilgileri'}
                 </h2>
                 <p className="text-[11px] text-gray-500 mt-0.5">

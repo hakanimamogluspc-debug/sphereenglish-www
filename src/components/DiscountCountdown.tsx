@@ -25,11 +25,16 @@ export default function DiscountCountdown({ endsAt, className }: { endsAt: strin
   const urgent = diff < 24 * 60 * 60 * 1000; // 24 saatten az
 
   return (
-    <div className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border ${urgent ? "border-red-300 bg-red-50" : "border-amber-300 bg-amber-50"} ${className ?? ""}`}>
-      <span className={`text-[10px] font-bold uppercase tracking-widest ${urgent ? "text-red-700" : "text-amber-800"}`}>
+    <div
+      className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border ${urgent ? "border-red-300 bg-red-50" : "border-amber-300 bg-amber-50"} ${className ?? ""}`}
+      role="timer"
+      aria-live="off"
+      aria-label={urgent ? "İndirim son gün" : `İndirim ${days} gün sonra bitiyor`}
+    >
+      <span className={`text-[10px] font-bold uppercase tracking-widest ${urgent ? "text-red-700" : "text-amber-800"}`} aria-hidden="true">
         {urgent ? "⏱ Son gün" : "⏱ İndirim biter"}
       </span>
-      <span className={`font-mono text-[13px] font-semibold ${urgent ? "text-red-900" : "text-amber-900"}`}>
+      <span className={`font-mono text-[13px] font-semibold ${urgent ? "text-red-900" : "text-amber-900"}`} aria-hidden="true">
         {days > 0 && <>{days}g </>}
         {String(hours).padStart(2, "0")}:{String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
       </span>

@@ -91,22 +91,27 @@ export default function ReferencesSection() {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <div ref={trackRef} className="flex whitespace-nowrap will-change-transform">
-          {[...logos, ...logos]?.map((logo, index) => (
-            <div
-              key={index}
-              className="inline-flex items-center justify-center mx-10 flex-shrink-0 group pointer-events-auto"
-            >
-              <Image
-                src={logo?.src}
-                alt={logo?.alt}
-                width={160}
-                height={80}
-                className="object-contain grayscale group-hover:grayscale-0 transition-all duration-300 opacity-60 group-hover:opacity-100 pointer-events-none"
-                draggable={false}
-              />
-            </div>
-          ))}
+        <div ref={trackRef} className="flex whitespace-nowrap will-change-transform" role="list" aria-label="Sphere English referans müşterileri">
+          {[...logos, ...logos]?.map((logo, index) => {
+            // Sonsuz scroll için logolar 2 kez çoğaltılmış — 2. kopya ekran okuyucudan gizli
+            const isDuplicate = index >= logos.length;
+            return (
+              <div
+                key={index}
+                className="inline-flex items-center justify-center mx-10 flex-shrink-0 group pointer-events-auto"
+                {...(isDuplicate ? { 'aria-hidden': 'true' } : { role: 'listitem' })}
+              >
+                <Image
+                  src={logo?.src}
+                  alt={isDuplicate ? '' : (logo?.alt ?? 'Referans müşteri logosu')}
+                  width={160}
+                  height={80}
+                  className="object-contain grayscale group-hover:grayscale-0 transition-all duration-300 opacity-60 group-hover:opacity-100 pointer-events-none"
+                  draggable={false}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

@@ -83,7 +83,7 @@ function renderNode(node: LexicalNode, key: string | number): React.ReactNode {
       if (!media || !media.url) return null;
       return (
         <figure key={key} className="my-8">
-          <img src={media.url} alt={media.alt || ''} className="w-full rounded-xl object-cover" />
+          <img src={media.url} alt={media.alt || 'Yazı içeriği görseli'} loading="lazy" decoding="async" className="w-full rounded-xl object-cover" />
           {media.alt && <figcaption className="text-center text-sm text-gray-400 mt-2">{media.alt}</figcaption>}
         </figure>
       );

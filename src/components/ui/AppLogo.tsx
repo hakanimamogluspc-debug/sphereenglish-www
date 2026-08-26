@@ -11,6 +11,8 @@ interface AppLogoProps {
   size?: number; // Size for icon/image
   className?: string; // Additional classes
   onClick?: () => void; // Click handler
+  /** Marka / kurum adı — SEO ve a11y için anlamlı alt text üretir. */
+  brandName?: string;
 }
 
 function AppLogo({
@@ -20,6 +22,7 @@ function AppLogo({
   size = 64,
   className = '',
   onClick,
+  brandName = 'Sphere English',
 }: AppLogoProps) {
   return (
     <div
@@ -28,7 +31,7 @@ function AppLogo({
     >
       {/* Show image if src provided, otherwise show icon */}
       {src ? (
-        <AppImage src={src} alt="Logo" width={size} height={size} className="flex-shrink-0" />
+        <AppImage src={src} alt={`${brandName} logo`} width={size} height={size} className="flex-shrink-0" />
       ) : (
         <AppIcon name={iconName} size={size} className="flex-shrink-0" />
       )}

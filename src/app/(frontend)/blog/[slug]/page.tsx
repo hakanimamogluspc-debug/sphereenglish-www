@@ -153,7 +153,7 @@ function renderNotionBlock(block: BlogBlock): React.ReactNode {
     case 'image':
       return block.content ? (
         <figure key={block.id} className="my-8">
-          <img src={block.content} alt="Blog görseli" className="w-full rounded-xl object-cover" />
+          <img src={block.content} alt="Blog yazı içeriği görseli" loading="lazy" decoding="async" className="w-full rounded-xl object-cover" />
         </figure>
       ) : null;
     case 'callout':
@@ -246,7 +246,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
           {post.cover && (
             <div className="mb-8 rounded-2xl overflow-hidden">
-              <img src={post.cover} alt={post.title} className="w-full h-64 object-cover" />
+              <img src={post.cover} alt={post.title} loading="lazy" decoding="async" className="w-full h-64 object-cover" />
             </div>
           )}
 

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sendGa4Purchase, ga4ClientIdFromCookie } from "@/lib/analytics/ga4-server";
 
 /**
  * Kurs ödemesi Iyzico callback'i.
@@ -41,6 +42,29 @@ async function handle(req: NextRequest) {
     const data = await r.json().catch(() => ({}));
 
     if (data.status === "paid") {
+      // GA4 purchase event — server-side (kurs ödemesi başarılı)
+      const priceKurus = Number(data.amountKurus ?? data.amount_kurus ?? 0);
+      const priceTry = priceKurus > 0 ? priceKurus / 100 : Number(data.amount ?? 0);
+      const programmeSlug = String(data.programmeSlug ?? data.programme_slug ?? "course");
+      const programmeTitle = String(data.programmeTitle ?? data.programme_title ?? "Kurs");
+      sendGa4Purchase({
+        transactionId: `course_${orderToken}`,
+        value: priceTry,
+        currency: "TRY",
+        clientId: ga4ClientIdFromCookie(req.cookies.get("_ga")?.value),
+        items: [
+          {
+            item_id: `course-${programmeSlug}`,
+            item_name: programmeTitle,
+            item_category: "Kurs",
+            item_variant: programmeSlug,
+            price: priceTry,
+            quantity: 1,
+          },
+        ],
+      }).then((r) => {
+        if (!r.ok) console.warn("[ga4] course purchase hata:", r.error);
+      });
       return NextResponse.redirect(new URL(`/kurslar/kayit?order=${orderToken}`, req.url));
     }
     return NextResponse.redirect(new URL(`/kurslar?err=payment-failed`, req.url));
