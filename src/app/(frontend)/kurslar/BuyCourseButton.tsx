@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { analytics } from "@/lib/analytics/gtm";
 
 interface Props {
@@ -29,6 +29,30 @@ export default function BuyCourseButton({
   const [agree, setAgree] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [checkoutHtml, setCheckoutHtml] = useState<string | null>(null);
+
+  // Iyzico checkout HTML'i modal içindeki container'a inject et
+  useEffect(() => {
+    if (!checkoutHtml) return;
+    const container = document.getElementById("iyzipay-course-checkout-form");
+    if (!container) return;
+    container.innerHTML = checkoutHtml;
+    // Iyzico script'lerini yeniden çalıştır (innerHTML script'leri execute etmez)
+    container.querySelectorAll("script").forEach((oldScript) => {
+      const newScript = document.createElement("script");
+      Array.from(oldScript.attributes).forEach((attr) =>
+        newScript.setAttribute(attr.name, attr.value),
+      );
+      newScript.text = oldScript.text;
+      oldScript.parentNode?.replaceChild(newScript, oldScript);
+    });
+  }, [checkoutHtml]);
+
+  function closeCheckout() {
+    setCheckoutHtml(null);
+    const c = document.getElementById("iyzipay-course-checkout-form");
+    if (c) c.innerHTML = "";
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -68,22 +92,18 @@ export default function BuyCourseButton({
       });
       const data = await r.json();
       if (!r.ok) throw new Error(data?.error || "Ödeme başlatılamadı");
-      // Iyzico checkout form'unu inject et
-      const div = document.createElement("div");
-      div.id = "iyzipay-checkout-form";
-      div.className = "responsive";
-      document.body.appendChild(div);
-      const scriptContainer = document.createElement("div");
-      scriptContainer.innerHTML = data.checkoutFormContent;
-      const scriptEl = scriptContainer.querySelector("script");
-      if (scriptEl) {
-        const s = document.createElement("script");
-        s.type = scriptEl.type || "text/javascript";
-        if (scriptEl.src) s.src = scriptEl.src;
-        else s.text = scriptEl.textContent || "";
-        document.body.appendChild(s);
+
+      // Mobilde tam sayfa Iyzico hosted checkout — modal responsive değil, direkt hosted URL
+      const paymentPageUrl = (data as any)?.paymentPageUrl as string | undefined;
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+      if (isMobile && paymentPageUrl) {
+        window.location.href = paymentPageUrl;
+        return;
       }
+
+      // Desktop: modal içinde inline iyzico form göster
       setOpen(false);
+      setCheckoutHtml(data.checkoutFormContent);
     } catch (e: any) {
       setError(e?.message || "Bir hata oluştu");
     } finally {
@@ -192,6 +212,29 @@ export default function BuyCourseButton({
                 </p>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Iyzico checkout modal — fixed, ortalanmış, scroll'lu */}
+      {checkoutHtml && (
+        <div
+          className="fixed inset-0 z-[110] flex items-center justify-center p-2 sm:p-4"
+          style={{ background: "rgba(0,0,0,0.7)" }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Iyzico güvenli ödeme"
+          onKeyDown={(e) => { if (e.key === "Escape") closeCheckout(); }}
+        >
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[95vh] overflow-y-auto overflow-x-hidden">
+            <button
+              onClick={closeCheckout}
+              className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 hover:text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0ea5e9]"
+              aria-label="Ödemeyi kapat"
+            >
+              ✕
+            </button>
+            <div id="iyzipay-course-checkout-form" className="p-3 sm:p-4" />
           </div>
         </div>
       )}
