@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Teslimat ve İade Şartları | Sphere English',
+  title: 'Teslimat ve İade Şartları',
   description:
     'Sphere English dijital eğitim aboneliği teslimat şartları, 14 günlük cayma hakkı ve iade prosedürleri.',
   alternates: { canonical: 'https://www.sphereenglish.com/teslimat-iade' },

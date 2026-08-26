@@ -37,7 +37,7 @@ const packages: Package[] = [
     tag: 'En Popüler',
     featured: true,
     features: [
-      'Maksimum 5 kişilik butik gruplar',
+      'Maksimum 6 kişilik butik gruplar',
       'Seviye ve hedef bazlı sınıf planlama',
       'Şirkete özel vaka çalışmaları',
       'Gerçek iş senaryoları ile pratik',

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
-  title: 'AI Studio | Sphere English — Yapay Zeka Destekli İngilizce Koçlar',
+  title: 'AI Studio — Yapay Zeka Destekli İngilizce Koçlar',
   description:
     '12 farklı yapay zeka koçuyla gerçek zamanlı konuşma pratiği, anlık telaffuz analizi, gramer ve yazma desteği. Sphere AI Studio ile İngilizceyi hızla geliştirin.',
   alternates: { canonical: 'https://www.sphereenglish.com/ai-studio' },

@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Kullanım Koşulları | Sphere English',
+  title: 'Kullanım Koşulları',
   description:
     'Sphere English kurumsal İngilizce eğitim platformu kullanım koşulları. Hizmet kapsamı, hak ve yükümlülükler, ödeme ve iptal politikaları.',
   alternates: { canonical: 'https://www.sphereenglish.com/kullanim-kosullari' },
@@ -29,7 +29,7 @@ export default function KullanimKosullariPage() {
 
           <h2 className="text-[22px] font-bold text-[#1B365D] mt-10 mb-4">1. Hizmet Tanımı</h2>
           <p>
-            Sphere English; B2B kurumsal müşterilere yönelik, Oxford University Press iş birliğiyle, canlı Zoom
+            Sphere English; B2B kurumsal müşterilere yönelik, Oxford University Press müfredat kaynaklarıyla, canlı Zoom
             dersleri ve GPT-4o destekli AI Studio modüllerinden oluşan bir İş İngilizcesi eğitim platformudur.
             Bireysel öğrenci programları, kurumsal sözleşme şartları çerçevesinde sağlanabilir.
           </p>

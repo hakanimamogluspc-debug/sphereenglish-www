@@ -4,7 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Ödeme Tamamlanamadı | Sphere English',
+  title: 'Ödeme Tamamlanamadı',
   robots: { index: false, follow: false },
 };
 

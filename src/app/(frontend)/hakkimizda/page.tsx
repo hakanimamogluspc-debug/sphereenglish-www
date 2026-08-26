@@ -15,9 +15,9 @@ const timelineEvents = [
   },
   {
     year: '2021',
-    title: 'Oxford Ortaklığı',
+    title: 'Oxford Kaynakları Entegrasyonu',
     description:
-      'Oxford University Press ile resmi eğitim ortaklığı kuruldu. Müfredat uluslararası standartlara taşındı, online platform hayata geçirildi.',
+      'Oxford University Press müfredat ve kaynakları entegre edildi. Müfredat uluslararası standartlara taşındı, online platform hayata geçirildi.',
     side: 'right',
   },
   {
@@ -184,7 +184,7 @@ export default function HakkimizdaPage() {
                     Ankara Üniversitesi İngiliz Dili ve Edebiyatı mezunu olan Didem, mezuniyetinin ardından kariyerini İngilizce eğitimi ve öğretmenlik üzerine kurdu. Eğitim alanındaki deneyimiyle, profesyonellerin iş dünyasında İngilizceyi sadece öğrenmelerini değil, güvenle kullanmalarını hedefler.
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {['Kurumsal Koçluk', 'Müfredat Tasarımı', 'Oxford Sertifikalı']?.map((tag) => (
+                    {['Kurumsal Koçluk', 'Müfredat Tasarımı', 'OUP Müfredat']?.map((tag) => (
                       <span key={tag} className="text-[11px] font-semibold bg-[#1B365D]/8 text-[#1B365D] px-3 py-1 rounded-full">
                         {tag}
                       </span>
@@ -259,7 +259,7 @@ export default function HakkimizdaPage() {
               Ekibinizin global potansiyelini açığa çıkarmak için ücretsiz demo randevusu alın.
             </p>
             <Link
-              href="/iletisim"
+              href="/demo"
               className="inline-block px-8 py-3.5 rounded-full bg-[#0ea5e9] text-white text-[13px] font-bold tracking-[0.16em] hover:bg-[#0284c7] transition-colors duration-200 shadow-lg"
             >
               ÜCRETSİZ DEMO AL

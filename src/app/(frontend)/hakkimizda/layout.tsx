@@ -4,10 +4,10 @@ import type { Metadata } from 'next';
   export const metadata: Metadata = {
     title: 'Hakkımızda | Kurumsal İngilizce Eğitim Uzmanları',
     description:
-      "Sphere English olarak 2020'den bu yana Türkiye'deki şirketlere kurumsal iş İngilizcesi eğitimi veriyoruz. Oxford University Press ortaklığı, sertifikalı eğitmenler ve ölçülebilir sonuçlarla fark yaratıyoruz.",
+      "Sphere English olarak 2020'den bu yana Türkiye'deki şirketlere kurumsal iş İngilizcesi eğitimi veriyoruz. Oxford University Press müfredat ve kaynakları, deneyimli eğitmenler ve ölçülebilir sonuçlarla fark yaratıyoruz.",
     alternates: { canonical: 'https://www.sphereenglish.com/hakkimizda' },
     openGraph: {
-      title: 'Hakkımızda | Sphere English — Kurumsal İngilizce Uzmanları',
+      title: 'Hakkımızda — Kurumsal İngilizce Uzmanları',
       description: "Kurumsal iş İngilizcesi eğitiminde Türkiye'nin öncü platformu. Sertifikalı eğitmenler, Oxford müfredatı, 50+ şirket deneyimi.",
       url: 'https://www.sphereenglish.com/hakkimizda',
     },

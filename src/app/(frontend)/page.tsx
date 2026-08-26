@@ -20,6 +20,7 @@ import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import HeroSection from './home/components/HeroSection';
+import CoursesSection from './home/components/CoursesSection';
 import FounderQuoteSection from './home/components/FounderQuoteSection';
 import MerveFounderQuoteSection from './home/components/MerveFounderQuoteSection';
 import NedenBizSection from './home/components/NedenBizSection';
@@ -61,6 +62,8 @@ export default async function HomePage() {
       <Header />
       <main>
         <HeroSection data={cms} />
+        {/* Yeni: Kurslar bölümü — hero'dan hemen sonra birincil ticari alan (§9) */}
+        <CoursesSection />
         <NedenBizSection data={cms} />
         <EgitimModeliSection />
         <BentoGrid data={cms} />

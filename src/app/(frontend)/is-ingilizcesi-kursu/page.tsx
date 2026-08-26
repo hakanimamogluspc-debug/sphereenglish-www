@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     googleBot: { index: false, follow: false },
   },
   openGraph: {
-    title: 'Online İş İngilizcesi Kursu | Sphere English',
+    title: 'Online İş İngilizcesi Kursu',
     description:
       'A1-A2 ve B1-B2 için 4 haftalık canlı grup programları. Max 6 kişi, gerçek iş senaryoları.',
     url: 'https://www.sphereenglish.com/is-ingilizcesi-kursu',

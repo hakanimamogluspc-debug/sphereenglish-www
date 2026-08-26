@@ -24,12 +24,12 @@ export default function HeroSection({ data }: HeroProps = {}) {
   const subRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
 
-  const heroLine1 = data?.heroLine1 ?? 'Kurumsal';
-  const heroLine2 = data?.heroLine2 ?? 'İş İngilizcesi';
-  const heroLine3 = data?.heroLine3 ?? 'Eğitim Programı';
-  const heroSubtitle = data?.heroSubtitle ?? 'Çalışanlarınız için ölçülebilir, raporlanabilir ve hedef odaklı İngilizce eğitimi. Global rekabet gücünüzü artırın.';
-  const heroCta1Text = data?.heroCta1Text ?? 'HEMEN TEKLİF AL';
-  const heroCta2Text = data?.heroCta2Text ?? 'ÜCRETSİZ DEMO RANDEVUSU';
+  const heroLine1 = data?.heroLine1 ?? 'İş İngilizcesinde';
+  const heroLine2 = data?.heroLine2 ?? 'Bir Üst Seviyeye';
+  const heroLine3 = data?.heroLine3 ?? 'Geç.';
+  const heroSubtitle = data?.heroSubtitle ?? 'Türk profesyoneller için gerçek iş hayatına odaklanan online eğitim programları, dijital kaynaklar ve yapay zekâ destekli İngilizce pratik araçları.';
+  const heroCta1Text = data?.heroCta1Text ?? 'KURSLARI İNCELE';
+  const heroCta2Text = data?.heroCta2Text ?? 'E-KİTAPLARI KEŞFET';
   const heroBadge = data?.heroBadge ?? 'Canlı Ders Devam Ediyor';
   const heroStatValue = data?.heroStatValue ?? '+2';
   const heroStatLabel = data?.heroStatLabel ?? 'Seviye';
@@ -73,20 +73,30 @@ export default function HeroSection({ data }: HeroProps = {}) {
             {heroSubtitle}
           </p>
 
-          <div ref={ctaRef} className="flex flex-col gap-3 mb-6 lg:mb-12 w-full max-w-sm">
+          <div ref={ctaRef} className="flex flex-col gap-3 mb-4 lg:mb-6 w-full max-w-sm">
             <Link
-              href="/iletisim"
+              href="/is-ingilizcesi-kursu"
               className="bg-[#1B365D] text-white font-bold text-[13px] tracking-widest px-7 py-4 rounded-2xl flex items-center justify-center gap-2 text-center w-full hover:bg-[#0ea5e9] transition-colors duration-300 shadow-md"
             >
-              <Icon name="EnvelopeIcon" size={16} />
+              <Icon name="AcademicCapIcon" size={16} />
               {heroCta1Text}
             </Link>
             <Link
-              href="/iletisim"
+              href="/e-kitaplar"
               className="bg-white border-2 border-[#1B365D] text-[#1B365D] font-bold text-[13px] tracking-widest px-7 py-4 rounded-2xl flex items-center justify-center gap-2 text-center w-full hover:border-[#0ea5e9] hover:text-[#0ea5e9] transition-colors duration-300 shadow-sm"
             >
-              <Icon name="CalendarDaysIcon" size={16} />
+              <Icon name="BookOpenIcon" size={16} />
               {heroCta2Text}
+            </Link>
+          </div>
+
+          {/* Tertiary link — kurumsal kaybolmasın */}
+          <div className="mb-6 lg:mb-10 max-w-sm">
+            <Link
+              href="/iletisim"
+              className="text-[12px] text-gray-500 hover:text-[#0ea5e9] transition-colors inline-flex items-center gap-1.5"
+            >
+              Şirketiniz için eğitim mi arıyorsunuz? <span className="font-semibold text-[#1B365D] hover:text-[#0ea5e9]">Kurumsal Çözümler →</span>
             </Link>
           </div>
 
@@ -151,7 +161,7 @@ export default function HeroSection({ data }: HeroProps = {}) {
 
           <div className="w-full max-w-[480px] sm:max-w-[560px] mt-3 flex justify-center">
             <span className="inline-block text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase">
-              B2B KURUMSAL İNGİLİZCE EĞİTİMİ
+              BUSINESS ENGLISH FOR PROFESSIONALS
             </span>
           </div>
 

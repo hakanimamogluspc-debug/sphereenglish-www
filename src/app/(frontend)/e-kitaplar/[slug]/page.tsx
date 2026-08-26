@@ -91,7 +91,7 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const result = await getEbook(params.slug);
-  if (!result) return { title: 'Kitap Bulunamadı | Sphere English' };
+  if (!result) return { title: 'Kitap Bulunamadı' };
   const { ebook } = result;
   const title = ebook.seo_title || `${ebook.title} | Sphere English E-Kitap`;
   const description = ebook.seo_description || ebook.description.slice(0, 280);

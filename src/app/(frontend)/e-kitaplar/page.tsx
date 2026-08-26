@@ -458,7 +458,7 @@ export default async function EKitaplarPage() {
             </h2>
             <p className="text-[15px] text-white/75 leading-relaxed mb-6">
               Türk iş profesyonellerinin kurumsal hayatta en sık karşılaştığı 1000 İngilizce
-              kelimeyi ve kalıbı 10 tematik kitaba böldük. Her kitap; toplantıdan e-postaya, sunumdan
+              kelimeyi ve kalıbı 5 tematik kitapta bir araya getirdik. Her kitap; toplantıdan e-postaya, sunumdan
               müzakereye gerçek iş senaryoları üzerinden Türkçe açıklamalarla kalıcı öğrenme
               sağlıyor. Sphere English AI Coach&apos;u ile birlikte kullanın, telaffuzunuzu da
               geliştirin.

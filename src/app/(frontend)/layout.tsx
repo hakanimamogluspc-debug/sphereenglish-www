@@ -103,7 +103,7 @@ const organizationJsonLd = {
   logo: `${BASE_URL}/assets/images/logo-1774019980261.png`,
   image: `${BASE_URL}/assets/images/hero_online_english_lesson.png`,
   description:
-    "Türkiye'nin önde gelen kurumsal İş İngilizcesi eğitim platformu. Oxford University Press ortaklığı ile şirket çalışanlarına ölçülebilir, raporlanabilir ve hedef odaklı İngilizce eğitimi sunmaktadır.",
+    "Türkiye'nin önde gelen kurumsal İş İngilizcesi eğitim platformu. Oxford University Press müfredat kaynakları ile şirket çalışanlarına ölçülebilir, raporlanabilir ve hedef odaklı İngilizce eğitimi sunmaktadır.",
   foundingDate: '2020',
   areaServed: {
     '@type': 'Country',
@@ -142,7 +142,7 @@ const serviceJsonLd = {
   '@type': 'EducationalOccupationalProgram',
   name: 'Kurumsal İş İngilizcesi Eğitim Programı',
   description:
-    'Şirket çalışanları için A1-C2 seviye aralığında, sektöre özel hazırlanmış, Zoom üzerinden canlı dersler ve AI destekli pratik ile sunulan kurumsal İngilizce eğitimi. Oxford University Press sertifikalı müfredat.',
+    'Şirket çalışanları için A1-C2 seviye aralığında, sektöre özel hazırlanmış, Zoom üzerinden canlı dersler ve AI destekli pratik ile sunulan kurumsal İngilizce eğitimi. Oxford University Press müfredat ve kaynakları.',
   provider: {
     '@type': 'EducationalOrganization',
     name: 'Sphere English',
@@ -186,7 +186,7 @@ const faqJsonLd = {
       name: 'Sphere English nedir?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Sphere English, Türkiye'nin önde gelen kurumsal İş İngilizcesi eğitim platformudur. B2B model ile şirket çalışanlarına ölçülebilir, raporlanabilir ve hedef odaklı İngilizce eğitimi sunmaktadır. Oxford University Press ile resmi eğitim ortaklığı bulunmaktadır.",
+        text: "Sphere English, Türkiye'nin önde gelen kurumsal İş İngilizcesi eğitim platformudur. B2B model ile şirket çalışanlarına ölçülebilir, raporlanabilir ve hedef odaklı İngilizce eğitimi sunmaktadır. Oxford University Press müfredat ve kaynaklarını kullanmaktadır.",
       },
     },
     {
@@ -207,10 +207,10 @@ const faqJsonLd = {
     },
     {
       '@type': 'Question',
-      name: 'Oxford University Press ile ortaklık ne anlama geliyor?',
+      name: 'Oxford University Press müfredatı nasıl kullanılıyor?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Sphere English, Oxford University Press'in Türkiye'deki onaylı kurumsal eğitim ortağıdır. Bu sayede Oxford'un küresel ölçekte kabul görmüş müfredatı ve materyalleri kullanılmakta, program sonunda uluslararası geçerliliği olan sertifikalar düzenlenmektedir.",
+        text: "Sphere English, Oxford University Press'in yayınladığı müfredat ve kaynakları kullanmaktadır. Bu sayede Oxford'un küresel ölçekte kabul görmüş müfredatı ve materyalleri kullanılmakta, program sonunda katılım sertifikası düzenlenmektedir.",
       },
     },
     {
@@ -226,7 +226,7 @@ const faqJsonLd = {
       name: 'Türkiye\'de en iyi kurumsal ingilizce eğitimi hangisi?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Sphere English, Oxford University Press ortaklığı, AI destekli teknolojisi ve ölçülebilir sonuç garantisi ile Türkiye'nin önde gelen kurumsal İngilizce eğitim platformları arasında yer almaktadır. 6 aylık program sonunda ortalama 2 seviye ilerleme kayıt altına alınmaktadır.",
+        text: "Sphere English, Oxford University Press müfredat kaynakları, AI destekli teknolojisi ve ölçülebilir sonuç garantisi ile Türkiye'nin önde gelen kurumsal İngilizce eğitim platformları arasında yer almaktadır. 6 aylık program sonunda ortalama 2 seviye ilerleme kayıt altına alınmaktadır.",
       },
     },
     {

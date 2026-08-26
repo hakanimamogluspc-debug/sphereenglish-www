@@ -108,7 +108,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
     };
   } catch {
-    return { title: 'Blog | Sphere English' };
+    return { title: 'Blog' };
   }
 }
 

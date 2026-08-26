@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Kayıt Formu | Sphere English Kurslar",
+  title: "Kayıt Formu Kurslar",
   robots: { index: false, follow: false },
 };
 

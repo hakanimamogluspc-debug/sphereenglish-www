@@ -9,7 +9,7 @@ export const metadata: Metadata = {
       'Yöneticilerden satış ekiplerine, finans profesyonellerinden teknik kadrolara: sektörünüze ve rolünüze özel kurumsal iş İngilizcesi programları. Toplantı, sunum, e-posta, müzakere ingilizcesi ve daha fazlası.',
     alternates: { canonical: 'https://www.sphereenglish.com/cozumler' },
     openGraph: {
-      title: 'Kurumsal İngilizce Çözümleri | Sphere English',
+      title: 'Kurumsal İngilizce Çözümleri',
       description: 'Sektörünüze ve rolünüze özel iş İngilizcesi programları. Yönetici, satış, İK, teknik ve finans profesyonelleri için.',
       url: 'https://www.sphereenglish.com/cozumler',
     },

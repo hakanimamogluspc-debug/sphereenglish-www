@@ -15,13 +15,13 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const solution = await fetchSolution(slug);
-  if (!solution) return { title: 'Sayfa Bulunamadı | Sphere English' };
+  if (!solution) return { title: 'Sayfa Bulunamadı' };
   return {
-    title: `${solution.title} | Sphere English`,
+    title: `${solution.title}`,
     description: solution.description,
     alternates: { canonical: `https://www.sphereenglish.com/cozumler/${slug}` },
     openGraph: {
-      title: `${solution.title} | Sphere English`,
+      title: `${solution.title}`,
       description: solution.description,
       url: `https://www.sphereenglish.com/cozumler/${slug}`,
     },

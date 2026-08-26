@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import AbonelikClient from './AbonelikClient';
 
 export const metadata: Metadata = {
-  title: 'Abonelik Planları | Sphere English',
+  title: 'Abonelik Planları',
   description:
     'Sphere English bireysel İngilizce eğitim aboneliği planları. Aylık ve peşin paket seçenekleri, Iyzico ile güvenli ödeme.',
   alternates: { canonical: 'https://www.sphereenglish.com/abonelik' },

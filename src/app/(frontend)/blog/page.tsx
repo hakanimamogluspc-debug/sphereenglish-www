@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     'İş dünyasında İngilizce, kurumsal dil eğitimi, kariyer gelişimi ve sektör haberleri hakkında uzman içerikler. Sphere English Blog.',
   alternates: { canonical: 'https://www.sphereenglish.com/blog' },
   openGraph: {
-    title: 'Blog | Sphere English — İş İngilizcesi Rehberi',
+    title: 'Blog — İş İngilizcesi Rehberi',
     description:
       'İş dünyasında İngilizce ve kurumsal eğitim üzerine uzman içerikler, ipuçları ve güncel haberler.',
     url: 'https://www.sphereenglish.com/blog',

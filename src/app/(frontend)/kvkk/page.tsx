@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'KVKK Aydınlatma Metni | Sphere English',
+  title: 'KVKK Aydınlatma Metni',
   description:
     'Sphere English KVKK aydınlatma metni. 6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında kişisel veri işleme süreçleri.',
   alternates: { canonical: 'https://www.sphereenglish.com/kvkk' },

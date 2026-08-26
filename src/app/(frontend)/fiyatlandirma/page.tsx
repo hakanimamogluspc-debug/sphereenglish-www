@@ -10,7 +10,7 @@ const SHOW_PRICING = process.env.NEXT_PUBLIC_SHOW_PRICING === 'true';
 
 export const metadata: Metadata = SHOW_PRICING
   ? {
-      title: 'Fiyatlandırma | Sphere English — Kurumsal İş İngilizcesi Eğitim Platformu',
+      title: 'Fiyatlandırma — Kurumsal İş İngilizcesi Eğitim Platformu',
       description:
         'Sphere English bireysel ve kurumsal İngilizce eğitim paketleri. Şeffaf fiyatlandırma, aylık ve peşin paket seçenekleri, kurumsal teklif imkanı.',
       alternates: { canonical: 'https://www.sphereenglish.com/fiyatlandirma' },
@@ -23,7 +23,7 @@ export const metadata: Metadata = SHOW_PRICING
       },
     }
   : {
-      title: 'Sayfa bulunamadı | Sphere English',
+      title: 'Sayfa bulunamadı',
       robots: { index: false, follow: false },
     };
 

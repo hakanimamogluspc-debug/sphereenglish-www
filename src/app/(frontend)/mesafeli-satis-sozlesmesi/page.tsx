@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Mesafeli Satış Sözleşmesi | Sphere English',
+  title: 'Mesafeli Satış Sözleşmesi',
   description:
     'Sphere English dijital eğitim aboneliği satışına ilişkin Mesafeli Satış Sözleşmesi. 6502 sayılı Tüketici Kanunu kapsamında hak ve yükümlülükler.',
   alternates: { canonical: 'https://www.sphereenglish.com/mesafeli-satis-sozlesmesi' },

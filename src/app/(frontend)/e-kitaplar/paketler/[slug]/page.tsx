@@ -73,7 +73,7 @@ function formatTRY(amount: number | string) {
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const bundle = await getBundle(params.slug);
-  if (!bundle) return { title: 'Paket bulunamadı | Sphere English' };
+  if (!bundle) return { title: 'Paket bulunamadı' };
 
   const title = bundle.seo_title || `${bundle.title} | Sphere English`;
   const description =

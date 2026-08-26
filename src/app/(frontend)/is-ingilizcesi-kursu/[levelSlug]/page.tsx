@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       googleBot: { index: false, follow: false },
     },
     openGraph: {
-      title: `${seo.title} | Sphere English`,
+      title: `${seo.title}`,
       description: seo.description,
       url: `https://www.sphereenglish.com/is-ingilizcesi-kursu/${levelSlug}`,
     },

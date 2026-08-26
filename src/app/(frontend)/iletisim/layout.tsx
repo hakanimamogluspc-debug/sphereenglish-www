@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
       "Şirketiniz için kurumsal iş İngilizcesi eğitim teklifi alın. Ücretsiz demo randevusu, ihtiyaç analizi ve kişiselleştirilmiş program önerisi için bizimle iletişime geçin.",
     alternates: { canonical: 'https://www.sphereenglish.com/iletisim' },
     openGraph: {
-      title: 'İletişim | Sphere English — Kurumsal İngilizce Eğitimi',
+      title: 'İletişim — Kurumsal İngilizce Eğitimi',
       description: "Şirketiniz için kurumsal ingilizce eğitim teklifi alın. Ücretsiz demo ve ihtiyaç analizi.",
       url: 'https://www.sphereenglish.com/iletisim',
     },

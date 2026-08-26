@@ -6,7 +6,7 @@ import PurchaseTracker from '@/components/PurchaseTracker';
 import CartClearOnMount from './CartClearOnMount';
 
 export const metadata: Metadata = {
-  title: 'Ödeme Başarılı | Sphere English',
+  title: 'Ödeme Başarılı',
   robots: { index: false, follow: false },
 };
 

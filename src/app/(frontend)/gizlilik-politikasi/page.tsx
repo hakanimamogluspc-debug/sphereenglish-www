@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Gizlilik Politikası | Sphere English',
+  title: 'Gizlilik Politikası',
   description:
     'Sphere English gizlilik politikası. Kullanıcı verilerinin nasıl toplandığı, işlendiği, korunduğu ve haklarınız hakkında detaylı bilgi.',
   alternates: { canonical: 'https://www.sphereenglish.com/gizlilik-politikasi' },

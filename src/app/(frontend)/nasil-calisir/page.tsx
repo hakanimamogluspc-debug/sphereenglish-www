@@ -14,13 +14,13 @@ const steps = [
   {
     number: '02',
     title: 'Seviye Tespiti',
-    description: 'Oxford standartlarında seviye testi ile başlangıç noktanızı belirleyin.',
+    description: 'CEFR uyumlu seviye testi ile başlangıç noktanızı belirleyin.',
     icon: '📊',
   },
   {
     number: '03',
     title: 'Kişiselleştirilmiş Program',
-    description: 'Hedeflerinize ve sektörünüze özel müfredat hazırlanır.',
+    description: 'Oxford University Press müfredat ve kaynaklarını temel alarak hedeflerinize ve sektörünüze özel program hazırlanır.',
     icon: '📋',
   },
   {
@@ -31,8 +31,8 @@ const steps = [
   },
   {
     number: '05',
-    title: 'Dersler ve Takip',
-    description: 'Zoom entegreli online dersler. Esnek saatler, kayıt imkanı.',
+    title: 'Canlı Dersler ve Takip',
+    description: 'Zoom entegreli, %100 canlı online dersler. Haftalık program, sürdürülebilir tempo.',
     icon: '💻',
   },
   {
@@ -63,60 +63,32 @@ export default function NasilCalisirPage() {
           </div>
         </section>
 
-        {/* Timeline Section */}
+        {/* Timeline Section — her adım TEK KEZ render (duplicate content bug fix) */}
         <section className="py-16 md:py-24 bg-white">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="relative">
-              {/* Center vertical line */}
-              <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#0ea5e9] via-[#1B365D] to-[#0ea5e9] -translate-x-1/2" />
+              {/* Desktop dikey çizgi (ortada) */}
+              <div className="hidden md:block absolute left-1/2 top-4 bottom-4 w-0.5 bg-gradient-to-b from-[#0ea5e9] via-[#1B365D] to-[#0ea5e9] -translate-x-1/2" aria-hidden="true" />
+              {/* Mobile dikey çizgi (solda) */}
+              <div className="md:hidden absolute left-[9px] top-4 bottom-4 w-0.5 bg-gradient-to-b from-[#0ea5e9] to-[#1B365D]" aria-hidden="true" />
 
-              <div className="flex flex-col gap-12 md:gap-16">
+              <ol className="flex flex-col gap-8 md:gap-12">
                 {steps.map((step, index) => {
                   const isLeft = index % 2 === 0;
                   return (
-                    <div key={step.number} className="relative flex items-center">
-                      {/* Desktop layout */}
-                      <div className="hidden md:flex w-full items-center">
-                        {/* Left side */}
-                        <div className={`w-1/2 ${isLeft ? 'pr-12 flex justify-end' : 'pr-12'}`}>
-                          {isLeft ? (
-                            <TimelineCard step={step} />
-                          ) : (
-                            <div />
-                          )}
-                        </div>
-
-                        {/* Center dot */}
-                        <div className="absolute left-1/2 -translate-x-1/2 z-10 flex items-center justify-center">
-                          <div className="w-5 h-5 rounded-full bg-[#0ea5e9] border-4 border-white shadow-lg shadow-[#0ea5e9]/30" />
-                        </div>
-
-                        {/* Right side */}
-                        <div className={`w-1/2 ${!isLeft ? 'pl-12 flex justify-start' : 'pl-12'}`}>
-                          {!isLeft ? (
-                            <TimelineCard step={step} />
-                          ) : (
-                            <div />
-                          )}
-                        </div>
+                    <li key={step.number} className="relative md:grid md:grid-cols-2 md:gap-x-12 flex items-start gap-4 md:gap-0">
+                      {/* Dot — mobile: solda 20px, desktop: ortada absolute */}
+                      <div className="flex-shrink-0 md:absolute md:left-1/2 md:top-6 md:-translate-x-1/2 z-10 pt-1 md:pt-0">
+                        <div className="w-5 h-5 rounded-full bg-[#0ea5e9] border-4 border-white shadow-lg shadow-[#0ea5e9]/30" />
                       </div>
-
-                      {/* Mobile layout */}
-                      <div className="md:hidden flex items-start gap-3 sm:gap-4 w-full">
-                        <div className="flex flex-col items-center pt-1">
-                          <div className="w-4 h-4 rounded-full bg-[#0ea5e9] border-4 border-white shadow-md flex-shrink-0" />
-                          {index < steps.length - 1 && (
-                            <div className="w-0.5 bg-gradient-to-b from-[#0ea5e9] to-[#1B365D] flex-1 mt-1" style={{ minHeight: '80px' }} />
-                          )}
-                        </div>
-                        <div className="flex-1 pb-4 min-w-0">
-                          <TimelineCard step={step} />
-                        </div>
+                      {/* Card — desktop: alternating column, mobile: sağ tarafta tek kolon */}
+                      <div className={`flex-1 md:flex-none min-w-0 ${isLeft ? 'md:col-start-1 md:pr-6' : 'md:col-start-2 md:pl-6'}`}>
+                        <TimelineCard step={step} />
                       </div>
-                    </div>
+                    </li>
                   );
                 })}
-              </div>
+              </ol>
             </div>
           </div>
         </section>
@@ -131,7 +103,7 @@ export default function NasilCalisirPage() {
               Ücretsiz demo randevunuzu alın, farkı kendiniz görün.
             </p>
             <Link
-              href="/iletisim"
+              href="/demo"
               className="inline-block px-8 py-4 rounded-full bg-[#0ea5e9] text-white text-[13px] font-bold tracking-[0.18em] hover:bg-[#0284c7] transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               ÜCRETSİZ DEMO RANDEVUSU AL

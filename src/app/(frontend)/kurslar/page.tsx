@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Kurumsal İngilizce Grup Programları | Sphere English',
+  title: 'Kurumsal İngilizce Grup Programları',
   description:
     '4 haftada iş İngilizcesi becerileri. A1-A2 için Foundation, B1-B2 için Corporate Diplomacy programları.',
   robots: {
