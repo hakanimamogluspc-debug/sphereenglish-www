@@ -29,7 +29,9 @@ export default function HeroSection({ data }: HeroProps = {}) {
   const heroLine3 = data?.heroLine3 ?? 'Geç.';
   const heroSubtitle = data?.heroSubtitle ?? 'Türk profesyoneller için gerçek iş hayatına odaklanan online eğitim programları, dijital kaynaklar ve yapay zekâ destekli İngilizce pratik araçları.';
   const heroCta1Text = data?.heroCta1Text ?? 'KURSLARI İNCELE';
-  const heroCta2Text = data?.heroCta2Text ?? 'E-KİTAPLARI KEŞFET';
+  // NOT: 2. CTA metni CMS'te tarihsel olarak "ÜCRETSİZ DEMO RANDEVUSU" — link /demo'ya
+  // gitmeli. E-kitap keşfi footer + Kurslar bölümü + nav'dan zaten mevcut.
+  const heroCta2Text = data?.heroCta2Text ?? 'ÜCRETSİZ DEMO RANDEVUSU';
   const heroBadge = data?.heroBadge ?? 'Canlı Ders Devam Ediyor';
   const heroStatValue = data?.heroStatValue ?? '+2';
   const heroStatLabel = data?.heroStatLabel ?? 'Seviye';
@@ -82,10 +84,10 @@ export default function HeroSection({ data }: HeroProps = {}) {
               {heroCta1Text}
             </Link>
             <Link
-              href="/e-kitaplar"
+              href="/demo"
               className="bg-white border-2 border-[#1B365D] text-[#1B365D] font-bold text-[13px] tracking-widest px-7 py-4 rounded-2xl flex items-center justify-center gap-2 text-center w-full hover:border-[#0ea5e9] hover:text-[#0ea5e9] transition-colors duration-300 shadow-sm"
             >
-              <Icon name="BookOpenIcon" size={16} />
+              <Icon name="CalendarDaysIcon" size={16} />
               {heroCta2Text}
             </Link>
           </div>
