@@ -67,11 +67,11 @@ export default function HeroSection({ data }: HeroProps = {}) {
         <div className="flex flex-col justify-center lg:pr-16 lg:pt-[80px] lg:pb-[60px]">
           <h1
             ref={headlineRef}
-            className="text-[28px] sm:text-[44px] lg:text-[60px] xl:text-[68px] font-extrabold leading-[1.08] tracking-[-0.025em] text-[#1B365D] mt-[30px] sm:mt-[60px] mb-[20px] sm:mb-[30px]"
+            className="text-[28px] sm:text-[44px] lg:text-[60px] xl:text-[68px] font-extrabold leading-[1.18] tracking-[-0.02em] text-[#1B365D] mt-[30px] sm:mt-[60px] mb-[20px] sm:mb-[30px]"
           >
-            {heroLine1}<br />
-            {heroLine2}<br />
-            <span className="text-[#0ea5e9]">{heroLine3}</span>
+            <span className="block pb-1">{heroLine1}</span>
+            <span className="block pb-1">{heroLine2}</span>
+            <span className="block text-[#0ea5e9]">{heroLine3}</span>
           </h1>
 
           <p
