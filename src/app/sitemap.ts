@@ -49,8 +49,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const today = new Date().toISOString();
 
   const staticUrls: MetadataRoute.Sitemap = [
+    // / — YENİ canonical anasayfa (eski /home 301 → /)
     { url: BASE_URL, lastModified: today, changeFrequency: 'weekly', priority: 1.0 },
-    { url: `${BASE_URL}/home`, lastModified: today, changeFrequency: 'weekly', priority: 1.0 },
+    // NOT: /home ve /kurslar sitemap'ten çıkarıldı — ikisi de 301 redirect
+    // NOT: /is-ingilizcesi-kursu Eylül lansmanına kadar noindex, sitemap'e eklenmedi
     { url: `${BASE_URL}/hakkimizda`, lastModified: today, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE_URL}/nasil-calisir`, lastModified: today, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE_URL}/cozumler`, lastModified: today, changeFrequency: 'weekly', priority: 0.9 },

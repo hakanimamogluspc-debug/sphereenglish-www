@@ -3,14 +3,14 @@ export const dynamic = 'force-dynamic';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Blog — İş İngilizcesi & Kurumsal Eğitim Rehberi',
+  title: 'İş İngilizcesi Blogu & Kariyer Rehberi',
   description:
-    'İş dünyasında İngilizce, kurumsal dil eğitimi, kariyer gelişimi ve sektör haberleri hakkında uzman içerikler. Sphere English Blog.',
+    'İş İngilizcesi, profesyonel iletişim, toplantılar, e-posta, mülakatlar ve kariyer gelişimi için uygulamalı rehberler. Türk profesyoneller için hazırlanan uzman içerikler.',
   alternates: { canonical: 'https://www.sphereenglish.com/blog' },
   openGraph: {
-    title: 'Blog — İş İngilizcesi Rehberi',
+    title: 'İş İngilizcesi Blogu & Kariyer Rehberi',
     description:
-      'İş dünyasında İngilizce ve kurumsal eğitim üzerine uzman içerikler, ipuçları ve güncel haberler.',
+      'Toplantıdan mülakata, e-postadan kariyere iş hayatında İngilizce üzerine uygulamalı rehberler.',
     url: 'https://www.sphereenglish.com/blog',
     images: [{ url: '/assets/blog_cover_english.svg', width: 1200, height: 630 }],
   },
@@ -162,13 +162,13 @@ export default async function BlogPage() {
 
       <section className="pt-32 pb-16 bg-white border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
-          <span className="inline-block text-xs font-semibold tracking-widest text-[#00BCD4] uppercase mb-4">Blog</span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1B365D] mb-4 leading-tight">
-            İngilizce & Eğitim<br />
-            <span className="text-[#00BCD4]">Dünyasından Haberler</span>
+          <span className="inline-block text-xs font-bold tracking-[0.22em] text-[#0ea5e9] uppercase mb-4">İŞ İNGİLİZCESİ BLOGU</span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#1B365D] mb-4 leading-tight tracking-tight">
+            İş İngilizcesi Blogu &<br />
+            <span className="text-[#0ea5e9]">Kariyer Rehberi</span>
           </h1>
-          <p className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto">
-            Dil öğrenimi, kariyer gelişimi ve kurumsal eğitim hakkında uzman içerikler.
+          <p className="text-base sm:text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
+            İş İngilizcesi, profesyonel iletişim, toplantılar, e-posta, mülakatlar ve kariyer gelişimi için uygulamalı rehberler.
           </p>
         </div>
       </section>

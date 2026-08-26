@@ -84,8 +84,54 @@ export default async function LevelDetailPage({ params }: Props) {
   const cohort = COHORTS.find((c) => c.programmeSlug === p.levelSlug);
   const isWaitlist = cohort?.status === 'waitlist';
 
+  // JSON-LD: Course + BreadcrumbList
+  const url = `https://www.sphereenglish.com/is-ingilizcesi-kursu/${p.levelSlug}`;
+  const courseJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name: p.titleTr,
+    alternateName: p.titleEn,
+    description: p.description,
+    provider: {
+      '@type': 'EducationalOrganization',
+      name: 'Sphere English',
+      url: 'https://www.sphereenglish.com',
+      sameAs: 'https://www.sphereenglish.com',
+    },
+    url,
+    educationalLevel: p.levelCefr,
+    inLanguage: 'tr',
+    audience: { '@type': 'EducationalAudience', educationalRole: 'Professional' },
+    hasCourseInstance: {
+      '@type': 'CourseInstance',
+      courseMode: 'online',
+      courseWorkload: p.durationLabel,
+      inLanguage: 'tr',
+      location: { '@type': 'VirtualLocation', url: 'https://zoom.us' },
+    },
+    offers: {
+      '@type': 'Offer',
+      price: (p.priceKurus / 100).toFixed(2),
+      priceCurrency: 'TRY',
+      url,
+      availability: cohort?.status === 'waitlist' ? 'https://schema.org/PreOrder' : 'https://schema.org/InStock',
+      category: 'Online Course',
+    },
+  };
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: 'https://www.sphereenglish.com/' },
+      { '@type': 'ListItem', position: 2, name: 'İş İngilizcesi Kursu', item: 'https://www.sphereenglish.com/is-ingilizcesi-kursu' },
+      { '@type': 'ListItem', position: 3, name: p.levelCefr, item: url },
+    ],
+  };
+
   return (
     <main className="bg-white min-h-screen">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <Header />
 
       {/* Breadcrumb */}

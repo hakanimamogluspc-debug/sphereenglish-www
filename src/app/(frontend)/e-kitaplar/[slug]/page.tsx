@@ -93,7 +93,9 @@ export async function generateMetadata({
   const result = await getEbook(params.slug);
   if (!result) return { title: 'Kitap Bulunamadı' };
   const { ebook } = result;
-  const title = ebook.seo_title || `${ebook.title} | Sphere English E-Kitap`;
+  // SEO title format: "İş İngilizcesi Kitabı: [Konu]" — layout template " | Sphere English" ekler
+  // ebook.seo_title DB'de spesifik override varsa onu kullan, yoksa standardize et
+  const title = ebook.seo_title || `İş İngilizcesi Kitabı: ${ebook.title}`;
   const description = ebook.seo_description || ebook.description.slice(0, 280);
   const url = `https://www.sphereenglish.com/e-kitaplar/${ebook.slug}`;
   return {
@@ -446,6 +448,28 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
           </div>
         </section>
       )}
+
+      {/* Cross-sell: E-kitap → Kurs (§14) */}
+      <section className="bg-gradient-to-br from-[#0B1F3A] to-[#1B365D] text-white py-16 lg:py-20">
+        <div className="max-w-4xl mx-auto px-6 lg:px-10 text-center">
+          <p className="text-[11px] font-bold tracking-[0.22em] text-[#7dd3fc] uppercase mb-4">
+            KİTAPTAN KURSA
+          </p>
+          <h2 className="text-[28px] lg:text-[38px] font-extrabold leading-tight mb-4 tracking-tight">
+            Okuyarak Öğreniyorsunuz. Şimdi Gerçek İş Senaryolarında Kullanın.
+          </h2>
+          <p className="text-[16px] text-white/80 leading-relaxed mb-8 max-w-2xl mx-auto">
+            Kitaptaki kalıpları maks 6 kişilik canlı grup derslerinde uygulayın.
+            Toplantı yönetimi, kriz iletişimi, mülakat ve pazarlık senaryoları — Türk profesyoneller için tasarlandı.
+          </p>
+          <Link
+            href="/is-ingilizcesi-kursu"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-[#0ea5e9] hover:bg-[#0284c7] text-white font-bold text-[15px] transition-colors"
+          >
+            İş İngilizcesi Kurslarını İncele →
+          </Link>
+        </div>
+      </section>
 
       <Footer />
     </main>

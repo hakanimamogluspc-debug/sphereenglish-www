@@ -70,9 +70,43 @@ const FAQ = [
   },
 ];
 
+// JSON-LD: ItemList (2 kurs) + BreadcrumbList
+const listJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: PROGRAMMES.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'Course',
+      name: p.titleTr,
+      description: p.tagline,
+      provider: { '@type': 'EducationalOrganization', name: 'Sphere English', url: 'https://www.sphereenglish.com' },
+      url: `https://www.sphereenglish.com/is-ingilizcesi-kursu/${p.levelSlug}`,
+      educationalLevel: p.levelCefr,
+      offers: {
+        '@type': 'Offer',
+        price: (p.priceKurus / 100).toFixed(2),
+        priceCurrency: 'TRY',
+      },
+    },
+  })),
+};
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: 'https://www.sphereenglish.com/' },
+    { '@type': 'ListItem', position: 2, name: 'İş İngilizcesi Kursu', item: 'https://www.sphereenglish.com/is-ingilizcesi-kursu' },
+  ],
+};
+
 export default function CourseLandingPage() {
   return (
     <main className="bg-white min-h-screen">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(listJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <Header />
 
       {/* Hero */}

@@ -8,11 +8,11 @@ export default function Footer() {
   return (
     <footer style={{ background: '#0d1f4e' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16">
-        {/* Top row */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-10 mb-12 pb-12 border-b border-white/10">
+        {/* Top row — Brand (2 col) + Öğren + Kurumsal + Sphere + İletişim (4 col split) */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-10 mb-12 pb-12 border-b border-white/10">
 
           {/* Brand */}
-          <div className="lg:col-span-2">
+          <div className="col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2.5 mb-6">
               <Link href="/">
                 <Image
@@ -25,7 +25,7 @@ export default function Footer() {
               </Link>
             </div>
             <p className="text-[14px] text-white/65 leading-relaxed max-w-xs mb-7">
-              Kurumsal İş İngilizcesi eğitiminde ölçülebilir sonuçlar. Şirketinizi global arenada rekabetçi kılıyoruz.
+              Türk profesyoneller için gerçek iş hayatına odaklanan İş İngilizcesi eğitimi, dijital kaynaklar ve AI destekli pratik.
             </p>
             <div className="flex items-center gap-3">
               <a
@@ -54,22 +54,38 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Navigation */}
+          {/* Öğren — bireysel ürünler önce */}
           <div>
-            <p className="text-[11px] font-semibold tracking-[0.22em] text-white/45 mb-6 uppercase">Program</p>
+            <p className="text-[11px] font-semibold tracking-[0.22em] text-white/45 mb-6 uppercase">Öğren</p>
             <div className="flex flex-col gap-3.5">
-              <Link href="/home" className="text-[14px] text-white/70 hover:text-white transition-colors">Anasayfa</Link>
-              <Link href="/hakkimizda" className="text-[14px] text-white/70 hover:text-white transition-colors">Hakkımızda</Link>
-              <Link href="/nasil-calisir" className="text-[14px] text-white/70 hover:text-white transition-colors">Nasıl Çalışır</Link>
+              <Link href="/is-ingilizcesi-kursu" className="text-[14px] text-white/70 hover:text-white transition-colors">Kurslar</Link>
+              <Link href="/e-kitaplar" className="text-[14px] text-white/70 hover:text-white transition-colors">E-Kitaplar</Link>
+              <Link href="/ai-studio" className="text-[14px] text-white/70 hover:text-white transition-colors">AI Studio</Link>
+              <Link href="/abonelik" className="text-[14px] text-white/70 hover:text-white transition-colors">Abonelik</Link>
+              <Link href="/blog" className="text-[14px] text-white/70 hover:text-white transition-colors">Blog</Link>
+            </div>
+          </div>
+
+          {/* Kurumsal */}
+          <div>
+            <p className="text-[11px] font-semibold tracking-[0.22em] text-white/45 mb-6 uppercase">Kurumsal</p>
+            <div className="flex flex-col gap-3.5">
               <Link href="/cozumler" className="text-[14px] text-white/70 hover:text-white transition-colors">Çözümler</Link>
+              <Link href="/nasil-calisir" className="text-[14px] text-white/70 hover:text-white transition-colors">Nasıl Çalışır</Link>
+              <Link href="/iletisim" className="text-[14px] text-white/70 hover:text-white transition-colors">Kurumsal Teklif Al</Link>
               {process.env.NEXT_PUBLIC_SHOW_PRICING === 'true' && (
                 <Link href="/fiyatlandirma" className="text-[14px] text-white/70 hover:text-white transition-colors">Fiyatlandırma</Link>
               )}
-              <Link href="/e-kitaplar" className="text-[14px] text-white/70 hover:text-white transition-colors">E-Kitaplar</Link>
-              <Link href="/abonelik" className="text-[14px] text-white/70 hover:text-white transition-colors">Abonelik</Link>
-              <Link href="/egitmen-ol" className="text-[14px] text-white/70 hover:text-white transition-colors">Eğitmen Ol</Link>
-              <Link href="/blog" className="text-[14px] text-white/70 hover:text-white transition-colors">Blog</Link>
+            </div>
+          </div>
+
+          {/* Sphere English */}
+          <div>
+            <p className="text-[11px] font-semibold tracking-[0.22em] text-white/45 mb-6 uppercase">Sphere English</p>
+            <div className="flex flex-col gap-3.5">
+              <Link href="/hakkimizda" className="text-[14px] text-white/70 hover:text-white transition-colors">Hakkımızda</Link>
               <Link href="/iletisim" className="text-[14px] text-white/70 hover:text-white transition-colors">İletişim</Link>
+              <Link href="/egitmen-ol" className="text-[14px] text-white/70 hover:text-white transition-colors">Eğitmen Ol</Link>
             </div>
           </div>
 

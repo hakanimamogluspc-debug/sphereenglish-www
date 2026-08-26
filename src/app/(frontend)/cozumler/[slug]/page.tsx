@@ -12,16 +12,38 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+/**
+ * SEO-friendly title map — arama niyeti odaklı (§19).
+ * Layout template ` | Sphere English` suffix ekler; burada primary keyword + secondary keyword.
+ * Yeni çözüm eklendiğinde bu map'e de yeni satır ekleyin.
+ */
+const SEO_TITLE_MAP: Record<string, string> = {
+  'toplanti-ingilizcesi': 'Toplantı İngilizcesi Kursu | İş İngilizcesi',
+  'eposta-yazimi': 'İngilizce E-posta Yazma Eğitimi | İş İngilizcesi',
+  'sunum-teknikleri': 'İngilizce Sunum Teknikleri Eğitimi',
+  'muzakere-ve-ikna': 'İngilizce Müzakere ve İkna Eğitimi',
+  'telaffuz-ve-akicilik': 'İngilizce Telaffuz ve Akıcılık Eğitimi',
+  'finans-ingilizcesi': 'Finans İngilizcesi Eğitimi | Financial English',
+  'teknoloji-ingilizcesi': 'Teknoloji İngilizcesi | IT & Business English',
+  'saglik-ingilizcesi': 'Sağlık İngilizcesi Eğitimi | Medical English',
+  'hukuk-ingilizcesi': 'Hukuk İngilizcesi Eğitimi | Legal English',
+  'yoneticiler-icin': 'Yöneticiler İçin İngilizce Eğitimi | Executive English',
+  'ik-profesyonelleri': 'İK için İngilizce Eğitimi | HR Business English',
+  'satis-ekipleri': 'Satış Ekipleri İçin İngilizce Eğitimi',
+  'teknik-ekipler': 'Teknik Ekipler İçin İngilizce Eğitimi',
+};
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const solution = await fetchSolution(slug);
   if (!solution) return { title: 'Sayfa Bulunamadı' };
+  const seoTitle = SEO_TITLE_MAP[slug] ?? solution.title;
   return {
-    title: `${solution.title}`,
+    title: seoTitle,
     description: solution.description,
     alternates: { canonical: `https://www.sphereenglish.com/cozumler/${slug}` },
     openGraph: {
-      title: `${solution.title}`,
+      title: seoTitle,
       description: solution.description,
       url: `https://www.sphereenglish.com/cozumler/${slug}`,
     },
