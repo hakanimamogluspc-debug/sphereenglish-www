@@ -11,14 +11,13 @@ interface Props {
   variant?: "primary" | "secondary";
 }
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ??
-  "https://app.sphereenglish.com";
-
 /**
  * Kurs "Ön Kayıt Ol" butonu — tıklanınca minimal iyzico form modal açar.
- * Ad + email + telefon alır → Iyzico checkout başlatır → yönlendirir.
+ * Ad + email + telefon alır → Iyzico checkout başlatır (www /api/payment/course/initialize) → yönlendirir.
  * TC, yaş, sektör, cinsiyet ödeme sonrası ayrı sayfada toplanır.
+ *
+ * MİMARİ: Kurs ödemesi artık www tarafında (ebook/cart pattern'i ile aynı).
+ * Backend sadece DB owner + HMAC internal endpoint'ler.
  */
 export default function BuyCourseButton({
   programmeSlug, programmeTitle, price, className, variant = "primary",
@@ -56,7 +55,8 @@ export default function BuyCourseButton({
       priceTry,
     );
     try {
-      const r = await fetch(`${API_BASE}/api/course-orders/checkout`, {
+      // www route: /api/payment/course/initialize (Iyzico + backend pre-create HMAC)
+      const r = await fetch(`/api/payment/course/initialize`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
