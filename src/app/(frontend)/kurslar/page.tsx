@@ -30,7 +30,8 @@ export const dynamic = 'force-dynamic';
 type Programme = {
   slug: string;
   levelBadge: string;
-  levelLabel: string;
+  levelCefr: string;
+  levelAudience: string;
   titleEn: string;
   titleTr: string;
   tagline: string;
@@ -41,8 +42,9 @@ type Programme = {
 const PROGRAMMES: Programme[] = [
   {
     slug: 'foundation',
-    levelBadge: 'SEVİYE 1',
-    levelLabel: 'A1 – A2 · Yeni başlayanlar',
+    levelBadge: 'Seviye 1',
+    levelCefr: 'A1 – A2',
+    levelAudience: 'Yeni başlayanlar için',
     titleEn: 'Business English Foundation',
     titleTr: 'İş İngilizcesine Sıfırdan Başla',
     tagline: 'İş hayatında İngilizce iletişim kurmaya yeni başlayan profesyoneller için.',
@@ -56,8 +58,9 @@ const PROGRAMMES: Programme[] = [
   },
   {
     slug: 'diplomacy',
-    levelBadge: 'SEVİYE 2',
-    levelLabel: 'B1 – B2 · Orta seviye ve üstü',
+    levelBadge: 'Seviye 2',
+    levelCefr: 'B1 – B2',
+    levelAudience: 'Orta seviye ve üstü',
     titleEn: 'Corporate Diplomacy & Crisis Management',
     titleTr: 'Toplantıyı Sen Yönet',
     tagline: 'Toplantılarda söz almak, kriz yönetmek, diplomatik iletişim kurmak ve etki yaratmak için.',
@@ -155,16 +158,24 @@ export default function KurslarPage() {
               key={p.slug}
               className="group flex flex-col rounded-2xl overflow-hidden bg-white border border-gray-200 hover:shadow-xl hover:border-[#0ea5e9]/40 transition-all duration-300"
             >
-              {/* Header bar — dikey turkuaz vurgu */}
+              {/* Header bar — belirgin seviye rozeti */}
               <div className="relative border-b border-gray-100 px-7 pt-6 pb-5">
                 <div className="absolute top-6 left-0 w-1 h-12 bg-[#0ea5e9]" />
                 <div className="pl-4">
-                  <div className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#0ea5e9]">
-                    <span>{p.levelBadge}</span>
-                    <span className="text-gray-300">·</span>
-                    <span className="text-gray-500 font-medium tracking-normal normal-case">{p.levelLabel}</span>
+                  {/* Belirgin seviye rozetleri — 2 pill yan yana */}
+                  <div className="flex flex-wrap items-center gap-2 mb-3">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1B365D] text-white text-[11px] font-bold uppercase tracking-[0.14em]">
+                      <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#0ea5e9]" />
+                      {p.levelBadge}
+                    </span>
+                    <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-[#0ea5e9]/10 border border-[#0ea5e9]/30 text-[#0ea5e9] text-[13px] font-extrabold tracking-wide">
+                      {p.levelCefr}
+                    </span>
+                    <span className="text-[12px] font-semibold text-gray-500">
+                      {p.levelAudience}
+                    </span>
                   </div>
-                  <h2 className="text-[26px] lg:text-[30px] font-extrabold text-[#1B365D] leading-[1.15] mt-3 tracking-tight">
+                  <h2 className="text-[26px] lg:text-[30px] font-extrabold text-[#1B365D] leading-[1.15] tracking-tight">
                     {p.titleTr}
                   </h2>
                   <p className="text-[12px] text-gray-400 italic mt-1.5">{p.titleEn}</p>
