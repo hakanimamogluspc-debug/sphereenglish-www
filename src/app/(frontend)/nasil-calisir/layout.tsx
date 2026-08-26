@@ -2,13 +2,13 @@ import type { Metadata } from 'next';
   import type { ReactNode } from 'react';
 
   export const metadata: Metadata = {
-    title: 'Nasıl Çalışır | Kurumsal İngilizce Eğitim Süreci',
+    title: 'Nasıl Çalışır | İş İngilizcesi Eğitim Süreci',
     description:
-      "Sphere English kurumsal iş İngilizcesi eğitim süreci: ihtiyaç analizi, kişiselleştirilmiş program tasarımı, canlı online dersler ve ölçülebilir raporlama. Şirketiniz için adım adım dil eğitimi.",
+      "Sphere English iş İngilizcesi eğitim süreci: seviye tespiti, kişiselleştirilmiş program, canlı online dersler, aylık raporlama ve katılım sertifikası. Bireyler ve şirketler için adım adım süreç.",
     alternates: { canonical: 'https://www.sphereenglish.com/nasil-calisir' },
     openGraph: {
-      title: 'Nasıl Çalışır — Kurumsal Eğitim Süreci',
-      description: "İhtiyaç analizinden raporlamaya: kurumsal ingilizce eğitiminin adımları. Online, esnek ve ölçülebilir.",
+      title: 'Nasıl Çalışır | İş İngilizcesi Eğitim Süreci',
+      description: "Seviye tespitinden raporlamaya iş İngilizcesi eğitim yolculuğunun 6 adımı.",
       url: 'https://www.sphereenglish.com/nasil-calisir',
     },
   };

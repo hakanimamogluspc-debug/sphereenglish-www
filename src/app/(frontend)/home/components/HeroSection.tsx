@@ -24,14 +24,20 @@ export default function HeroSection({ data }: HeroProps = {}) {
   const subRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
 
-  const heroLine1 = data?.heroLine1 ?? 'İş İngilizcesinde';
-  const heroLine2 = data?.heroLine2 ?? 'Bir Üst Seviyeye';
-  const heroLine3 = data?.heroLine3 ?? 'Geç.';
-  const heroSubtitle = data?.heroSubtitle ?? 'Türk profesyoneller için gerçek iş hayatına odaklanan online eğitim programları, dijital kaynaklar ve yapay zekâ destekli İngilizce pratik araçları.';
-  const heroCta1Text = data?.heroCta1Text ?? 'KURSLARI İNCELE';
-  // NOT: 2. CTA metni CMS'te tarihsel olarak "ÜCRETSİZ DEMO RANDEVUSU" — link /demo'ya
-  // gitmeli. E-kitap keşfi footer + Kurslar bölümü + nav'dan zaten mevcut.
-  const heroCta2Text = data?.heroCta2Text ?? 'ÜCRETSİZ DEMO RANDEVUSU';
+  // ─── HERO CONTENT — CMS OVERRIDE BYPASS ─────────────────────────────
+  // Payload CMS'te eski B2B yönlendirmeli değerler ("Kurumsal İş İngilizcesi
+  // Eğitim Programı", "HEMEN TEKLİF AL" vb.) hâlâ mevcut ve yeni positioning'i
+  // (bireysel profesyonel + kurs/e-kitap funnel) eziyordu.
+  //
+  // Yeni positioning'i garantilemek için CMS override'ı bilinçli olarak DEVRE DIŞI.
+  // İleride CMS'i admin panelden güncelledikten sonra `data?.heroLine1 ?? '...'`
+  // pattern'ine geri dönebilirsiniz.
+  const heroLine1 = 'İş İngilizcesinde';
+  const heroLine2 = 'Bir Üst Seviyeye';
+  const heroLine3 = 'Geç.';
+  const heroSubtitle = 'Türk profesyoneller için gerçek iş hayatına odaklanan online kurslar, dijital kaynaklar ve AI destekli pratik. Toplantıdan e-postaya, mülakattan pazarlığa kariyerinizde daha net ve güvenli iletişim.';
+  const heroCta1Text = 'KURSLARI İNCELE';
+  const heroCta2Text = 'E-KİTAPLARI KEŞFET';
   const heroBadge = data?.heroBadge ?? 'Canlı Ders Devam Ediyor';
   const heroStatValue = data?.heroStatValue ?? '+2';
   const heroStatLabel = data?.heroStatLabel ?? 'Seviye';
@@ -84,18 +90,18 @@ export default function HeroSection({ data }: HeroProps = {}) {
               {heroCta1Text}
             </Link>
             <Link
-              href="/demo"
+              href="/e-kitaplar"
               className="bg-white border-2 border-[#1B365D] text-[#1B365D] font-bold text-[13px] tracking-widest px-7 py-4 rounded-2xl flex items-center justify-center gap-2 text-center w-full hover:border-[#0ea5e9] hover:text-[#0ea5e9] transition-colors duration-300 shadow-sm"
             >
-              <Icon name="CalendarDaysIcon" size={16} />
+              <Icon name="BookOpenIcon" size={16} />
               {heroCta2Text}
             </Link>
           </div>
 
-          {/* Tertiary link — kurumsal kaybolmasın */}
+          {/* Tertiary link — kurumsal kaybolmasın (§8: → /cozumler, NOT /iletisim) */}
           <div className="mb-6 lg:mb-10 max-w-sm">
             <Link
-              href="/iletisim"
+              href="/cozumler"
               className="text-[12px] text-gray-500 hover:text-[#0ea5e9] transition-colors inline-flex items-center gap-1.5"
             >
               Şirketiniz için eğitim mi arıyorsunuz? <span className="font-semibold text-[#1B365D] hover:text-[#0ea5e9]">Kurumsal Çözümler →</span>

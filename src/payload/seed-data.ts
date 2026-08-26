@@ -238,13 +238,13 @@ export const SOLUTIONS = [
 ];
 
 export const HOMEPAGE = {
-  heroLine1: 'Kurumsal',
-  heroLine2: 'İş İngilizcesi',
-  heroLine3: 'Eğitim Programı',
+  heroLine1: 'İş İngilizcesinde',
+  heroLine2: 'Bir Üst Seviyeye',
+  heroLine3: 'Geç.',
   heroSubtitle:
-    'Çalışanlarınız için ölçülebilir, raporlanabilir ve hedef odaklı İngilizce eğitimi. Global rekabet gücünüzü artırın.',
-  heroCta1Text: 'HEMEN TEKLİF AL',
-  heroCta2Text: 'ÜCRETSİZ DEMO RANDEVUSU',
+    'Türk profesyoneller için gerçek iş hayatına odaklanan online kurslar, dijital kaynaklar ve AI destekli pratik.',
+  heroCta1Text: 'KURSLARI İNCELE',
+  heroCta2Text: 'E-KİTAPLARI KEŞFET',
   heroBadge: 'Canlı Ders Devam Ediyor',
   heroStatValue: '+2',
   heroStatLabel: 'Seviye',
