@@ -30,7 +30,7 @@ async function handle(req: NextRequest) {
   }
 
   if (!orderToken || !iyzicoToken) {
-    return NextResponse.redirect(new URL("/kurslar?err=missing-token", req.url));
+    return NextResponse.redirect(new URL("/odeme/basarisiz?type=course&reason=token_eksik", req.url), { status: 303 });
   }
 
   try {

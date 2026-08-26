@@ -325,7 +325,8 @@ export async function POST(req: NextRequest) {
     basketId: conversationId,
     paymentGroup: 'PRODUCT',
     callbackUrl,
-    enabledInstallments: [1, 2, 3, 6],
+    // Taksit — Iyzico merchant panel'indeki tüm banka anlaşmalarına izin ver (1-12 arası)
+    enabledInstallments: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     buyer: {
       id: email,
       name: firstName,
