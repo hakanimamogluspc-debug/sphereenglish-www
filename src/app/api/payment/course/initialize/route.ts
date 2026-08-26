@@ -6,7 +6,7 @@ import {
   paymentBaseUrl,
   signInternalPayload,
 } from '@/lib/iyzico';
-import { PROGRAMMES } from '@/lib/courses-catalog';
+import { fetchCourseBySlug } from '@/lib/api/courses';
 
 /**
  * Kurs ödemesi Iyzico Checkout Form Initialize.
@@ -84,8 +84,8 @@ export async function POST(req: NextRequest) {
   const buyerEmail = String(body?.buyerEmail ?? '').trim().toLowerCase();
   const buyerPhone = String(body?.buyerPhone ?? '').trim();
 
-  // ── Validasyon ──
-  const programme = PROGRAMMES.find((p) => p.paymentSlug === programmeSlug);
+  // ── Validasyon ── (DB-driven — admin fiyat/başlık güncellemesi anında yansır)
+  const programme = await fetchCourseBySlug(programmeSlug);
   if (!programme) {
     return NextResponse.json({ error: 'Geçersiz program' }, { status: 400 });
   }
@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
   // ── IDs ──
   const orderToken = newOrderToken();
   const conversationId = `CO-${orderToken}`;
-  const amountTry = programme.priceKurus / 100;
+  const amountTry = programme.price_kurus / 100;
   const { firstName, lastName } = splitName(buyerName);
 
   // ── Iyzico callback ──
@@ -145,8 +145,8 @@ export async function POST(req: NextRequest) {
     },
     basketItems: [
       {
-        id: `course_${programme.paymentSlug}`,
-        name: programme.titleTr.slice(0, 100),
+        id: `course_${programme.slug}`,
+        name: programme.title.slice(0, 100),
         category1: 'Eğitim',
         itemType: 'VIRTUAL',
         price: amountTry.toFixed(2),
@@ -175,13 +175,13 @@ export async function POST(req: NextRequest) {
     // ── Backend'e pre-create yaz (pending order) ──
     const pre = await preCreatePending({
       orderToken,
-      programmeSlug: programme.paymentSlug,
+      programmeSlug: programme.slug,
       buyerName,
       buyerEmail,
       buyerPhone,
       iyzicoConversationId: conversationId,
       iyzicoToken: result.token,
-      amountKurus: programme.priceKurus,
+      amountKurus: programme.price_kurus,
     });
 
     if (!pre.ok) {
