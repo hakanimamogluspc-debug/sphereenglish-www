@@ -134,8 +134,8 @@ export default async function LevelDetailPage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <Header />
 
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="max-w-5xl mx-auto px-6 lg:px-10 pt-6 text-[12px] text-gray-500">
+      {/* Breadcrumb — Header fixed top-0 (92px) altına ittir */}
+      <nav aria-label="Breadcrumb" className="max-w-5xl mx-auto px-6 lg:px-10 pt-28 lg:pt-32 pb-2 text-[12px] text-gray-500">
         <ol className="flex items-center gap-2 flex-wrap">
           <li><Link href="/" className="hover:text-[#0ea5e9]">Ana Sayfa</Link></li>
           <li className="text-gray-300">/</li>
@@ -146,7 +146,7 @@ export default async function LevelDetailPage({ params }: Props) {
       </nav>
 
       {/* Hero */}
-      <section className="bg-gradient-to-b from-[#f0f7ff] to-white pt-10 pb-14">
+      <section className="bg-gradient-to-b from-[#f0f7ff] to-white pt-4 pb-14">
         <div className="max-w-5xl mx-auto px-6 lg:px-10">
           <div className="flex flex-wrap items-center gap-2 mb-5">
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1B365D] text-white text-[11px] font-bold uppercase tracking-[0.14em]">
