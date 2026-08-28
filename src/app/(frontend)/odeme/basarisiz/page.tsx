@@ -28,9 +28,9 @@ const REASON_MAP: Record<string, ReasonMeta> = {
     tip: 'Lütfen ürün sayfasına dönüp ödemeyi yeniden başlatın.',
   },
   plan_bulunamadi: {
-    title: 'Seçilen plan bulunamadı',
-    description: 'Seçtiğiniz plan artık aktif değil veya kataloğumuzdan kaldırılmış olabilir.',
-    tip: 'Güncel paketleri görmek için abonelik sayfasına dönün.',
+    title: 'Seçilen ürün bulunamadı',
+    description: 'Seçtiğiniz ürün artık aktif değil veya kataloğumuzdan kaldırılmış olabilir.',
+    tip: 'Güncel ürünlerimizi görmek için ürün sayfasına dönün.',
   },
   sistem_hatasi: {
     title: 'Sistemde geçici bir aksaklık',
@@ -195,11 +195,19 @@ export default function OdemeBasarisizPage({
 }) {
   const rawReason = searchParams.reason ?? '';
   const type = searchParams.type;
-  const isEbook = type === 'ebook';
 
   const meta = getReasonMeta(rawReason);
-  const retryHref = isEbook ? '/e-kitaplar' : '/abonelik';
-  const retryLabel = isEbook ? 'E-kitaplara Dön' : 'Tekrar Dene';
+
+  // Type'a göre retry hedefi (abonelik henüz yok — asla oraya yönlendirme)
+  let retryHref = '/';
+  let retryLabel = 'Ana Sayfaya Dön';
+  if (type === 'ebook' || type === 'cart') {
+    retryHref = '/e-kitaplar';
+    retryLabel = 'E-Kitaplara Dön';
+  } else if (type === 'course') {
+    retryHref = '/is-ingilizcesi-kursu';
+    retryLabel = 'Kurslara Dön';
+  }
 
   return (
     <main className="bg-white min-h-screen">
