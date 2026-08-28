@@ -36,6 +36,10 @@ type Body = {
   buyerEmail?: string;
   buyerPhone?: string;
   tcKimlik?: string;
+  billingAddress?: string;
+  billingCity?: string;
+  billingDistrict?: string;
+  billingPostalCode?: string;
 };
 
 function newOrderToken(): string {
@@ -85,6 +89,10 @@ export async function POST(req: NextRequest) {
   const buyerEmail = String(body?.buyerEmail ?? '').trim().toLowerCase();
   const buyerPhone = String(body?.buyerPhone ?? '').trim();
   const tcKimlik = String(body?.tcKimlik ?? '').replace(/\D/g, '').trim();
+  const billingAddress = String(body?.billingAddress ?? '').trim();
+  const billingCity = String(body?.billingCity ?? '').trim();
+  const billingDistrict = String(body?.billingDistrict ?? '').trim();
+  const billingPostalCode = String(body?.billingPostalCode ?? '').trim();
 
   // ── Validasyon ── (DB-driven — admin fiyat/başlık güncellemesi anında yansır)
   const programme = await fetchCourseBySlug(programmeSlug);
@@ -102,6 +110,15 @@ export async function POST(req: NextRequest) {
   }
   if (tcKimlik.length !== 11) {
     return NextResponse.json({ error: 'TC Kimlik No 11 haneli olmalı' }, { status: 400 });
+  }
+  if (billingAddress.length < 10) {
+    return NextResponse.json({ error: 'Açık adres gerekli (en az 10 karakter)' }, { status: 400 });
+  }
+  if (billingCity.length < 2) {
+    return NextResponse.json({ error: 'İl gerekli' }, { status: 400 });
+  }
+  if (billingDistrict.length < 2) {
+    return NextResponse.json({ error: 'İlçe gerekli' }, { status: 400 });
   }
 
   // ── IDs ──
@@ -130,23 +147,26 @@ export async function POST(req: NextRequest) {
       surname: lastName,
       gsmNumber: buyerPhone,
       email: buyerEmail,
-      identityNumber: tcKimlik, // Gerçek TC (fatura + 3D Secure banka doğrulaması için)
-      registrationAddress: 'Merkez Mah. Atatürk Cad. No:1',
+      identityNumber: tcKimlik,
+      registrationAddress: billingAddress.slice(0, 200),
       ip: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1',
-      city: 'İstanbul',
+      city: billingCity,
       country: 'Turkey',
+      zipCode: billingPostalCode || undefined,
     },
     shippingAddress: {
       contactName: buyerName,
-      city: 'İstanbul',
+      city: billingCity,
       country: 'Turkey',
-      address: 'Merkez Mah. Atatürk Cad. No:1',
+      address: `${billingAddress}, ${billingDistrict}/${billingCity}`.slice(0, 200),
+      zipCode: billingPostalCode || undefined,
     },
     billingAddress: {
       contactName: buyerName,
-      city: 'İstanbul',
+      city: billingCity,
       country: 'Turkey',
-      address: 'Merkez Mah. Atatürk Cad. No:1',
+      address: `${billingAddress}, ${billingDistrict}/${billingCity}`.slice(0, 200),
+      zipCode: billingPostalCode || undefined,
     },
     basketItems: [
       {
@@ -184,6 +204,11 @@ export async function POST(req: NextRequest) {
       buyerName,
       buyerEmail,
       buyerPhone,
+      tcKimlik,
+      billingAddress,
+      billingCity,
+      billingDistrict,
+      billingPostalCode: billingPostalCode || null,
       iyzicoConversationId: conversationId,
       iyzicoToken: result.token,
       amountKurus: programme.price_kurus,
