@@ -26,6 +26,7 @@ export default function BuyCourseButton({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [tc, setTc] = useState("");
   const [agree, setAgree] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,6 +62,10 @@ export default function BuyCourseButton({
       setError("Tüm alanları doldur");
       return;
     }
+    if (!/^\d{11}$/.test(tc)) {
+      setError("TC Kimlik No 11 haneli olmalı — fatura ve banka doğrulaması için gerekli");
+      return;
+    }
     if (!agree) {
       setError("KVKK aydınlatma metnini kabul etmelisin");
       return;
@@ -88,6 +93,7 @@ export default function BuyCourseButton({
           buyerName: name.trim(),
           buyerEmail: email.trim().toLowerCase(),
           buyerPhone: phone.trim(),
+          tcKimlik: tc.trim(),
         }),
       });
       const data = await r.json();
@@ -188,6 +194,20 @@ export default function BuyCourseButton({
                 <label className="text-xs font-semibold text-gray-600 block mb-1">Telefon *</label>
                 <input required type="tel" value={phone} onChange={(e) => setPhone(e.target.value)}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm" placeholder="+90 5XX XXX XX XX" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-600 block mb-1">TC Kimlik No *</label>
+                <input
+                  required
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={11}
+                  value={tc}
+                  onChange={(e) => setTc(e.target.value.replace(/\D/g, "").slice(0, 11))}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-mono"
+                  placeholder="11 haneli"
+                />
+                <p className="text-[10px] text-gray-400 mt-1">Fatura ve 3D Secure doğrulaması için gerekli. Güvenli iletim, sadece Iyzico'ya gider.</p>
               </div>
 
               <label className="flex items-start gap-2 text-xs text-gray-600 leading-relaxed pt-2">

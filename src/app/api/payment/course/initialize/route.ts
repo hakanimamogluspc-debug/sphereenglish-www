@@ -35,6 +35,7 @@ type Body = {
   buyerName?: string;
   buyerEmail?: string;
   buyerPhone?: string;
+  tcKimlik?: string;
 };
 
 function newOrderToken(): string {
@@ -83,6 +84,7 @@ export async function POST(req: NextRequest) {
   const buyerName = String(body?.buyerName ?? '').trim();
   const buyerEmail = String(body?.buyerEmail ?? '').trim().toLowerCase();
   const buyerPhone = String(body?.buyerPhone ?? '').trim();
+  const tcKimlik = String(body?.tcKimlik ?? '').replace(/\D/g, '').trim();
 
   // ── Validasyon ── (DB-driven — admin fiyat/başlık güncellemesi anında yansır)
   const programme = await fetchCourseBySlug(programmeSlug);
@@ -97,6 +99,9 @@ export async function POST(req: NextRequest) {
   }
   if (buyerPhone.replace(/\D/g, '').length < 10) {
     return NextResponse.json({ error: 'Geçerli telefon gerekli (10+ hane)' }, { status: 400 });
+  }
+  if (tcKimlik.length !== 11) {
+    return NextResponse.json({ error: 'TC Kimlik No 11 haneli olmalı' }, { status: 400 });
   }
 
   // ── IDs ──
@@ -125,8 +130,8 @@ export async function POST(req: NextRequest) {
       surname: lastName,
       gsmNumber: buyerPhone,
       email: buyerEmail,
-      identityNumber: '11111111111', // Kurs kayıt formunda alınacak, Iyzico için dummy
-      registrationAddress: 'Türkiye',
+      identityNumber: tcKimlik, // Gerçek TC (fatura + 3D Secure banka doğrulaması için)
+      registrationAddress: 'Merkez Mah. Atatürk Cad. No:1',
       ip: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1',
       city: 'İstanbul',
       country: 'Turkey',
@@ -135,13 +140,13 @@ export async function POST(req: NextRequest) {
       contactName: buyerName,
       city: 'İstanbul',
       country: 'Turkey',
-      address: 'Dijital hizmet — fiziksel teslimat yok',
+      address: 'Merkez Mah. Atatürk Cad. No:1',
     },
     billingAddress: {
       contactName: buyerName,
       city: 'İstanbul',
       country: 'Turkey',
-      address: 'Dijital hizmet',
+      address: 'Merkez Mah. Atatürk Cad. No:1',
     },
     basketItems: [
       {
