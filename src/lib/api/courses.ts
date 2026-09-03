@@ -43,6 +43,8 @@ export interface ApiCourse {
   cohort_start_display: string | null;
   cohort_capacity: number;
   cohort_registrations: number;
+  /** "Ön Kayıt" rozet metni — admin panelde düzenlenir (örn: "Ekim Ön Kayıt") */
+  cohort_waitlist_label: string | null;
   seo_title: string | null;
   seo_description: string | null;
   is_active: boolean;
@@ -130,6 +132,7 @@ function programmeToApiCourse(p: Programme): ApiCourse {
     cohort_start_display: "Eylül 2026'nın ilk haftası",
     cohort_capacity: 6,
     cohort_registrations: 0,
+    cohort_waitlist_label: 'Eylül Ön Kayıt',
     seo_title: null,
     seo_description: null,
     is_active: true,
@@ -139,10 +142,10 @@ function programmeToApiCourse(p: Programme): ApiCourse {
 
 // ─── UI helpers ─────────────────────────────────────────────
 
-export function cohortStatusLabel(status: ApiCohortStatus): string {
+export function cohortStatusLabel(status: ApiCohortStatus, waitlistLabel?: string | null): string {
   switch (status) {
     case 'open':     return 'Kayıtlar Açık';
-    case 'waitlist': return 'Eylül Ön Kayıt';
+    case 'waitlist': return waitlistLabel || 'Ön Kayıt';
     case 'full':     return 'Dolu';
     case 'closed':   return 'Kapalı';
   }

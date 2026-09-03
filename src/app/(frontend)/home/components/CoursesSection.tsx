@@ -53,9 +53,9 @@ export default async function CoursesSection() {
                           {c.level_cefr}
                         </span>
                       )}
-                      {isWaitlist && (
+                      {isWaitlist && c.cohort_waitlist_label && (
                         <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-1">
-                          Eylül Ön Kayıt
+                          {c.cohort_waitlist_label}
                         </span>
                       )}
                     </div>
