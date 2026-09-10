@@ -6,6 +6,7 @@ import ChatWidget from '../../components/ChatWidget/ChatWidget';
 import WebMCPProvider from '../../components/WebMCPProvider';
 import AnalyticsTracker from '../../components/AnalyticsTracker';
 import MetaPixelRouteTracker from '../../components/MetaPixelRouteTracker';
+import FbclidCapture from '../../components/FbclidCapture';
 import ContactClickTracker from '../../components/ContactClickTracker';
 import { CartProvider } from '../../lib/cart/cart-context';
 import MiniCartDrawer from '../../components/MiniCartDrawer';
@@ -371,6 +372,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <MiniCartDrawer />
           {/* Meta Pixel SPA route değişimlerinde PageView tetikleyici */}
           <MetaPixelRouteTracker />
+          {/* Reklamdan gelen fbclid → _fbc cookie (adblock/ITP fallback için) */}
+          <Suspense fallback={null}>
+            <FbclidCapture />
+          </Suspense>
           {/* WhatsApp/telefon/mail linki tıklamalarında Contact event */}
           <ContactClickTracker />
         </CartProvider>

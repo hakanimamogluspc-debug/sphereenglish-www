@@ -7,6 +7,7 @@ import {
   paymentBaseUrl,
   signInternalPayload,
 } from "@/lib/iyzico";
+import { captureMetaIdentity } from "@/lib/analytics/meta-capi";
 
 /**
  * E-kitap Iyzico Checkout Form Initialize.
@@ -177,6 +178,11 @@ export async function POST(req: NextRequest) {
   const fwd = req.headers.get("x-forwarded-for") ?? "";
   const ip = fwd.split(",")[0]?.trim() || "127.0.0.1";
 
+  // Meta Pixel/CAPI kimlik verisi — checkout başlarken YAKALA.
+  // Iyzico callback'i kullanıcının cookie/IP/UA'sını taşımaz, o yüzden burada
+  // yakalıyoruz ve pending kayda yazıyoruz. Callback'te activate response'undan okunacak.
+  const metaIdentity = captureMetaIdentity(req);
+
   // ── api-server'a pre-create yaz (pending purchase) ──
   const preCreate = await preCreatePurchase({
     ebookId: ebook.id,
@@ -198,6 +204,11 @@ export async function POST(req: NextRequest) {
     couponDiscountKurus,
     affiliateCode: appliedAffiliateCode,
     originalPriceKurus: Math.round(price * 100),
+    // Meta kimlik — attribution için kritik (callback'te CAPI userData'ya yazılır)
+    metaFbp: metaIdentity.fbp ?? null,
+    metaFbc: metaIdentity.fbc ?? null,
+    metaClientIp: metaIdentity.clientIpAddress ?? null,
+    metaClientUserAgent: metaIdentity.clientUserAgent ?? null,
   });
 
   if (!preCreate.ok) {

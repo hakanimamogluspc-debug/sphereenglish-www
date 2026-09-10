@@ -210,6 +210,12 @@ export async function sendCapiEvent(input: CapiEventInput): Promise<{ ok: boolea
 
 // ─── Request context'ten user_data çıkart ─────────────────────────────
 /**
+ * @deprecated Ödeme CALLBACK'lerinde KULLANMA — orada request Iyzico'dan gelir,
+ * kullanıcının cookie/IP/UA bilgisini taşımaz (yanlış eşleşme = attribution kaybı).
+ *
+ * Bunun yerine checkout INITIALIZE aşamasında `captureMetaIdentity()` ile
+ * yakala, sipariş kaydına yaz, callback'te oradan (activate response'undan) oku.
+ *
  * Next.js API route içinde request'ten CAPI user_data hazırla.
  * IP, User-Agent + Facebook cookie'lerini (fbp, fbc) çıkarır.
  */
@@ -234,6 +240,44 @@ export function userDataFromRequest(req: Request | { headers: Headers; cookies?:
     clientUserAgent,
     fbp: cookies._fbp || undefined,
     fbc: cookies._fbc || undefined,
+  };
+}
+
+/**
+ * Kullanıcının TARAYICI isteğinden Meta kimlik verisini çıkarır.
+ *
+ * ⚠️ Bunu SADECE kullanıcının kendi isteğini işleyen route'larda çağır
+ * (checkout initialize gibi). Iyzico callback'inde ÇAĞIRMA — orada bu
+ * değerler Iyzico'nun sunucusuna ait olur ve yanlış eşleşmeye yol açar.
+ *
+ * Callback tarafında, initialize sırasında yakaladığımız değerleri pending
+ * kayıttan (`activate` response'undan `meta.*`) okuyup CAPI'ye geçirmelisin.
+ */
+export function captureMetaIdentity(req: Request | { headers: Headers }): {
+  fbp?: string;
+  fbc?: string;
+  clientIpAddress?: string;
+  clientUserAgent?: string;
+} {
+  const headers = 'headers' in req ? req.headers : new Headers();
+  const clientUserAgent = headers.get('user-agent') || undefined;
+  const forwardedFor = headers.get('x-forwarded-for') || '';
+  const realIp = headers.get('x-real-ip') || '';
+  const clientIpAddress = forwardedFor.split(',')[0]?.trim() || realIp || undefined;
+
+  const cookieHeader = headers.get('cookie') || '';
+  const cookies = Object.fromEntries(
+    cookieHeader.split(';').map((c) => {
+      const [k, ...v] = c.trim().split('=');
+      return [k, v.join('=')];
+    }),
+  );
+
+  return {
+    fbp: cookies._fbp || undefined,
+    fbc: cookies._fbc || undefined,
+    clientIpAddress,
+    clientUserAgent,
   };
 }
 

@@ -6,6 +6,7 @@ import {
   paymentBaseUrl,
   signInternalPayload,
 } from '@/lib/iyzico';
+import { captureMetaIdentity } from '@/lib/analytics/meta-capi';
 
 /**
  * Sepet (multi-item) Iyzico Checkout Form Initialize.
@@ -283,6 +284,9 @@ export async function POST(req: NextRequest) {
   const fwd = req.headers.get('x-forwarded-for') ?? '';
   const ip = fwd.split(',')[0]?.trim() || '127.0.0.1';
 
+  // Meta Pixel/CAPI kimlik verisi — checkout başlarken YAKALA (Iyzico callback erişemez)
+  const metaIdentity = captureMetaIdentity(req);
+
   // ── Pre-create ──
   const preCreate = await preCreateCart({
     items,
@@ -301,6 +305,11 @@ export async function POST(req: NextRequest) {
     couponDiscountKurus,
     affiliateCode: appliedAffiliateCode,
     iyzicoConversationId: conversationId,
+    // Meta kimlik — attribution için kritik
+    metaFbp: metaIdentity.fbp ?? null,
+    metaFbc: metaIdentity.fbc ?? null,
+    metaClientIp: metaIdentity.clientIpAddress ?? null,
+    metaClientUserAgent: metaIdentity.clientUserAgent ?? null,
   });
 
   if (!preCreate.ok) {

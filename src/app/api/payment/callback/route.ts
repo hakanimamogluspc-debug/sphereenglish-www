@@ -7,7 +7,7 @@ import {
   paymentBaseUrl,
 } from "@/lib/iyzico";
 import { getPlan } from "@/lib/plans";
-import { sendCapiSubscribe, userDataFromRequest } from "@/lib/analytics/meta-capi";
+import { sendCapiSubscribe, sendCapiPurchase } from "@/lib/analytics/meta-capi";
 
 /**
  * Iyzico callback handler.
@@ -145,28 +145,51 @@ async function handle(req: NextRequest) {
       }
     }
 
-    // Meta Pixel Purchase event için value/product params
+    // Meta Pixel event params — Purchase ve Subscribe FARKLI eventId'lerle gönderilmeli.
+    // Meta dedup'ı (event_name, event_id) çifti üzerinden çalışır. Aynı ID ile Purchase
+    // + Subscribe göndermek istemci-sunucu dedup'ını Purchase için kırar (KN-4).
     const priceTry = Number(result.paidPrice ?? plan.amount ?? 0);
-    const eventId = `subscribe_${conversationId}`;
+    const purchaseEventId = `purchase_${conversationId}`;
+    const subscribeEventId = `subscribe_${conversationId}`;
 
-    // CAPI Subscribe — server-side (fire-and-forget)
+    // userData — Iyzico callback req'sini KULLANMA. Ideally initialize'da pending
+    // draft'a yakalanmalıydı, ama abonelik akışı hâlâ pending draft'ta meta_* tutmuyor.
+    // Bu turda subscription flow için sadece Iyzico buyer verisiyle CAPI gönderiyoruz
+    // (email/name/phone — EMQ için yeterli). fbp/fbc yoksa Meta URL parametresini
+    // fbclid'den zaten yakalıyor (FbclidCapture), o yüzden client Purchase dedup çalışır.
+    const sharedUserData = {
+      email: buyerEmailFromIyzico ?? undefined,
+      firstName: result?.buyer?.name,
+      lastName: result?.buyer?.surname,
+      phone: result?.buyer?.gsmNumber,
+      city: result?.buyer?.city,
+      country: 'TR',
+      externalId: buyerEmailFromIyzico ?? undefined,
+    };
+
+    // CAPI Purchase — istemcideki trackPurchase ile dedup edilecek
+    sendCapiPurchase({
+      orderId: conversationId,
+      value: priceTry,
+      currency: result.currency ?? 'TRY',
+      contentIds: [`subscription-${planCode}`],
+      contentName: plan.label ?? plan.code ?? 'Pro Abonelik',
+      eventSourceUrl: `${paymentBaseUrl()}/odeme/basarili`,
+      userData: sharedUserData,
+    }).then((r) => {
+      if (!r.ok) console.warn('[capi] subscription Purchase send hata:', r.error);
+    });
+
+    // CAPI Subscribe — istemcideki trackMetaEvent('Subscribe') ile dedup edilecek
     sendCapiSubscribe({
       orderId: conversationId,
       planCode: `subscription-${planCode}`,
       value: priceTry,
       predictedLtv: priceTry * 12, // 12 aylık tahmini LTV
       eventSourceUrl: `${paymentBaseUrl()}/odeme/basarili`,
-      userData: {
-        ...userDataFromRequest(req),
-        email: buyerEmailFromIyzico ?? undefined,
-        firstName: result?.buyer?.name,
-        lastName: result?.buyer?.surname,
-        phone: result?.buyer?.gsmNumber,
-        city: result?.buyer?.city,
-        country: 'TR',
-      },
+      userData: sharedUserData,
     }).then((r) => {
-      if (!r.ok) console.warn('[capi] subscription send hata:', r.error);
+      if (!r.ok) console.warn('[capi] subscription Subscribe send hata:', r.error);
     });
 
     const purchaseUrl =
@@ -174,7 +197,8 @@ async function handle(req: NextRequest) {
       `&value=${priceTry}` +
       `&productId=${encodeURIComponent('subscription-' + planCode)}` +
       `&productName=${encodeURIComponent(plan.label ?? plan.code ?? 'Pro Abonelik')}` +
-      `&eventId=${encodeURIComponent(eventId)}`;
+      `&eventId=${encodeURIComponent(purchaseEventId)}` +
+      `&subscribeEventId=${encodeURIComponent(subscribeEventId)}`;
 
     return NextResponse.redirect(purchaseUrl, { status: 303 });
   } catch (e: any) {

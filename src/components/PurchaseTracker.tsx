@@ -16,8 +16,14 @@ export default function PurchaseTracker(props: {
   productName: string;
   priceTry: number;
   orderId?: string;
-  /** CAPI deduplication ID — callback URL'inden gelir */
+  /** CAPI Purchase deduplication ID — callback URL'inden gelir (purchase_<conv>) */
   eventId?: string;
+  /**
+   * CAPI Subscribe deduplication ID — SADECE subscription tipinde kullanılır.
+   * Meta dedup'ı (event_name, event_id) çifti üzerinden çalışır → Purchase ve
+   * Subscribe'ın FARKLI eventID kullanması ŞART, yoksa dedup Purchase için kırılır.
+   */
+  subscribeEventId?: string;
 }) {
   const firedRef = useRef(false);
 
@@ -36,7 +42,7 @@ export default function PurchaseTracker(props: {
       priceTry: props.priceTry,
       type: props.type,
       orderId: props.orderId,
-      eventId: props.eventId,
+      eventId: props.eventId, // purchase_<conv> — CAPI Purchase ile dedup
     });
 
     // Subscription satın alma ise Subscribe event de tetikle (LTV tracking)
@@ -50,10 +56,11 @@ export default function PurchaseTracker(props: {
           content_ids: [props.productId],
           predicted_ltv: props.priceTry * 12, // Yıllık tahmini LTV
         },
-        props.eventId, // aynı deduplication ID — CAPI server-side ile eşleşir
+        // AYRI dedup ID — subscribe_<conv> ile CAPI Subscribe eşleşir
+        props.subscribeEventId ?? props.eventId,
       );
     }
-  }, [props.productId, props.priceTry, props.type, props.productName, props.orderId, props.eventId]);
+  }, [props.productId, props.priceTry, props.type, props.productName, props.orderId, props.eventId, props.subscribeEventId]);
 
   return null;
 }

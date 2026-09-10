@@ -7,7 +7,7 @@ import {
   paymentBaseUrl,
   signInternalPayload,
 } from "@/lib/iyzico";
-import { sendCapiPurchase, userDataFromRequest } from "@/lib/analytics/meta-capi";
+import { sendCapiPurchase } from "@/lib/analytics/meta-capi";
 import { sendGa4Purchase, ga4ClientIdFromCookie } from "@/lib/analytics/ga4-server";
 
 /**
@@ -210,68 +210,102 @@ async function handle(req: NextRequest) {
       body: JSON.stringify(payload),
     });
 
-    if (!activate.ok) {
+    // Meta Pixel Purchase event için value/product params
+    const priceTry = Number(result.paidPrice ?? 0);
+    const productId = `ebook-${ebookId}`;
+    // Deduplication için deterministik event ID — hem client Pixel hem CAPI aynısını kullanır.
+    // NOT: crypto.randomUUID() fallback KALDIRILDI — rastgele ID her retry'da yeni satış
+    // sayılmasına yol açıyordu (KN-5). Deterministik referans yoksa CAPI atlanır.
+    const stableRef = conversationId || (result?.paymentId ? String(result.paymentId) : "");
+    const eventId = stableRef ? `purchase_${stableRef}` : "";
+
+    // activate'ten dönen meta kimlik verisini oku (checkout initialize'da yakalandı)
+    let metaFromPending: {
+      fbp?: string | null;
+      fbc?: string | null;
+      clientIp?: string | null;
+      clientUserAgent?: string | null;
+    } = {};
+    if (activate.ok) {
+      try {
+        const actBody = await activate.clone().json();
+        metaFromPending = actBody?.meta ?? {};
+      } catch {}
+    } else {
       const errBody = await activate.json().catch(() => ({}));
       console.error("[payment/ebook/callback] activate hata:", activate.status, errBody);
       // Yine de başarı sayfasını göster + warning
+      // NOT: warn=manuel dalında da CAPI göndermek istiyoruz — para tahsil edilmiş olabilir.
+    }
+
+    if (!eventId) {
+      console.error(
+        "[payment/ebook/callback] Deterministik event ref yok (conversationId + paymentId ikisi de boş). CAPI atlanıyor.",
+      );
+    } else {
+      // CAPI Purchase — server-side event (ATT kaybını telafi eder)
+      // Fire-and-forget — CAPI hatası ödeme başarısını etkilemez
+      sendCapiPurchase({
+        orderId: eventId.replace(/^purchase_/, ""),
+        value: priceTry,
+        currency: result.currency ?? "TRY",
+        contentIds: [productId],
+        contentName: `E-Kitap #${ebookId}`,
+        eventSourceUrl: `${paymentBaseUrl()}/odeme/basarili?type=ebook`,
+        userData: {
+          // ✅ Checkout initialize'da yakalanan GERÇEK kullanıcı verisi (Iyzico değil)
+          fbp: metaFromPending.fbp ?? undefined,
+          fbc: metaFromPending.fbc ?? undefined,
+          clientIpAddress: metaFromPending.clientIp ?? undefined,
+          clientUserAgent: metaFromPending.clientUserAgent ?? undefined,
+          // Iyzico buyer'dan gelen kimlik — EMQ'yu belirgin yükseltir (sha256 sendCapiEvent içinde)
+          email: buyerEmail,
+          firstName: result?.buyer?.name,
+          lastName: result?.buyer?.surname,
+          phone: result?.buyer?.gsmNumber,
+          city: result?.buyer?.city,
+          country: "TR",
+          externalId: buyerEmail, // email hash'i sendCapiEvent içinde atılır
+        },
+      }).then((r) => {
+        if (!r.ok) console.warn("[capi] ebook Purchase send hata:", r.error);
+      });
+    }
+
+    // Activate hatasında manuel warn ile redirect
+    if (!activate.ok) {
       return NextResponse.redirect(
         `${paymentBaseUrl()}/odeme/basarili?type=ebook&token=${downloadToken}&warn=manuel`,
         { status: 303 },
       );
     }
 
-    // Meta Pixel Purchase event için value/product params
-    const priceTry = Number(result.paidPrice ?? 0);
-    const productId = `ebook-${ebookId}`;
-    // Deduplication için deterministik event ID — hem client Pixel hem CAPI aynısını kullanır
-    const eventId = `purchase_${conversationId || result?.paymentId || crypto.randomUUID()}`;
-
-    // CAPI Purchase — server-side event (ATT kaybını telafi eder)
-    // Fire-and-forget — CAPI hatası ödeme başarısını etkilemez
-    sendCapiPurchase({
-      orderId: eventId.replace(/^purchase_/, ""),
-      value: priceTry,
-      currency: result.currency ?? "TRY",
-      contentIds: [productId],
-      contentName: `E-Kitap #${ebookId}`,
-      eventSourceUrl: `${paymentBaseUrl()}/odeme/basarili?type=ebook`,
-      userData: {
-        ...userDataFromRequest(req),
-        email: buyerEmail,
-        firstName: result?.buyer?.name,
-        lastName: result?.buyer?.surname,
-        phone: result?.buyer?.gsmNumber,
-        city: result?.buyer?.city,
-        country: "TR",
-      },
-    }).then((r) => {
-      if (!r.ok) console.warn("[capi] ebook Purchase send hata:", r.error);
-    });
-
     // GA4 Measurement Protocol Purchase — server-side (client pageview'e bağımlı değil)
-    sendGa4Purchase({
-      transactionId: eventId.replace(/^purchase_/, ""),
-      value: priceTry,
-      currency: result.currency ?? "TRY",
-      clientId: ga4ClientIdFromCookie(req.cookies.get("_ga")?.value),
-      items: [
-        {
-          item_id: productId,
-          item_name: `E-Kitap #${ebookId}`,
-          item_category: "E-Kitap",
-          price: priceTry,
-          quantity: 1,
-        },
-      ],
-    }).then((r) => {
-      if (!r.ok) console.warn("[ga4] ebook purchase hata:", r.error);
-    });
+    if (eventId) {
+      sendGa4Purchase({
+        transactionId: eventId.replace(/^purchase_/, ""),
+        value: priceTry,
+        currency: result.currency ?? "TRY",
+        clientId: ga4ClientIdFromCookie(req.cookies.get("_ga")?.value),
+        items: [
+          {
+            item_id: productId,
+            item_name: `E-Kitap #${ebookId}`,
+            item_category: "E-Kitap",
+            price: priceTry,
+            quantity: 1,
+          },
+        ],
+      }).then((r) => {
+        if (!r.ok) console.warn("[ga4] ebook purchase hata:", r.error);
+      });
+    }
 
     const purchaseUrl =
       `${paymentBaseUrl()}/odeme/basarili?type=ebook&token=${downloadToken}` +
       `&value=${priceTry}` +
       `&productId=${encodeURIComponent(productId)}` +
-      `&eventId=${encodeURIComponent(eventId)}`;
+      (eventId ? `&eventId=${encodeURIComponent(eventId)}` : "");
 
     return NextResponse.redirect(purchaseUrl, { status: 303 });
   } catch (e: any) {

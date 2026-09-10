@@ -6,7 +6,7 @@ import {
   paymentBaseUrl,
   signInternalPayload,
 } from '@/lib/iyzico';
-import { sendCapiPurchase, userDataFromRequest } from '@/lib/analytics/meta-capi';
+import { sendCapiPurchase } from '@/lib/analytics/meta-capi';
 import { sendGa4Purchase, ga4ClientIdFromCookie } from '@/lib/analytics/ga4-server';
 
 /**
@@ -198,14 +198,22 @@ async function handle(req: NextRequest) {
       },
     );
 
-    if (!activate.ok) {
+    // activate response'undan meta kimlik verisini oku (checkout initialize'da yakalandı)
+    let metaFromPending: {
+      fbp?: string | null;
+      fbc?: string | null;
+      clientIp?: string | null;
+      clientUserAgent?: string | null;
+    } = {};
+    if (activate.ok) {
+      try {
+        const actBody = await activate.clone().json();
+        metaFromPending = actBody?.meta ?? {};
+      } catch {}
+    } else {
       const errBody = await activate.json().catch(() => ({}));
       console.error('[payment/cart/callback] activate hata:', activate.status, errBody);
-      // Yine de success sayfasını göster + warn
-      return NextResponse.redirect(
-        `${paymentBaseUrl()}/odeme/basarili?type=cart&orderId=${encodeURIComponent(orderId)}&warn=manuel`,
-        { status: 303 },
-      );
+      // Yine de success sayfasını göster + warn — CAPI hâlâ gönderilecek (para tahsil edilmiş)
     }
 
     // Meta Pixel Purchase event için toplam tutar
@@ -218,6 +226,7 @@ async function handle(req: NextRequest) {
       : [];
 
     // CAPI Purchase — server-side (fire-and-forget)
+    // ✅ Kullanıcı verisi initialize'da yakalanan pending kayıttan (Iyzico req'den DEĞİL)
     sendCapiPurchase({
       orderId: `cart_${orderId}`,
       value: priceTry,
@@ -226,17 +235,29 @@ async function handle(req: NextRequest) {
       contentName: `Sepet (${contentIds.length} kitap)`,
       eventSourceUrl: `${paymentBaseUrl()}/odeme/basarili?type=cart`,
       userData: {
-        ...userDataFromRequest(req),
+        fbp: metaFromPending.fbp ?? undefined,
+        fbc: metaFromPending.fbc ?? undefined,
+        clientIpAddress: metaFromPending.clientIp ?? undefined,
+        clientUserAgent: metaFromPending.clientUserAgent ?? undefined,
         email: result?.buyer?.email,
         firstName: result?.buyer?.name,
         lastName: result?.buyer?.surname,
         phone: result?.buyer?.gsmNumber,
         city: result?.buyer?.city,
         country: 'TR',
+        externalId: result?.buyer?.email,
       },
     }).then((r) => {
       if (!r.ok) console.warn('[capi] cart Purchase send hata:', r.error);
     });
+
+    // Activate hatasında manuel warn ile redirect (CAPI zaten gitti)
+    if (!activate.ok) {
+      return NextResponse.redirect(
+        `${paymentBaseUrl()}/odeme/basarili?type=cart&orderId=${encodeURIComponent(orderId)}&warn=manuel`,
+        { status: 303 },
+      );
+    }
 
     // GA4 server-side purchase
     sendGa4Purchase({

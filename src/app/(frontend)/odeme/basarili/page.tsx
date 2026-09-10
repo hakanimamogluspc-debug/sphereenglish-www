@@ -74,6 +74,7 @@ export default async function OdemeBasariliPage({
     productId?: string;
     productName?: string;
     eventId?: string;
+    subscribeEventId?: string;
   }>;
 }) {
   const sp = await searchParams;
@@ -83,6 +84,7 @@ export default async function OdemeBasariliPage({
   const token = sp.token;
   const orderId = sp.orderId;
   const eventId = sp.eventId;
+  const subscribeEventId = sp.subscribeEventId;
 
   const isEbook = type === 'ebook';
   const isCart = type === 'cart';
@@ -112,6 +114,7 @@ export default async function OdemeBasariliPage({
           priceTry={priceTry}
           orderId={orderId ?? conv}
           eventId={eventId}
+          subscribeEventId={subscribeEventId}
         />
       )}
 
