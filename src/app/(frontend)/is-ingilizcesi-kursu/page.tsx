@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { fetchAllCourses } from '@/lib/api/courses';
+import { fetchAllCourses, currentCohortStartDisplay, currentCohortMonth, currentCohortMonthYear } from '@/lib/api/courses';
 import { GROUP_SIZE, CONTACT, OXFORD } from '@/lib/business-config';
 import {
   Users, Calendar, MessageSquare, FileText, Video, Building2,
@@ -42,10 +42,10 @@ const SHARED_FEATURES = [
   { icon: Building2,     title: 'Türk iş dünyası',             desc: 'Sektörel gerçek durumlar, Türk profesyonellere özel.' },
 ];
 
-const FAQ = [
+const buildFaq = (startDisplay: string) => [
   {
     q: 'Program ne zaman başlıyor?',
-    a: `Eylül 2026'nın ilk haftası ilk gruplar açılıyor. Kesin başlangıç tarihi ön kayıt sonrası size e-posta ile iletilir.`,
+    a: `${startDisplay} ilk gruplar açılıyor. Kesin başlangıç tarihi ön kayıt sonrası size e-posta ile iletilir.`,
   },
   {
     q: 'Dersler nasıl işleniyor?',
@@ -80,6 +80,10 @@ const breadcrumbJsonLd = {
 
 export default async function CourseLandingPage() {
   const courses = await fetchAllCourses();
+  const cohortStart = currentCohortStartDisplay(courses);
+  const cohortMonth = currentCohortMonth(courses);
+  const cohortMonthYear = currentCohortMonthYear(courses);
+  const FAQ = buildFaq(cohortStart);
 
   // JSON-LD: ItemList (kurslar)
   const listJsonLd = {
@@ -130,7 +134,7 @@ export default async function CourseLandingPage() {
           <div className="flex flex-wrap items-center justify-center gap-3 mt-8 text-[12px] text-gray-500">
             <span className="inline-flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              Eylül 2026'nın ilk haftası başlıyor
+              {cohortStart} başlıyor
             </span>
             <span className="text-gray-300">·</span>
             <span className="inline-flex items-center gap-1.5">
@@ -265,7 +269,7 @@ export default async function CourseLandingPage() {
         <div className="rounded-xl bg-[#f0f7ff] border border-[#0ea5e9]/25 p-5 text-center">
           <p className="text-[14px] text-[#1B365D] leading-relaxed">
             <strong>Mevcut gruplarımızın kontenjanı dolmuştur.</strong>{' '}
-            Eylül 2026 grupları için ön kayıt devam ediyor. Her programda yalnızca <strong>{GROUP_SIZE.max} kişilik</strong> yer var.
+            {cohortMonthYear} grupları için ön kayıt devam ediyor. Her programda yalnızca <strong>{GROUP_SIZE.max} kişilik</strong> yer var.
           </p>
         </div>
       </section>
@@ -329,7 +333,7 @@ export default async function CourseLandingPage() {
             KONTENJANLAR SINIRLIDIR
           </p>
           <h2 className="text-[32px] lg:text-[42px] font-extrabold leading-tight mb-4 tracking-tight">
-            Eylül Grubunda Yerini Ayır
+            {cohortMonth} Grubunda Yerini Ayır
           </h2>
           <p className="text-[16px] text-white/80 leading-relaxed mb-8 max-w-xl mx-auto">
             Her programda yalnızca <strong className="text-white">{GROUP_SIZE.max} kişilik</strong> yer var.

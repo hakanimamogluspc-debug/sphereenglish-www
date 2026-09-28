@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BuyCourseButton from './BuyCourseButton';
+import { fetchAllCourses, currentCohortStartDisplay, currentCohortMonth, currentCohortMonthYear, monthWithLocative } from '@/lib/api/courses';
 import {
   Users, Clock, MessageSquare, FileText, Video, Building2,
   ArrowRight, CheckCircle2, Calendar, Shield,
@@ -83,10 +84,10 @@ const SHARED_FEATURES = [
   { icon: Building2,    title: 'Türk iş dünyası',    desc: 'Sektörel gerçek durumlar ve Türk profesyonellere özel.' },
 ];
 
-const FAQ = [
+const buildFaq = (monthYear: string) => [
   {
     q: 'Program ne zaman başlıyor?',
-    a: 'Eylül 2026\'da ilk gruplar açılıyor. Kesin tarih ön kayıt sonrası size iletilir.',
+    a: `${monthYear}'da ilk gruplar açılıyor. Kesin tarih ön kayıt sonrası size iletilir.`,
   },
   {
     q: 'Dersler nasıl işleniyor?',
@@ -110,7 +111,11 @@ const FAQ = [
   },
 ];
 
-export default function KurslarPage() {
+export default async function KurslarPage() {
+  const courses = await fetchAllCourses();
+  const cohortMonth = currentCohortMonth(courses);
+  const cohortMonthYear = currentCohortMonthYear(courses);
+  const FAQ = buildFaq(cohortMonthYear);
   return (
     <main className="bg-white min-h-screen">
       <Header />
@@ -134,7 +139,7 @@ export default function KurslarPage() {
           <div className="flex flex-wrap items-center justify-center gap-3 mt-8 text-[12px] text-gray-500">
             <span className="inline-flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              Eylül 2026'da başlıyor
+              {cohortMonthYear}'da başlıyor
             </span>
             <span className="text-gray-300">·</span>
             <span className="inline-flex items-center gap-1.5">
@@ -345,7 +350,7 @@ export default function KurslarPage() {
             KONTENJANLAR SINIRLIDIR
           </p>
           <h2 className="text-[32px] lg:text-[42px] font-extrabold leading-tight mb-4 tracking-tight">
-            Yerini Ayır — Eylül'de
+            Yerini Ayır — {monthWithLocative(cohortMonth)}
             <br />
             Sınıfta Buluşalım
           </h2>

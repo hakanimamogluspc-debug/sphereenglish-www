@@ -151,6 +151,60 @@ export function cohortStatusLabel(status: ApiCohortStatus, waitlistLabel?: strin
   }
 }
 
+/**
+ * Aktif cohort için tarih display (örn: "Ekim 2026'nın ilk haftası").
+ * Waitlist > Open > Fallback sırasıyla döner.
+ */
+export function currentCohortStartDisplay(courses: ApiCourse[]): string {
+  const priority = ["waitlist", "open"] as const;
+  for (const status of priority) {
+    const c = courses.find((c) => c.cohort_status === status && c.cohort_start_display);
+    if (c?.cohort_start_display) return c.cohort_start_display;
+  }
+  return "Eylül 2026'nın ilk haftası"; // fallback
+}
+
+/**
+ * Cohort_start_display'ten ay adını çıkar (örn: "Ekim 2026'nın ilk haftası" → "Ekim").
+ * Türkçe ay tanır: Ocak, Şubat, Mart, Nisan, Mayıs, Haziran, Temmuz, Ağustos, Eylül, Ekim, Kasım, Aralık.
+ */
+export function currentCohortMonth(courses: ApiCourse[]): string {
+  const display = currentCohortStartDisplay(courses);
+  const m = display.match(/(Ocak|Şubat|Mart|Nisan|Mayıs|Haziran|Temmuz|Ağustos|Eylül|Ekim|Kasım|Aralık)/i);
+  return m?.[1] || "Eylül";
+}
+
+/**
+ * Türkçe ay ismi + locative eki (bulunma hali).
+ * Örn: "Ekim" → "Ekim'de", "Ocak" → "Ocak'ta", "Kasım" → "Kasım'da"
+ */
+export function monthWithLocative(month: string): string {
+  const map: Record<string, string> = {
+    Ocak: "Ocak'ta",
+    "Şubat": "Şubat'ta",
+    Mart: "Mart'ta",
+    Nisan: "Nisan'da",
+    "Mayıs": "Mayıs'ta",
+    Haziran: "Haziran'da",
+    Temmuz: "Temmuz'da",
+    "Ağustos": "Ağustos'ta",
+    "Eylül": "Eylül'de",
+    Ekim: "Ekim'de",
+    "Kasım": "Kasım'da",
+    "Aralık": "Aralık'ta",
+  };
+  return map[month] || `${month}'de`;
+}
+
+/**
+ * "Ekim 2026" — ay + yıl birleşimi. Yıl bulunmazsa güncel yıl.
+ */
+export function currentCohortMonthYear(courses: ApiCourse[]): string {
+  const display = currentCohortStartDisplay(courses);
+  const m = display.match(/((?:Ocak|Şubat|Mart|Nisan|Mayıs|Haziran|Temmuz|Ağustos|Eylül|Ekim|Kasım|Aralık)\s+\d{4})/i);
+  return m?.[1] || `${currentCohortMonth(courses)} ${new Date().getFullYear()}`;
+}
+
 export function cohortStatusMessage(course: ApiCourse): string {
   const when = course.cohort_start_display ?? "Eylül 2026'nın ilk haftası";
   switch (course.cohort_status) {
