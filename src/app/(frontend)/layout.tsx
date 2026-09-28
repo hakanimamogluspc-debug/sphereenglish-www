@@ -8,6 +8,7 @@ import AnalyticsTracker from '../../components/AnalyticsTracker';
 import MetaPixelRouteTracker from '../../components/MetaPixelRouteTracker';
 import FbclidCapture from '../../components/FbclidCapture';
 import ContactClickTracker from '../../components/ContactClickTracker';
+import CookieConsent from '@/components/CookieConsent';
 import { CartProvider } from '../../lib/cart/cart-context';
 import MiniCartDrawer from '../../components/MiniCartDrawer';
 
@@ -275,6 +276,25 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <head>
+        {/* KVKK/GDPR — Google Consent Mode v2 DEFAULT (GTM'den ÖNCE olmalı) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied',
+                'functionality_storage': 'granted',
+                'personalization_storage': 'denied',
+                'security_storage': 'granted',
+                'wait_for_update': 500
+              });
+            `,
+          }}
+        />
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{
@@ -326,7 +346,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         />
 
 
-        {/* Meta Pixel Code */}
+        {/* Meta Pixel Code — KVKK: revoke ile başlat, consent verildiğinde grant */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -338,6 +358,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               t.src=v;s=b.getElementsByTagName(e)[0];
               s.parentNode.insertBefore(t,s)}(window, document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('consent', 'revoke');
               fbq('init', '2156406151837976');
               fbq('track', 'PageView');
             `,
@@ -378,6 +399,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </Suspense>
           {/* WhatsApp/telefon/mail linki tıklamalarında Contact event */}
           <ContactClickTracker />
+          {/* KVKK/GDPR Çerez rıza banner'ı */}
+          <CookieConsent />
         </CartProvider>
       </body>
     </html>
