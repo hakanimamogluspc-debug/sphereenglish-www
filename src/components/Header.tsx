@@ -4,7 +4,42 @@ import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import Image from 'next/image';
 import CartIcon from '@/components/CartIcon';
-import { primaryCtaLabel } from '@/lib/cohort-config';
+import { primaryCtaLabel as fallbackPrimaryCtaLabel } from '@/lib/cohort-config';
+
+/**
+ * Admin panel "Kurs Yönetimi"nden gelen cohort_waitlist_label'ı kullanır.
+ * Backend down / veri boşsa `cohort-config.ts` fallback'ine düşer.
+ */
+function usePrimaryCta(): { label: string; href: string } {
+  const [cta, setCta] = useState(() => fallbackPrimaryCtaLabel());
+
+  useEffect(() => {
+    let cancelled = false;
+    const apiBase = process.env.NEXT_PUBLIC_API_BASE || 'https://app.sphereenglish.com';
+    fetch(`${apiBase.replace(/\/$/, '')}/api/courses`, { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled || !data?.courses?.length) return;
+        const courses: any[] = data.courses;
+        const anyOpen = courses.some((c) => c.cohort_status === 'open');
+        if (anyOpen) {
+          setCta({ label: 'Kursları İncele', href: '/is-ingilizcesi-kursu' });
+          return;
+        }
+        const firstWaitlist = courses.find((c) => c.cohort_status === 'waitlist');
+        if (firstWaitlist) {
+          setCta({
+            label: firstWaitlist.cohort_waitlist_label || 'Ön Kayıt',
+            href: '/is-ingilizcesi-kursu',
+          });
+        }
+      })
+      .catch(() => {/* fallback zaten set */});
+    return () => { cancelled = true; };
+  }, []);
+
+  return cta;
+}
 
 const cozumlerMenu = [
   {
@@ -38,6 +73,8 @@ const cozumlerMenu = [
 ];
 
 export default function Header({ forceWhite = false }: { forceWhite?: boolean }) {
+  const primaryCta = usePrimaryCta();
+
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [cozumlerOpen, setCozumlerOpen] = useState(false);
@@ -224,18 +261,13 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
           >
             GİRİŞ YAP
           </a>
-          {(() => {
-            const cta = primaryCtaLabel();
-            return (
-              <Link
-                href={cta.href}
-                className="ml-1 px-5 py-2 rounded-full text-white text-[11px] font-bold tracking-[0.18em] transition-all duration-200 hover:opacity-90 hover:shadow-md whitespace-nowrap"
-                style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)' }}
-              >
-                {cta.label.toUpperCase()}
-              </Link>
-            );
-          })()}
+          <Link
+            href={primaryCta.href}
+            className="ml-1 px-5 py-2 rounded-full text-white text-[11px] font-bold tracking-[0.18em] transition-all duration-200 hover:opacity-90 hover:shadow-md whitespace-nowrap"
+            style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)' }}
+          >
+            {primaryCta.label.toUpperCase()}
+          </Link>
         </nav>
 
         {/* Mobile actions */}
@@ -353,19 +385,14 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
           >
             GİRİŞ YAP
           </a>
-          {(() => {
-            const cta = primaryCtaLabel();
-            return (
-              <Link
-                href={cta.href}
-                className="mt-1 px-5 py-2.5 rounded-full text-white text-[11px] font-bold tracking-[0.18em] text-center transition-all duration-200 hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)' }}
-                onClick={() => setMobileOpen(false)}
-              >
-                {cta.label.toUpperCase()}
-              </Link>
-            );
-          })()}
+          <Link
+            href={primaryCta.href}
+            className="mt-1 px-5 py-2.5 rounded-full text-white text-[11px] font-bold tracking-[0.18em] text-center transition-all duration-200 hover:opacity-90"
+            style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)' }}
+            onClick={() => setMobileOpen(false)}
+          >
+            {primaryCta.label.toUpperCase()}
+          </Link>
         </div>
       )}
     </header>
