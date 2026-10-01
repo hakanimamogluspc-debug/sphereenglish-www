@@ -1,4 +1,5 @@
 import { withPayload } from '@payloadcms/next/withPayload';
+import { withSentryConfig } from '@sentry/nextjs';
 import { imageHosts } from './image-hosts.config.js';
 
 /** @type {import('next').NextConfig} */
@@ -112,4 +113,28 @@ const nextConfig = {
   },
 };
 
-export default withPayload(nextConfig, { devBundleServerPackages: false });
+const configWithPayload = withPayload(nextConfig, { devBundleServerPackages: false });
+
+// Sentry wrapper — SENTRY_DSN set edilmişse source map upload yapar
+// Yoksa işlemsizdir (next build hâlâ çalışır)
+export default process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN
+  ? withSentryConfig(configWithPayload, {
+      silent: !process.env.CI,
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+
+      // Hide source maps from browser (upload sadece Sentry'ye)
+      hideSourceMaps: true,
+
+      // Tunneling — ad blocker bypass (optional)
+      // tunnelRoute: '/monitoring',
+
+      // React component names source map'te
+      reactComponentAnnotation: { enabled: true },
+
+      // Disable logger / telemetry
+      disableLogger: true,
+      telemetry: false,
+    })
+  : configWithPayload;
