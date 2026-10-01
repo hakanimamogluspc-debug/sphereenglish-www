@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { LEGAL_UPDATES, formatForTR } from '@/lib/legal-dates';
 
 export const metadata: Metadata = {
   title: 'Teslimat ve İade Şartları',
@@ -19,7 +20,7 @@ export default function TeslimatIadePage() {
         <h1 className="text-[34px] lg:text-[44px] font-extrabold tracking-[-0.025em] text-[#1B365D] leading-[1.15] mb-3">
           Teslimat ve İade Şartları
         </h1>
-        <p className="text-[14px] text-gray-500 mb-10">Son güncelleme: 22 Haziran 2026</p>
+        <p className="text-[14px] text-gray-500 mb-10">Son güncelleme: {formatForTR(LEGAL_UPDATES.teslimatIade)}</p>
 
         <div className="prose prose-slate max-w-none text-[15px] leading-relaxed text-gray-700 space-y-6">
           <p>

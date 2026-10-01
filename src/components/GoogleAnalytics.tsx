@@ -1,28 +1,16 @@
-'use client';
-import Script from 'next/script';
-
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-ELDF1FF5S1';
-
+/**
+ * @deprecated 2026-10-02
+ *
+ * GA4 ölçümü artık GTM (Google Tag Manager) üzerinden yapılıyor.
+ * Doğrudan gtag.js enjekte etmeye gerek yok — `app/(frontend)/layout.tsx`
+ * içindeki GTM script'i GA4 tag'ini yöneyecek şekilde GTM UI'da yapılandırılmıştır.
+ *
+ * KVKK Consent Mode v2 ile çalışır: kullanıcı consent vermeden GA4
+ * veri göndermez (analytics_storage=denied default).
+ *
+ * Dosya git history korunması için saklıyoruz; bir sonraki major refactor'de
+ * tamamen silinebilir.
+ */
 export default function GoogleAnalytics() {
-  return (
-    <>
-      <Script
-        async
-        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-        strategy="afterInteractive"
-      />
-      <Script
-        id="google-analytics-init"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_MEASUREMENT_ID}');
-          `,
-        }}
-      />
-    </>
-  );
+  return null;
 }
