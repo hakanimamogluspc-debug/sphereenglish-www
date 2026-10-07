@@ -49,11 +49,13 @@ if (dsn) {
       'gtag is not defined',
     ],
 
-    integrations: [
-      Sentry.replayIntegration({
-        maskAllText: true,       // KVKK: ekrandaki metni maskele
-        blockAllMedia: true,     // Resim/video kaydetme
-      }),
-    ],
+    integrations: typeof (Sentry as any).replayIntegration === 'function'
+      ? [
+        (Sentry as any).replayIntegration({
+          maskAllText: true,
+          blockAllMedia: true,
+        }),
+      ]
+      : [],
   });
 }
