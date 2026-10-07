@@ -18,7 +18,13 @@ export default function SentryInit() {
 
     (async () => {
       try {
-        const Sentry = await import('@sentry/nextjs');
+        // @sentry/nextjs v11 → browser init withSentryConfig wrapper'ı gerektiriyor,
+        // bu olmadan transport undefined kalıyor. @sentry/nextjs içindeki browser
+        // modülünü direkt import ederek bypass et.
+        const Sentry = await import('@sentry/nextjs/build/esm/client/index.js').catch(
+          () => import('@sentry/nextjs'),
+        );
+
         Sentry.init({
           dsn,
           environment: process.env.NEXT_PUBLIC_SENTRY_ENV || 'production',
@@ -26,6 +32,7 @@ export default function SentryInit() {
           replaysSessionSampleRate: 0,
           replaysOnErrorSampleRate: 1.0,
           sendDefaultPii: false,
+          enabled: true,
           integrations: typeof (Sentry as any).replayIntegration === 'function'
             ? [(Sentry as any).replayIntegration({ maskAllText: true, blockAllMedia: true })]
             : [],
@@ -37,16 +44,42 @@ export default function SentryInit() {
             'gtag is not defined',
           ],
         });
-        // Debug + test için window'a expose
-        (window as any).Sentry = Sentry;
-        console.log('[SentryInit] ✓ Sentry.init() tamamlandı — window.Sentry hazır');
 
-        // Global error handler explicit mount (Sentry 11'de bazı setup'ta auto çalışmıyor)
+        (window as any).Sentry = Sentry;
+
+        // Transport kontrolü — undefined ise manuel browser SDK dene
+        const client = (Sentry as any).getClient?.();
+        const hasTransport = client && typeof client.getTransport === 'function' && client.getTransport();
+        console.log('[SentryInit] client=', !!client, 'transport=', !!hasTransport);
+
+        if (!hasTransport) {
+          console.warn('[SentryInit] NextJS SDK transport yok, @sentry/browser fallback deniyor...');
+          const Browser = await import('@sentry/browser');
+          Browser.init({
+            dsn,
+            environment: process.env.NEXT_PUBLIC_SENTRY_ENV || 'production',
+            tracesSampleRate: 0.1,
+            replaysSessionSampleRate: 0,
+            replaysOnErrorSampleRate: 1.0,
+            sendDefaultPii: false,
+            enabled: true,
+            integrations: typeof (Browser as any).replayIntegration === 'function'
+              ? [(Browser as any).replayIntegration({ maskAllText: true, blockAllMedia: true })]
+              : [],
+          });
+          (window as any).Sentry = Browser;
+          const bClient = (Browser as any).getClient?.();
+          console.log('[SentryInit] browser SDK: client=', !!bClient, 'transport=', !!bClient?.getTransport?.());
+        }
+
+        console.log('[SentryInit] ✓ setup tamamlandı — window.Sentry hazır');
+
+        // Global error handler
         window.addEventListener('error', (e) => {
-          if (e.error) Sentry.captureException(e.error);
+          if (e.error) (window as any).Sentry?.captureException?.(e.error);
         });
         window.addEventListener('unhandledrejection', (e) => {
-          Sentry.captureException(e.reason);
+          (window as any).Sentry?.captureException?.(e.reason);
         });
       } catch (e) {
         console.warn('[SentryInit] init hata:', e);
