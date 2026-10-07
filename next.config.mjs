@@ -69,7 +69,7 @@ const nextConfig = {
               "img-src 'self' data: https:",
               "font-src 'self' data: https://fonts.gstatic.com https://*.iyzipay.com https://*.hotjar.com",
               // Meta Pixel event gönderimi (www.facebook.com/tr) + Iyzico + Google/Hotjar/Sentry
-              "connect-src 'self' https://app.sphereenglish.com https://www.google.com https://analytics.google.com https://www.google-analytics.com https://region1.google-analytics.com https://*.google-analytics.com https://www.iyzipay.com https://*.iyzipay.com https://*.hotjar.com wss://*.hotjar.com https://*.ingest.sentry.io https://*.sentry.io https://www.facebook.com https://connect.facebook.net",
+              "connect-src 'self' https://app.sphereenglish.com https://www.google.com https://analytics.google.com https://www.google-analytics.com https://region1.google-analytics.com https://*.google-analytics.com https://www.iyzipay.com https://*.iyzipay.com https://*.hotjar.com wss://*.hotjar.com https://*.ingest.sentry.io https://*.ingest.de.sentry.io https://*.ingest.us.sentry.io https://*.sentry.io https://www.facebook.com https://connect.facebook.net",
               // Iyzico 3D Secure iframe + BKM ve banka 3DS gateway'leri için izin
               "frame-src 'self' https:",
               "child-src 'self' https:",
