@@ -31,7 +31,7 @@ async function checkApiServer(timeoutMs = 3000): Promise<HealthCheck> {
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
-    const res = await fetch(`${apiBase.replace(/\/$/, '')}/api/health`, {
+    const res = await fetch(`${apiBase.replace(/\/$/, '')}/healthz`, {
       signal: controller.signal,
       cache: 'no-store',
     });
