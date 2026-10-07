@@ -9,6 +9,7 @@ import MetaPixelRouteTracker from '../../components/MetaPixelRouteTracker';
 import FbclidCapture from '../../components/FbclidCapture';
 import ContactClickTracker from '../../components/ContactClickTracker';
 import CookieConsent from '@/components/CookieConsent';
+import SentryInit from '@/components/SentryInit';
 import { CartProvider } from '../../lib/cart/cart-context';
 import MiniCartDrawer from '../../components/MiniCartDrawer';
 
@@ -408,6 +409,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           {/* WhatsApp/telefon/mail linki tıklamalarında Contact event */}
           <ContactClickTracker />
           {/* KVKK/GDPR Çerez rıza banner'ı */}
+          <SentryInit />
           <CookieConsent />
         </CartProvider>
       </body>
