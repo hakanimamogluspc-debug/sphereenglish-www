@@ -1,6 +1,7 @@
 import { withPayload } from '@payloadcms/next/withPayload';
-import sentryPkg from '@sentry/nextjs';
-const { withSentryConfig } = sentryPkg;
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { withSentryConfig } = require('@sentry/nextjs');
 import { imageHosts } from './image-hosts.config.js';
 
 /** @type {import('next').NextConfig} */
