@@ -37,7 +37,17 @@ export default function SentryInit() {
             'gtag is not defined',
           ],
         });
-        console.log('[SentryInit] ✓ Sentry.init() tamamlandı');
+        // Debug + test için window'a expose
+        (window as any).Sentry = Sentry;
+        console.log('[SentryInit] ✓ Sentry.init() tamamlandı — window.Sentry hazır');
+
+        // Global error handler explicit mount (Sentry 11'de bazı setup'ta auto çalışmıyor)
+        window.addEventListener('error', (e) => {
+          if (e.error) Sentry.captureException(e.error);
+        });
+        window.addEventListener('unhandledrejection', (e) => {
+          Sentry.captureException(e.reason);
+        });
       } catch (e) {
         console.warn('[SentryInit] init hata:', e);
       }
