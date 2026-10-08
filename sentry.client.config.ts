@@ -1,5 +1,6 @@
 /**
  * Sentry client-side (browser) config
+ * Build cache bust: 2026-10-09
  *
  * Marketing site tarayıcı tarafı hata izleme.
  * SENTRY_DSN yoksa Sentry devre dışı — sessizce atla.
