@@ -182,8 +182,8 @@ export default async function EKitaplarPage() {
           <div className="grid lg:grid-cols-[1.4fr_1fr] gap-10 items-start">
             <div>
               <span className="text-[12px] font-extrabold tracking-[0.2em] uppercase text-[#0ea5e9]">E-Kitap Kütüphanesi</span>
-              <h1 className="mt-3 text-[36px] lg:text-[52px] font-extrabold tracking-[-0.02em] text-[#1B365D] leading-[1.1]">
-                İş İngilizcesi <span className="text-[#0ea5e9]">e-kitapları</span>: toplantıdan finansa
+              <h1 className="mt-3 text-[36px] lg:text-[52px] font-extrabold tracking-[-0.02em] text-[#1B365D] leading-[1.1] [text-wrap:balance]">
+                İş İngilizcesi <span className="text-[#0ea5e9] whitespace-nowrap">e‑kitapları</span>: toplantıdan finansa
               </h1>
               <p className="mt-5 text-[16px] lg:text-[17px] text-gray-600 leading-relaxed max-w-2xl">
                 Türk profesyoneller için Türkçe açıklamalı, gerçek iş senaryolu PDF kitaplar.
