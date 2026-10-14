@@ -29,13 +29,12 @@ export default function SentryInit() {
           dsn,
           environment: process.env.NEXT_PUBLIC_SENTRY_ENV || 'production',
           tracesSampleRate: 0.1,
-          replaysSessionSampleRate: 0,
-          replaysOnErrorSampleRate: 1.0,
           sendDefaultPii: false,
           enabled: true,
-          integrations: typeof (Sentry as any).replayIntegration === 'function'
-            ? [(Sentry as any).replayIntegration({ maskAllText: true, blockAllMedia: true })]
-            : [],
+          // Session Replay kaldırıldı (2026-10-14): ~100 KiB ekstra JS, mobil
+          // performans skoru için. Gerekirse Sentry.lazyLoadIntegration ile
+          // sadece hata anında yüklenecek şekilde geri eklenebilir.
+          integrations: [],
           ignoreErrors: [
             'ResizeObserver loop limit exceeded',
             'Non-Error promise rejection captured',

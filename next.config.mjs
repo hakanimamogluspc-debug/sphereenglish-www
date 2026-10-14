@@ -85,6 +85,14 @@ const nextConfig = {
           },
         ],
       },
+      {
+        // public/assets altındaki statik görseller/svg — 1 yıl cache.
+        // Dosya değişirse adı/versiyonu değişir (hash yok ama nadir değişiyor).
+        source: '/assets/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
     ];
   },
   async redirects() {

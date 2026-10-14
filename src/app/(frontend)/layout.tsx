@@ -2,7 +2,8 @@ import React from 'react';
 import type { Metadata, Viewport } from 'next';
 import '../../styles/tailwind.css';
 import { Suspense } from 'react';
-import ChatWidget from '../../components/ChatWidget/ChatWidget';
+import DeferredChatWidget from '../../components/DeferredChatWidget';
+import ThirdPartyScripts from '../../components/ThirdPartyScripts';
 import WebMCPProvider from '../../components/WebMCPProvider';
 import AnalyticsTracker from '../../components/AnalyticsTracker';
 import MetaPixelRouteTracker from '../../components/MetaPixelRouteTracker';
@@ -296,25 +297,8 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* Google Tag Manager */}
-        {process.env.NEXT_PUBLIC_GTM_ID && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','${process.env.NEXT_PUBLIC_GTM_ID}');`,
-            }}
-          />
-        )}
-        {/* End Google Tag Manager */}
-        <link
-          rel="preload"
-          as="image"
-          href="/assets/images/hero-online-english.jpg"
-          fetchPriority="high"
-        />
+        {/* GTM ve Meta Pixel SDK'ları <ThirdPartyScripts /> ile ertelenmiş yüklenir
+            (ilk etkileşim veya 3.5 sn). Burada sadece stub'lar var. */}
         <meta name="geo.region" content="TR-10" />
         <meta name="geo.country" content="Turkey" />
         <meta name="geo.placename" content="Ayvalık, Balıkesir, Türkiye" />
@@ -349,19 +333,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         />
 
 
-        {/* Meta Pixel Code — KVKK: revoke ile başlat, consent verildiğinde grant */}
+        {/* Meta Pixel STUB — KVKK: revoke ile başlat, consent verildiğinde grant.
+            SDK (fbevents.js) ertelenmiş iner; buradaki çağrılar kuyruklanır. */}
         {process.env.NEXT_PUBLIC_META_PIXEL_ID && (
           <script
             dangerouslySetInnerHTML={{
               __html: `
-                !function(f,b,e,v,n,t,s)
-                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                !function(f){if(f.fbq)return;var n=f.fbq=function(){n.callMethod?
                 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-                n.queue=[];t=b.createElement(e);t.async=!0;
-                t.src=v;s=b.getElementsByTagName(e)[0];
-                s.parentNode.insertBefore(t,s)}(window, document,'script',
-                'https://connect.facebook.net/en_US/fbevents.js');
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[]}(window);
                 fbq('consent', 'revoke');
                 fbq('init', '${process.env.NEXT_PUBLIC_META_PIXEL_ID}');
                 fbq('track', 'PageView');
@@ -369,7 +349,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             }}
           />
         )}
-        {/* End Meta Pixel Code */}
       </head>
       <body>
         {/* Google Tag Manager (noscript) */}
@@ -393,7 +372,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         )}
         <CartProvider>
           {children}
-          <ChatWidget />
+          {/* GTM + Meta Pixel SDK — ilk etkileşim/idle'da yüklenir */}
+          <ThirdPartyScripts
+            gtmId={process.env.NEXT_PUBLIC_GTM_ID}
+            pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID}
+          />
+          {/* Chat widget — ayrı chunk, idle'da mount */}
+          <DeferredChatWidget />
           <WebMCPProvider />
           <Suspense fallback={null}>
             <AnalyticsTracker />

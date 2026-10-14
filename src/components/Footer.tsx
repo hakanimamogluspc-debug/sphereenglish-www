@@ -138,7 +138,9 @@ export default function Footer() {
           <img
             src="/assets/payment/logo_band_white.svg"
             alt="Iyzico, Visa, Mastercard, American Express, Troy — güvenli ödeme"
-            className="h-7 md:h-8 opacity-90"
+            width={520}
+            height={32}
+            className="h-7 md:h-8 w-auto opacity-90"
             loading="lazy"
           />
         </div>
