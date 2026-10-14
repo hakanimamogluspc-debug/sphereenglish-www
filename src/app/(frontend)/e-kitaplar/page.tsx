@@ -1,514 +1,502 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Header from '@/components/Header';
-import PreviewLinkButton from '@/components/PreviewLinkButton';
 import Footer from '@/components/Footer';
 import AddToCartButton from '@/components/AddToCartButton';
+import PreviewLinkButton from '@/components/PreviewLinkButton';
+import WaitlistForm, { type InterestOption } from './WaitlistForm';
 
 export const metadata: Metadata = {
-  title: 'E-Kitaplar — Sphere English Dijital Kitap Kataloğu | İş İngilizcesi PDF Kitaplar',
+  title: 'İş İngilizcesi PDF E-Kitapları: 1000 Kelime Serisi | Sphere English',
   description:
-    'Sphere English dijital iş İngilizcesi kitap serisi. "İş İngilizcesinde Kullanılan 1000 Kelime" — kurumsal iletişim, toplantı, e-posta, sunum dili. PDF format, anında indirilebilir, Türkçe açıklamalı.',
+    'Toplantı, satış, liderlik, finans ve teknoloji için Türkçe açıklamalı iş İngilizcesi PDF e-kitapları. Tek kitap ₺199, 5 kitaplık set ₺799. Yeni seriler yolda.',
   alternates: { canonical: 'https://www.sphereenglish.com/e-kitaplar' },
-  robots: { index: true, follow: true },
+  robots: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
   openGraph: {
-    title: 'Sphere English E-Kitap Kataloğu — İş İngilizcesi PDF Kitaplar',
-    description:
-      'Plaza dili, toplantı İngilizcesi, e-posta yazımı, sunum ifadeleri. 1000 Kelime serisi dijital kitaplar.',
+    title: 'İş İngilizcesi PDF E-Kitapları | Sphere English',
+    description: '250 kurumsal kalıp + 750 terim, 5 PDF kitap. Tek kitap ₺199, tam set ₺799. Yeni seriler yakında.',
     url: 'https://www.sphereenglish.com/e-kitaplar',
     siteName: 'Sphere English',
     type: 'website',
     locale: 'tr_TR',
   },
+  twitter: { card: 'summary_large_image' },
   keywords: [
-    'iş ingilizcesi kitap',
-    'business english pdf',
-    'kurumsal ingilizce',
-    'toplantı ingilizcesi',
-    'e-posta ingilizcesi',
-    'plaza dili',
-    'sphere english kitap',
-    'dijital ingilizce kitap',
-    '1000 kelime',
-    'iş ingilizcesi pdf indir',
+    'iş ingilizcesi kitap', 'business english pdf', 'kurumsal ingilizce', 'toplantı ingilizcesi',
+    'e-posta ingilizcesi', 'plaza dili', 'sphere english kitap', 'dijital ingilizce kitap',
+    '1000 kelime', 'iş ingilizcesi pdf indir',
   ],
 };
 
-// Cache'i kapat — admin değişikliği anında yansısın
+// Admin değişikliği anında yansısın
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-const API_BASE = process.env.INTERNAL_API_BASE_URL ?? 'http://sphere-english_sphere-english-app:3000';
+const API_BASE = (process.env.INTERNAL_API_BASE_URL ?? 'http://sphere-english_sphere-english-app:3000').replace(/\/$/, '');
+const SITE = 'https://www.sphereenglish.com';
+
+// ─── Types ────────────────────────────────────────────────────────────────
 
 interface Ebook {
-  id: number;
-  slug: string;
-  title: string;
-  subtitle: string | null;
-  description: string;
-  author: string;
-  series_title: string | null;
-  series_order: number | null;
-  cover_image_url: string | null;
-  page_count: number | null;
-  reading_time_min: number | null;
-  category: string | null;
-  tags: string[] | null;
-  price_try: string;
-  list_price_try: string | null;
-  discount_ends_at: string | null;
-  downloads_display_count: number | null;
-  preview_pdf_url: string | null;
-  is_featured: boolean;
+  id: number; slug: string; title: string; subtitle: string | null; description: string;
+  author: string; series_title: string | null; series_order: number | null;
+  cover_image_url: string | null; page_count: number | null; reading_time_min: number | null;
+  category: string | null; tags: string[] | null; price_try: string; list_price_try: string | null;
+  downloads_display_count: number | null; preview_pdf_url: string | null; is_featured: boolean;
   published_at: string;
 }
-
-async function getEbooks(): Promise<Ebook[]> {
-  try {
-    const r = await fetch(`${API_BASE.replace(/\/$/, '')}/api/ebooks`, {
-      cache: 'no-store',
-    });
-    if (!r.ok) return [];
-    const data = await r.json();
-    return data.ebooks ?? [];
-  } catch (err) {
-    console.error('[e-kitaplar] fetch error:', err);
-    return [];
-  }
-}
-
-interface BundleListItem {
-  id: number;
-  slug: string;
-  title: string;
-  subtitle: string | null;
-  description: string | null;
-  cover_image_url: string | null;
-  price_try: string;
-  list_price_try: string | null;
-  currency: string;
-  is_featured: boolean;
-  item_count: number;
+interface Bundle {
+  id: number; slug: string; title: string; subtitle: string | null; description: string | null;
+  cover_image_url: string | null; price_try: string; list_price_try: string | null;
+  is_featured: boolean; item_count: number;
   items_preview: Array<{ id: number; slug: string; title: string; cover_image_url: string | null }>;
 }
+interface Faq { id: number; question: string; answer: string }
+interface Guide { id: number; roleLabel: string; description: string; ctaText: string | null; ctaHref: string | null; icon: string | null }
 
-async function getBundles(): Promise<BundleListItem[]> {
+// ─── Data ─────────────────────────────────────────────────────────────────
+
+async function getJson<T>(path: string, key: string, fallback: T): Promise<T> {
   try {
-    const r = await fetch(`${API_BASE.replace(/\/$/, '')}/api/bundles`, {
-      cache: 'no-store',
-    });
-    if (!r.ok) return [];
+    const r = await fetch(`${API_BASE}${path}`, { cache: 'no-store' });
+    if (!r.ok) return fallback;
     const data = await r.json();
-    return data.bundles ?? [];
+    return (data?.[key] ?? fallback) as T;
   } catch (err) {
-    console.error('[e-kitaplar] bundles fetch error:', err);
-    return [];
+    console.error(`[e-kitaplar] fetch ${path} error:`, err);
+    return fallback;
   }
 }
 
-function formatTRY(amount: number | string) {
-  const n = typeof amount === 'string' ? parseFloat(amount) : amount;
-  return new Intl.NumberFormat('tr-TR', {
-    style: 'currency',
-    currency: 'TRY',
-    maximumFractionDigits: 0,
-  }).format(n);
+const fmtTRY = (n: number | string) =>
+  new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(Number(n));
+
+/** Düz metindeki URL'leri tıklanabilir yap (FAQ cevapları için) */
+function linkify(text: string) {
+  const parts = text.split(/(https?:\/\/[^\s)]+)/g);
+  return parts.map((p, i) =>
+    /^https?:\/\//.test(p)
+      ? <a key={i} href={p} className="text-[#0ea5e9] font-semibold hover:underline break-all">{p.replace(/^https?:\/\/(www\.)?/, '')}</a>
+      : <span key={i}>{p}</span>,
+  );
 }
 
+// ─── Page ─────────────────────────────────────────────────────────────────
+
 export default async function EKitaplarPage() {
-  const [ebooks, bundles] = await Promise.all([getEbooks(), getBundles()]);
+  const [ebooks, bundles, faq, guide, interests] = await Promise.all([
+    getJson<Ebook[]>('/api/ebooks', 'ebooks', []),
+    getJson<Bundle[]>('/api/bundles', 'bundles', []),
+    getJson<Faq[]>('/api/ebook-marketing/faq', 'faq', []),
+    getJson<Guide[]>('/api/ebook-marketing/guide', 'guide', []),
+    getJson<InterestOption[]>('/api/ebook-marketing/interests', 'interests', []),
+  ]);
 
-  // SEO için JSON-LD CollectionPage + ItemList schema
-  const collectionLd = {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    name: 'Sphere English E-Kitap Kataloğu',
-    description:
-      'Dijital iş İngilizcesi kitap serisi. PDF format, anında indirilebilir.',
-    url: 'https://www.sphereenglish.com/e-kitaplar',
-    inLanguage: 'tr-TR',
-    publisher: {
-      '@type': 'Organization',
-      name: 'Sphere English',
-      url: 'https://www.sphereenglish.com',
-    },
-  };
+  const set = bundles.find((b) => b.is_featured) ?? bundles[0] ?? null;
+  const setPrice = set ? Number(set.price_try) : null;
+  const setList = set?.list_price_try ? Number(set.list_price_try) : null;
+  const singleSum = ebooks.reduce((s, b) => s + Number(b.price_try), 0);
+  const setSaving = set && singleSum > Number(set.price_try) ? singleSum - Number(set.price_try) : 0;
+  const singlePrice = ebooks.length ? Math.min(...ebooks.map((b) => Number(b.price_try))) : null;
+  const totalPages = ebooks.reduce((s, b) => s + (b.page_count ?? 0), 0);
+  const kalip = ebooks.length * 50;
+  const terim = ebooks.length * 150;
+  const updated = ebooks.reduce((d, b) => (b.published_at > d ? b.published_at : d), '');
 
-  const itemListLd = {
+  // ─── JSON-LD ───
+  const ld = {
     '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    itemListElement: ebooks.map((b, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      url: `https://www.sphereenglish.com/e-kitaplar/${b.slug}`,
-      name: b.title,
-    })),
+    '@graph': [
+      {
+        '@type': 'CollectionPage',
+        '@id': `${SITE}/e-kitaplar#page`,
+        url: `${SITE}/e-kitaplar`,
+        name: 'İş İngilizcesi PDF E-Kitapları',
+        inLanguage: 'tr-TR',
+        isPartOf: { '@type': 'WebSite', url: SITE, name: 'Sphere English' },
+        breadcrumb: {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: SITE },
+            { '@type': 'ListItem', position: 2, name: 'E-Kitaplar', item: `${SITE}/e-kitaplar` },
+          ],
+        },
+      },
+      {
+        '@type': 'ItemList',
+        itemListElement: ebooks.map((b, i) => ({
+          '@type': 'ListItem', position: i + 1, url: `${SITE}/e-kitaplar/${b.slug}`, name: b.title,
+        })),
+      },
+      ...ebooks.map((b) => ({
+        '@type': 'Product',
+        name: b.title,
+        url: `${SITE}/e-kitaplar/${b.slug}`,
+        image: b.cover_image_url ?? undefined,
+        description: b.description,
+        brand: { '@type': 'Brand', name: 'Sphere English' },
+        offers: {
+          '@type': 'Offer', priceCurrency: 'TRY', price: Number(b.price_try),
+          availability: 'https://schema.org/InStock', url: `${SITE}/e-kitaplar/${b.slug}`,
+        },
+      })),
+      ...(set ? [{
+        '@type': 'Product',
+        name: set.title,
+        url: `${SITE}/e-kitaplar/paketler/${set.slug}`,
+        image: set.cover_image_url ?? undefined,
+        description: set.subtitle ?? set.description ?? undefined,
+        brand: { '@type': 'Brand', name: 'Sphere English' },
+        offers: {
+          '@type': 'Offer', priceCurrency: 'TRY', price: Number(set.price_try),
+          availability: 'https://schema.org/InStock', url: `${SITE}/e-kitaplar/paketler/${set.slug}`,
+        },
+      }] : []),
+      ...(faq.length ? [{
+        '@type': 'FAQPage',
+        mainEntity: faq.map((f) => ({
+          '@type': 'Question', name: f.question,
+          acceptedAnswer: { '@type': 'Answer', text: f.answer },
+        })),
+      }] : []),
+    ],
   };
 
   return (
-    <main className="bg-white min-h-screen">
+    <main className="bg-white min-h-screen text-[#334155]">
       <Header />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
-      />
+      {/* JSON.stringify + "<" kaçışı: admin içeriğinde </script> geçse bile script kapanmaz */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, '\\u003c') }} />
 
-      {/* Hero — CRO §12: net fiyat + primary CTA ilk ekranda */}
-      <section className="bg-gradient-to-b from-[#f0f7ff] to-white pt-20 pb-12">
-        <div className="max-w-5xl mx-auto px-6 lg:px-10 text-center">
-          <p className="text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase mb-4">
-            E-Kitap Kataloğu · PDF
-          </p>
-          <h1 className="text-[40px] lg:text-[54px] font-extrabold tracking-[-0.025em] text-[#1B365D] leading-[1.05] mb-5">
-            İş İngilizcesinde Kullanılan
-            <br />
-            <span className="text-[#0ea5e9]">1000 Kelime — 5 Kitaplık Set</span>
-          </h1>
-          <p className="text-[16px] text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Toplantıdan finansa, liderlikten pazarlamaya Türk iş profesyonelleri için
-            hazırlanmış <strong className="text-[#1B365D]">5 tematik PDF kitap</strong>.
-            Türkçe açıklamalı, gerçek iş hayatından örnekli.
-          </p>
+      {/* ─── HERO ─────────────────────────────────────────────────────── */}
+      <section className="bg-gradient-to-b from-[#f5f8fc] to-white pt-16 pb-10 lg:pt-20 lg:pb-14 border-b border-[#e6ebf2]">
+        <div className="max-w-6xl mx-auto px-6 lg:px-10">
+          <nav aria-label="Sayfa yolu" className="text-[12px] text-gray-500 mb-6">
+            <ol className="flex items-center gap-2">
+              <li><Link href="/" className="hover:text-[#0ea5e9]">Ana Sayfa</Link></li>
+              <li aria-hidden="true">/</li>
+              <li aria-current="page" className="text-[#1B365D] font-semibold">E-Kitaplar</li>
+            </ol>
+          </nav>
 
-          {/* Fiyat + CTA — ilk ekran içinde net */}
-          <div className="mt-8 inline-flex flex-col sm:flex-row items-center gap-4 sm:gap-6 px-6 py-5 rounded-2xl bg-white border-2 border-[#0ea5e9]/25 shadow-sm">
-            <div className="text-center sm:text-left">
-              <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-gray-400 mb-0.5">
-                5 KİTAPLIK SET
+          <div className="grid lg:grid-cols-[1.4fr_1fr] gap-10 items-start">
+            <div>
+              <span className="text-[12px] font-extrabold tracking-[0.2em] uppercase text-[#0ea5e9]">E-Kitap Kütüphanesi</span>
+              <h1 className="mt-3 text-[36px] lg:text-[52px] font-extrabold tracking-[-0.02em] text-[#1B365D] leading-[1.1]">
+                İş İngilizcesi <span className="text-[#0ea5e9]">e-kitapları</span>: toplantıdan finansa
+              </h1>
+              <p className="mt-5 text-[16px] lg:text-[17px] text-gray-600 leading-relaxed max-w-2xl">
+                Türk profesyoneller için Türkçe açıklamalı, gerçek iş senaryolu PDF kitaplar.
+                Şu an {ebooks.length} kitap ve tam set mevcut; farklı sektör ve konularda yeni kitaplar yolda.
+                Ödemeden hemen sonra e-postanızda.
+              </p>
+
+              <div className="mt-7 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl">
+                {[
+                  [String(ebooks.length), 'kitap'],
+                  [kalip.toLocaleString('tr-TR'), 'kalıp'],
+                  [totalPages.toLocaleString('tr-TR'), 'sayfa'],
+                  ['30+', 'yeni kitap yolda'],
+                ].map(([n, l]) => (
+                  <div key={l} className="rounded-xl bg-white border border-[#e6ebf2] px-4 py-3">
+                    <b className="block text-[22px] font-extrabold text-[#1B365D] leading-none tabular-nums">{n}</b>
+                    <small className="text-[11px] text-gray-500 font-semibold">{l}</small>
+                  </div>
+                ))}
               </div>
-              <div className="flex items-baseline gap-2 justify-center sm:justify-start">
-                <span className="text-[15px] text-gray-400 line-through">₺995</span>
-                <span className="text-[32px] font-extrabold text-[#1B365D] leading-none">₺799</span>
-                <span className="text-[11px] font-bold text-emerald-600 uppercase">%20 indirim</span>
+
+              <div className="mt-6 flex flex-wrap items-center gap-2 text-[13px] text-gray-500 font-semibold">
+                <span>Sık arananlar:</span>
+                {['toplantı', 'e-posta', 'satış', 'liderlik', 'finans', 'yazılım'].map((w) => (
+                  <a key={w} href="#katalog" className="px-3 py-1.5 rounded-full bg-white border border-[#e6ebf2] text-[#1B365D] hover:border-[#0ea5e9] hover:text-[#0ea5e9] transition-colors">{w}</a>
+                ))}
               </div>
             </div>
-            <a
-              href="#paketler"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#0ea5e9] hover:bg-[#0284c7] text-white font-bold text-[14px] transition-colors whitespace-nowrap"
-            >
-              5 Kitaplık Seti Al — ₺799
-            </a>
-          </div>
 
-          <p className="mt-4 text-[12px] text-gray-500">
-            veya <a href="#tek-tek" className="text-[#0ea5e9] font-semibold hover:underline">tek kitap ₺199</a> · Her kitap için <a href="#tek-tek" className="text-[#0ea5e9] font-semibold hover:underline">5 sayfa ücretsiz önizleme</a>
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-3 mt-6 text-[12px] text-gray-500">
-            <span className="inline-flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              Anında indirme
-            </span>
-            <span className="text-gray-300">·</span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              PDF format
-            </span>
-            <span className="text-gray-300">·</span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              Iyzico 3D Secure
-            </span>
+            {/* Tiers aside */}
+            {set && (
+              <aside className="rounded-2xl bg-gradient-to-br from-[#0B1F3A] to-[#1B365D] text-white p-7 shadow-xl" aria-labelledby="tiersH">
+                <span className="text-[12px] font-extrabold tracking-[0.2em] uppercase text-[#7dd3fc]">En avantajlı seçenek</span>
+                <h2 id="tiersH" className="mt-2 text-[24px] font-extrabold leading-tight text-white">
+                  {set.item_count} kitaplık tam set {fmtTRY(set.price_try)}
+                </h2>
+                <p className="mt-2 text-[14px] text-white/75 leading-relaxed">
+                  {set.subtitle ?? 'Toplantı, satış, liderlik, finans ve teknoloji kitaplarının hepsi.'}
+                  {setSaving > 0 && <> Tek tek almaya göre <b className="text-white">{fmtTRY(setSaving)}</b> daha az.</>}
+                </p>
+                <div className="mt-5 grid grid-cols-3 gap-2">
+                  {[[kalip, 'kalıp'], [terim, 'terim'], [totalPages, 'sayfa']].map(([n, l]) => (
+                    <div key={String(l)} className="rounded-xl bg-white/10 px-3 py-2.5 text-center">
+                      <b className="block text-[20px] font-extrabold leading-none tabular-nums">{Number(n).toLocaleString('tr-TR')}</b>
+                      <small className="text-[11px] text-white/70">{l}</small>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-5">
+                  <AddToCartButton
+                    type="bundle" slug={set.slug} title={set.title} subtitle={set.subtitle}
+                    coverImageUrl={set.cover_image_url} price={Number(set.price_try)} listPrice={setList}
+                    itemCount={set.item_count} variant="full"
+                  />
+                  {setList && setList > Number(set.price_try) && (
+                    <p className="mt-2 text-center text-[12px] text-white/60">
+                      Liste fiyatı <s>{fmtTRY(setList)}</s>
+                    </p>
+                  )}
+                </div>
+                <Link href={`/e-kitaplar/paketler/${set.slug}`} className="mt-3 block text-center text-[12px] text-[#7dd3fc] hover:underline">
+                  Setin detayını gör →
+                </Link>
+              </aside>
+            )}
           </div>
-          <p className="mt-3 text-[13px] text-gray-500 font-medium">
-            <span className="text-[#1B365D] font-bold">500+ profesyonel</span> serimizi indirdi
-          </p>
         </div>
       </section>
 
-      {/* ─── PAKETLER — birden fazla kitap indirimli ────────────────────── */}
-      {bundles.length > 0 && (
-        <section id="paketler" className="max-w-6xl mx-auto px-6 lg:px-10 pt-12 pb-4 scroll-mt-24">
-          <div className="flex items-end justify-between flex-wrap gap-4 mb-6">
-            <div>
-              <p className="text-[11px] font-bold tracking-[0.22em] text-emerald-600 uppercase mb-2">
-                Paketler · Kazançlı
-              </p>
-              <h2 className="text-[28px] lg:text-[36px] font-extrabold text-[#1B365D] leading-tight">
-                Serinin Tamamı — Tek Fiyat
-              </h2>
-              <p className="text-[14px] text-gray-500 mt-2">
-                Kitapları tek tek almak yerine set olarak alın, %20-47 indirimden yararlanın.
-              </p>
+      {/* ─── KISACA ───────────────────────────────────────────────────── */}
+      <div className="max-w-6xl mx-auto px-6 lg:px-10">
+        <section aria-labelledby="kisaca" className="mt-8 rounded-2xl bg-[#e6f5fd] border border-[#bae6fd] p-5 lg:p-6 flex gap-4">
+          <div aria-hidden="true" className="w-8 h-8 rounded-full bg-[#0ea5e9] text-white grid place-items-center font-extrabold flex-shrink-0">i</div>
+          <div className="text-[14px] leading-relaxed">
+            <h2 id="kisaca" className="text-[15px] font-extrabold text-[#1B365D] mb-1">Kısaca</h2>
+            <p>
+              Sphere English e-kitap kütüphanesi, Türk profesyoneller için hazırlanmış iş İngilizcesi PDF kitaplarından oluşur.
+              Şu an <strong className="text-[#1B365D]">İş İngilizcesinde Kullanılan 1000 Kelime</strong> serisinin {ebooks.length} kitabı satıştadır.
+              Her kitapta 50 kurumsal kalıp ve 150 terim vardır.
+              {singlePrice !== null && <> Tek kitap {fmtTRY(singlePrice)}{setPrice !== null && <>, {set!.item_count} kitaplık set {fmtTRY(setPrice)}</>}&apos;dur.</>}
+              {' '}Yazar Didem İmamoğlu, yayıncı Sphere English. Farklı sektörler ve beceriler için yeni kitaplar hazırlanmaktadır.
+            </p>
+            {updated && (
+              <time dateTime={updated.slice(0, 10)} className="block mt-2 text-[12px] text-gray-500">
+                Son güncelleme: {new Date(updated).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </time>
+            )}
+          </div>
+        </section>
+      </div>
+
+      {/* ─── SERİLER ──────────────────────────────────────────────────── */}
+      <section id="paketler" className="max-w-6xl mx-auto px-6 lg:px-10 pt-14 scroll-mt-24" aria-labelledby="serH">
+        <div className="mb-6">
+          <span className="text-[12px] font-extrabold tracking-[0.2em] uppercase text-[#0ea5e9]">Seriler ve paketler</span>
+          <h2 id="serH" className="mt-1 text-[28px] lg:text-[36px] font-extrabold text-[#1B365D] leading-tight">Seriler</h2>
+        </div>
+        <div className="grid md:grid-cols-3 gap-5">
+          {set ? (
+            <article className="rounded-2xl bg-gradient-to-br from-[#0B1F3A] to-[#1B365D] text-white p-6 flex flex-col gap-4 md:col-span-1 relative overflow-hidden">
+              <span className="self-start px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500 text-white">En çok tercih edilen</span>
+              {set.cover_image_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={set.cover_image_url} alt={set.title} loading="lazy"
+                  className="w-full aspect-[4/3] object-cover rounded-xl border border-white/10" />
+              ) : (
+                <div className="grid grid-cols-5 gap-1.5">
+                  {set.items_preview.slice(0, 5).map((it) => (
+                    <div key={it.id} className="aspect-[3/4] rounded-md overflow-hidden bg-white/10">
+                      {it.cover_image_url && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={it.cover_image_url} alt={it.title} loading="lazy" className="w-full h-full object-cover" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+              <h3 className="text-[18px] font-extrabold leading-snug text-white">
+                <Link href={`/e-kitaplar/paketler/${set.slug}`} className="hover:text-[#7dd3fc]">{set.title}</Link>
+              </h3>
+              <p className="text-[13px] text-white/75 -mt-2">{set.subtitle ?? `${kalip} kurumsal kalıp + ${terim} terim.`}</p>
+              <div className="mt-auto flex items-center justify-between gap-3 flex-wrap">
+                <span className="text-[24px] font-extrabold tabular-nums">
+                  {fmtTRY(set.price_try)}
+                  {setList && setList > Number(set.price_try) && <s className="ml-2 text-[14px] font-semibold text-white/50">{fmtTRY(setList)}</s>}
+                </span>
+                <AddToCartButton type="bundle" slug={set.slug} title={set.title} subtitle={set.subtitle}
+                  coverImageUrl={set.cover_image_url} price={Number(set.price_try)} listPrice={setList} itemCount={set.item_count} />
+              </div>
+            </article>
+          ) : null}
+
+          {[
+            ['Sektörel İngilizce', 'Havacılıktan sağlığa, turizmden lojistiğe: her sektörün günlük iş dili, terimleri ve senaryoları.'],
+            ['Beceri Kitapları', 'Sektörden bağımsız: e-posta, toplantı, sunum, müzakere, mülakat ve rapor yazımı.'],
+          ].map(([t, d]) => (
+            <article key={t} className="rounded-2xl bg-[#f5f8fc] border border-dashed border-[#cbd5e1] p-6 flex flex-col gap-3">
+              <span className="self-start px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-[#e6f5fd] text-[#0369a1]">Yakında</span>
+              <h3 className="text-[18px] font-extrabold text-[#1B365D] leading-snug">{t}</h3>
+              <p className="text-[13px] text-gray-600 leading-relaxed">{d}</p>
+              <a href="#haberdar-ol" className="mt-auto text-[13px] font-bold text-[#0ea5e9] hover:underline">Çıkınca haber ver →</a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── HABERDAR OL ──────────────────────────────────────────────── */}
+      <section id="haberdar-ol" className="max-w-6xl mx-auto px-6 lg:px-10 pt-12 scroll-mt-24" aria-labelledby="soonH">
+        <div className="rounded-3xl bg-[#f5f8fc] border border-[#e6ebf2] p-6 lg:p-10 grid lg:grid-cols-[1.2fr_1fr] gap-8 items-start">
+          <div>
+            <span className="text-[12px] font-extrabold tracking-[0.2em] uppercase text-[#0ea5e9]">Katalog büyüyor</span>
+            <h2 id="soonH" className="mt-1 text-[26px] lg:text-[32px] font-extrabold text-[#1B365D] leading-tight">Yeni sektörler ve konular yolda</h2>
+            <p className="mt-3 text-[14px] text-gray-600 leading-relaxed max-w-xl">
+              Kütüphaneye farklı sektör ve konularda 30–40 yeni kitap ekleniyor: sektörlere özel İngilizce kitapları ve
+              e-posta, sunum, müzakere, mülakat gibi beceri kitapları. Yeni kitaplar yayına girdikçe bu sayfaya eklenecek.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {['Havacılık', 'Turizm & Otelcilik', 'Sağlık & Medikal', 'Hukuk', 'Lojistik & Dış Ticaret', 'Enerji & Mühendislik', 'Gıda & Tarım İhracatı', 'E-posta', 'Sunum', 'Müzakere', 'Mülakat'].map((c) => (
+                <span key={c} className="px-3 py-1 rounded-full bg-white border border-[#e6ebf2] text-[12px] font-semibold text-gray-600">{c}</span>
+              ))}
             </div>
           </div>
+          <WaitlistForm interests={interests} />
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {bundles.map((bundle) => {
-              const price = Number(bundle.price_try);
-              const listPrice = bundle.list_price_try ? Number(bundle.list_price_try) : null;
-              const savings = listPrice ? Math.round(((listPrice - price) / listPrice) * 100) : 0;
+      {/* ─── KATALOG ──────────────────────────────────────────────────── */}
+      <section id="katalog" className="max-w-6xl mx-auto px-6 lg:px-10 pt-14 pb-14 scroll-mt-24" aria-labelledby="catH">
+        <div className="mb-6 flex items-end justify-between flex-wrap gap-3">
+          <div>
+            <span className="text-[12px] font-extrabold tracking-[0.2em] uppercase text-[#0ea5e9]">Mağaza</span>
+            <h2 id="catH" className="mt-1 text-[28px] lg:text-[36px] font-extrabold text-[#1B365D] leading-tight">Mevcut kitaplar</h2>
+          </div>
+          <span className="text-[13px] text-gray-500 font-semibold" aria-live="polite">{ebooks.length} kitap</span>
+        </div>
 
+        {ebooks.length === 0 ? (
+          <div className="text-center py-20 bg-[#f5f8fc] rounded-3xl">
+            <p className="text-[16px] text-gray-500">Kitaplar yakında yayınlanacak.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {ebooks.map((b) => {
+              const price = Number(b.price_try);
+              const list = b.list_price_try ? Number(b.list_price_try) : null;
+              const off = list && list > price ? Math.round(((list - price) / list) * 100) : 0;
               return (
-                <Link
-                  key={bundle.id}
-                  href={`/e-kitaplar/paketler/${bundle.slug}`}
-                  className="group relative flex flex-col md:flex-row gap-5 p-6 rounded-2xl bg-gradient-to-br from-white to-emerald-50/40 border-2 border-emerald-200/60 hover:border-emerald-500 hover:shadow-xl transition-all duration-300"
-                >
-                  {/* Yıldız + %indirim rozeti */}
-                  <div className="absolute -top-3 -right-3 flex items-center gap-2">
-                    {savings > 0 && (
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold text-white bg-emerald-500 shadow-lg">
-                        %{savings} İNDİRİM
-                      </span>
-                    )}
-                    {bundle.is_featured && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-amber-900 bg-amber-300 shadow-md">
-                        ⭐ Öne Çıkan
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Sol: kapak veya kitap grid'i */}
-                  <div className="flex-shrink-0">
-                    {bundle.cover_image_url ? (
+                <article key={b.id} className="group flex flex-col rounded-2xl overflow-hidden bg-white border border-[#e6ebf2] hover:shadow-xl hover:border-[#0ea5e9]/40 transition-all duration-300">
+                  <Link href={`/e-kitaplar/${b.slug}`} className="relative block aspect-[5/7] overflow-hidden bg-gradient-to-br from-[#0B1F3A] to-[#1B365D]">
+                    {b.cover_image_url && (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={bundle.cover_image_url}
-                        alt={bundle.title}
-                        className="w-32 md:w-40 aspect-[3/4] object-cover rounded-lg border border-gray-200 group-hover:scale-105 transition-transform"
-                        loading="lazy"
-                      />
-                    ) : (
-                      // Kitap kapak grid'i (paket kapağı yoksa alternatif)
-                      <div className="w-32 md:w-40 aspect-[3/4] rounded-lg bg-gradient-to-br from-emerald-100 to-teal-100 border border-emerald-200 grid grid-cols-2 gap-1 p-2">
-                        {bundle.items_preview.slice(0, 4).map((item, idx) => (
-                          <div
-                            key={idx}
-                            className="rounded overflow-hidden bg-white/60 aspect-[3/4]"
-                          >
-                            {item.cover_image_url ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img
-                                src={item.cover_image_url}
-                                alt={item.title}
-                                className="w-full h-full object-cover"
-                                loading="lazy"
-                              />
-                            ) : null}
-                          </div>
-                        ))}
-                      </div>
+                      <img src={b.cover_image_url} alt={`${b.title} kapak`} loading="lazy"
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     )}
-                  </div>
-
-                  {/* Sağ: bilgi */}
-                  <div className="flex-1 flex flex-col">
-                    <div className="flex items-baseline gap-2 mb-2">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100">
-                        📦 {bundle.item_count} KİTAP
-                      </span>
+                    <div className="absolute top-3 left-3 flex gap-1.5">
+                      {(b.downloads_display_count ?? 0) >= 300 ? (
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider text-white bg-[#b45309] shadow">Çok satan</span>
+                      ) : b.is_featured ? (
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider text-white bg-emerald-500 shadow">Yeni</span>
+                      ) : null}
+                      {off > 0 && <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold text-white bg-[#0ea5e9] shadow">%{off}</span>}
                     </div>
-                    <h3 className="text-[20px] md:text-[22px] font-bold text-[#1B365D] leading-tight mb-1 group-hover:text-emerald-700 transition-colors">
-                      {bundle.title}
+                  </Link>
+
+                  <div className="flex flex-col flex-1 p-5">
+                    <span className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#0ea5e9]">
+                      {b.category ?? 'İş İngilizcesi'}{b.series_title ? ` · ${b.series_title}` : ''}{b.series_order ? ` ${String(b.series_order).padStart(2, '0')}` : ''}
+                    </span>
+                    <h3 className="mt-1.5 text-[17px] font-extrabold text-[#1B365D] leading-snug">
+                      <Link href={`/e-kitaplar/${b.slug}`} className="group-hover:text-[#0ea5e9] transition-colors">{b.title}</Link>
                     </h3>
-                    {bundle.subtitle && (
-                      <p className="text-[13px] text-gray-600 leading-relaxed line-clamp-2 mb-3">
-                        {bundle.subtitle}
-                      </p>
+                    {b.subtitle && <p className="text-[12px] text-gray-500 mt-1 line-clamp-1">{b.subtitle}</p>}
+                    <p className="mt-2 text-[13px] text-gray-600 leading-relaxed line-clamp-3">{b.description}</p>
+
+                    <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-gray-500 font-semibold">
+                      {b.page_count ? <span>{b.page_count} sayfa</span> : null}
+                      {b.reading_time_min ? <span>~{b.reading_time_min} dk</span> : null}
+                      {(b.tags ?? []).slice(0, 2).map((t) => <span key={t} className="px-1.5 rounded bg-[#f5f8fc] border border-[#e6ebf2]">{t}</span>)}
+                    </div>
+                    {(b.downloads_display_count ?? 0) > 0 && (
+                      <span className="mt-2 text-[11px] font-bold text-emerald-600">● {b.downloads_display_count!.toLocaleString('tr-TR')}+ kez indirildi</span>
                     )}
 
-                    {/* Fiyat + aksiyonlar */}
-                    <div className="mt-auto pt-3 flex flex-col gap-3">
-                      <div>
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-[28px] font-extrabold text-emerald-700 leading-none">
-                            {formatTRY(price)}
-                          </span>
-                          {listPrice && listPrice > price && (
-                            <span className="text-[14px] text-gray-400 line-through">
-                              {formatTRY(listPrice)}
-                            </span>
-                          )}
-                        </div>
-                        {listPrice && listPrice > price && (
-                          <div className="text-[11px] text-emerald-600 font-semibold mt-1">
-                            💰 {formatTRY(listPrice - price)} kazanç
-                          </div>
-                        )}
+                    <div className="mt-auto pt-4 flex items-center justify-between gap-3 border-t border-[#f1f5f9] mt-4">
+                      <div className="leading-none">
+                        <b className="text-[20px] font-extrabold text-[#1B365D] tabular-nums">{fmtTRY(price)}</b>
+                        {list && list > price && <s className="ml-1.5 text-[12px] text-gray-400 tabular-nums">{fmtTRY(list)}</s>}
                       </div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <AddToCartButton
-                          type="bundle"
-                          slug={bundle.slug}
-                          title={bundle.title}
-                          subtitle={bundle.subtitle}
-                          coverImageUrl={bundle.cover_image_url}
-                          price={price}
-                          listPrice={listPrice}
-                          itemCount={bundle.item_count}
-                        />
-                        <span className="text-[12px] text-emerald-700 font-semibold hover:underline">
-                          Detayı gör →
-                        </span>
-                      </div>
+                      <AddToCartButton type="ebook" slug={b.slug} title={b.title} subtitle={b.subtitle}
+                        coverImageUrl={b.cover_image_url} price={price} listPrice={list} />
                     </div>
+                    {b.preview_pdf_url && (
+                      <div className="mt-2.5 text-center">
+                        <PreviewLinkButton url={b.preview_pdf_url} ebookSlug={b.slug} ebookName={b.title} />
+                      </div>
+                    )}
                   </div>
-                </Link>
+                </article>
               );
             })}
+          </div>
+        )}
+      </section>
+
+      {/* ─── REHBER ───────────────────────────────────────────────────── */}
+      {guide.length > 0 && (
+        <section className="bg-[#f5f8fc] border-y border-[#e6ebf2] py-14" aria-labelledby="guideH">
+          <div className="max-w-6xl mx-auto px-6 lg:px-10">
+            <div className="mb-6 flex items-end justify-between flex-wrap gap-3">
+              <div>
+                <span className="text-[12px] font-extrabold tracking-[0.2em] uppercase text-[#0ea5e9]">Rehber</span>
+                <h2 id="guideH" className="mt-1 text-[28px] lg:text-[36px] font-extrabold text-[#1B365D] leading-tight">Nereden başlamalıyım?</h2>
+              </div>
+              <p className="text-[14px] text-gray-500 max-w-md">Rolünüze göre en kısa yol. Yeni kitaplar eklendikçe bu rehber de genişleyecek.</p>
+            </div>
+            <div className="rounded-2xl bg-white border border-[#e6ebf2] overflow-hidden divide-y divide-[#f1f5f9]">
+              {guide.map((g) => (
+                <div key={g.id} className="grid md:grid-cols-[2.2rem_1fr_1.6fr_auto] gap-3 md:gap-5 items-center px-5 py-4">
+                  <span className="text-[22px] leading-none" aria-hidden="true">{g.icon ?? '•'}</span>
+                  <b className="text-[15px] text-[#1B365D] leading-snug">{g.roleLabel}</b>
+                  <p className="text-[13px] text-gray-600 leading-relaxed">{g.description}</p>
+                  {g.ctaText && g.ctaHref ? (
+                    <a href={g.ctaHref} className="text-[13px] font-bold text-[#0ea5e9] hover:underline whitespace-nowrap md:text-right">{g.ctaText} →</a>
+                  ) : <span />}
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
-      {/* Kitap listesi */}
-      <section id="tek-tek" className="max-w-6xl mx-auto px-6 lg:px-10 py-12 scroll-mt-24">
-        {bundles.length > 0 && ebooks.length > 0 && (
-          <div className="mb-8 pt-6 border-t border-gray-100">
-            <p className="text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase mb-2">
-              Tek Tek Al
-            </p>
-            <h2 className="text-[28px] lg:text-[36px] font-extrabold text-[#1B365D] leading-tight">
-              Kitap Kataloğu
-            </h2>
-            <p className="text-[14px] text-gray-500 mt-2">
-              İhtiyacına uygun tek kitabı seç, PDF olarak anında indir.
-            </p>
+      {/* ─── KURUMSAL ─────────────────────────────────────────────────── */}
+      <section className="max-w-6xl mx-auto px-6 lg:px-10 py-14" aria-label="Kurumsal">
+        <div className="rounded-3xl bg-gradient-to-br from-[#0B1F3A] to-[#1B365D] text-white p-8 lg:p-12 grid lg:grid-cols-[1.4fr_1fr] gap-8 items-center">
+          <div>
+            <span className="text-[12px] font-extrabold tracking-[0.2em] uppercase text-[#7dd3fc]">Kurumsal kütüphane</span>
+            <h2 className="mt-2 text-[28px] lg:text-[36px] font-extrabold leading-tight text-white">Bütün katalog, bütün ekibiniz için</h2>
+            <p className="mt-3 text-[15px] text-white/75">Şirketinizin ihtiyacına göre kitap seçkisi ve toplu lisans.</p>
+            <ul className="mt-4 space-y-1.5 text-[14px] text-white/85">
+              {['10+ lisansta özel fiyat ve tek fatura', 'Yeni seri kitapları çıktıkça lisansınıza eklenebilir', 'Canlı grup eğitimiyle birlikte kullanım'].map((t) => (
+                <li key={t} className="flex gap-2"><span className="text-emerald-400">✓</span>{t}</li>
+              ))}
+            </ul>
           </div>
-        )}
-        {ebooks.length === 0 ? (
-          <div className="text-center py-20 bg-gray-50 rounded-3xl">
-            <p className="text-[16px] text-gray-500">Kitaplar yakında yayınlanacak.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {ebooks.map((b) => (
-              <Link
-                key={b.id}
-                href={`/e-kitaplar/${b.slug}`}
-                className="group flex flex-col rounded-2xl overflow-hidden bg-white border border-gray-200 hover:shadow-xl hover:border-[#0ea5e9]/40 transition-all duration-300"
-              >
-                {/* Kapak */}
-                <div className="relative aspect-[5/7] overflow-hidden bg-gradient-to-br from-[#0B1F3A] to-[#1B365D]">
-                  {b.cover_image_url && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={b.cover_image_url}
-                      alt={`${b.title} kapak`}
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
-                    />
-                  )}
-                  {b.is_featured && (
-                    <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider text-white bg-emerald-500 shadow-md">
-                      ⭐ Yeni
-                    </span>
-                  )}
-                </div>
-
-                {/* Bilgi */}
-                <div className="flex flex-col flex-1 p-5">
-                  <h2 className="text-[18px] font-bold text-[#1B365D] mb-1 group-hover:text-[#0ea5e9] transition-colors">
-                    {b.title}
-                  </h2>
-                  {b.subtitle && (
-                    <p className="text-[12px] text-gray-500 mb-3 line-clamp-1">{b.subtitle}</p>
-                  )}
-                  <p className="text-[13px] text-gray-600 leading-relaxed line-clamp-3 mb-4">
-                    {b.description}
-                  </p>
-
-                  {/* Meta */}
-                  <div className="flex flex-wrap items-center gap-3 text-[11px] text-gray-500 mb-4">
-                    {b.page_count && (
-                      <span className="inline-flex items-center gap-1">📄 {b.page_count} sayfa</span>
-                    )}
-                    {b.reading_time_min && (
-                      <span className="inline-flex items-center gap-1">
-                        ⏱ {b.reading_time_min} dk
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Fiyat */}
-                  <div className="mt-auto flex items-end justify-between gap-3 pt-4 border-t border-gray-100">
-                    <div>
-                      {b.list_price_try && parseFloat(b.list_price_try) > parseFloat(b.price_try) && (
-                        <span className="text-[11px] text-gray-400 line-through mr-1.5">
-                          {formatTRY(b.list_price_try)}
-                        </span>
-                      )}
-                      <span className="text-[20px] font-extrabold text-[#1B365D]">
-                        {formatTRY(b.price_try)}
-                      </span>
-                    </div>
-                    <span className="text-[12px] font-bold text-[#0ea5e9] group-hover:translate-x-1 transition-transform">
-                      İncele →
-                    </span>
-                  </div>
-
-                  {/* Sepete Ekle */}
-                  <div className="mt-3">
-                    <AddToCartButton
-                      type="ebook"
-                      slug={b.slug}
-                      title={b.title}
-                      subtitle={b.subtitle}
-                      coverImageUrl={b.cover_image_url}
-                      price={parseFloat(b.price_try)}
-                      listPrice={b.list_price_try ? parseFloat(b.list_price_try) : null}
-                      className="w-full"
-                    />
-                  </div>
-
-                  {/* Ücretsiz önizleme linki — client component (server'da onClick olamaz) */}
-                  {b.preview_pdf_url && (
-                    <div className="mt-2.5 text-center">
-                      <PreviewLinkButton url={b.preview_pdf_url} />
-                    </div>
-                  )}
-
-                  {/* Downloads sayacı (varsa) — "0" render bug fix (§33): nullish coalescing */}
-                  {(b.downloads_display_count ?? 0) > 0 && (
-                    <p className="mt-1.5 text-center text-[11px] text-gray-400">
-                      {b.downloads_display_count!.toLocaleString("tr-TR")}+ kişi indirdi
-                    </p>
-                  )}
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
-
-        {/* Seri tanıtım */}
-        <div className="mt-16 p-8 lg:p-12 rounded-3xl bg-gradient-to-br from-[#0B1F3A] to-[#1B365D] text-white">
-          <div className="max-w-3xl">
-            <p className="text-[11px] font-bold tracking-[0.22em] text-[#7dd3fc] uppercase mb-3">
-              SERİ HAKKINDA
-            </p>
-            <h2 className="text-[28px] lg:text-[36px] font-extrabold tracking-[-0.02em] mb-4 leading-tight">
-              1000 Kelime Serisi — Plaza Dilinin Sözlüğü
-            </h2>
-            <p className="text-[15px] text-white/75 leading-relaxed mb-6">
-              Türk iş profesyonellerinin kurumsal hayatta en sık karşılaştığı 1000 İngilizce
-              kelimeyi ve kalıbı 5 tematik kitapta bir araya getirdik. Her kitap; toplantıdan e-postaya, sunumdan
-              müzakereye gerçek iş senaryoları üzerinden Türkçe açıklamalarla kalıcı öğrenme
-              sağlıyor. Sphere English AI Coach&apos;u ile birlikte kullanın, telaffuzunuzu da
-              geliştirin.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              {process.env.NEXT_PUBLIC_SHOW_PRICING === 'true' && (
-                <Link
-                  href="/fiyatlandirma"
-                  className="inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-[13px] text-[#1B365D] bg-white hover:bg-gray-100 transition-colors"
-                >
-                  Sphere Abonelik Planları
-                </Link>
-              )}
-              <Link
-                href="/iletisim"
-                className="inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-[13px] text-white border border-white/30 hover:bg-white/10 transition-colors"
-              >
-                Kurumsal Toplu Alım
-              </Link>
-            </div>
+          <div className="flex flex-col gap-3">
+            <Link href="/iletisim" className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl font-bold text-[14px] text-white bg-[#0ea5e9] hover:bg-[#0284c7] transition-colors">Kurumsal teklif al</Link>
+            <Link href="/abonelik" className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl font-bold text-[14px] text-white bg-white/10 hover:bg-white/20 border border-white/20 transition-colors">Abonelik seçeneklerini gör</Link>
           </div>
         </div>
       </section>
+
+      {/* ─── FAQ ──────────────────────────────────────────────────────── */}
+      {faq.length > 0 && (
+        <section className="bg-[#f5f8fc] border-t border-[#e6ebf2] py-14" aria-labelledby="faqH">
+          <div className="max-w-3xl mx-auto px-6 lg:px-10">
+            <div className="mb-6">
+              <span className="text-[12px] font-extrabold tracking-[0.2em] uppercase text-[#0ea5e9]">Sıkça sorulan sorular</span>
+              <h2 id="faqH" className="mt-1 text-[28px] lg:text-[36px] font-extrabold text-[#1B365D] leading-tight">Satın almadan önce merak edilenler</h2>
+            </div>
+            <div className="space-y-2">
+              {faq.map((f) => (
+                <details key={f.id} className="group rounded-xl bg-white border border-[#e6ebf2] open:border-[#0ea5e9]/40 open:shadow-sm">
+                  <summary className="cursor-pointer list-none flex items-center justify-between gap-4 px-5 py-4 text-[15px] font-bold text-[#1B365D] [&::-webkit-details-marker]:hidden">
+                    {f.question}
+                    <span aria-hidden="true" className="text-[#0ea5e9] text-[20px] leading-none transition-transform group-open:rotate-45">+</span>
+                  </summary>
+                  <div className="px-5 pb-5 text-[14px] text-gray-600 leading-relaxed whitespace-pre-line">{linkify(f.answer)}</div>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <Footer />
     </main>
