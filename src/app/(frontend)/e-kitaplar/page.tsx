@@ -7,7 +7,7 @@ import PreviewLinkButton from '@/components/PreviewLinkButton';
 import WaitlistForm, { type InterestOption } from './WaitlistForm';
 
 export const metadata: Metadata = {
-  title: 'İş İngilizcesi PDF E-Kitapları: 1000 Kelime Serisi | Sphere English',
+  title: 'İş İngilizcesi PDF E-Kitapları: 1000 Kelime Serisi',
   description:
     'Toplantı, satış, liderlik, finans ve teknoloji için Türkçe açıklamalı iş İngilizcesi PDF e-kitapları. Tek kitap ₺199, 5 kitaplık set ₺799. Yeni seriler yolda.',
   alternates: { canonical: 'https://www.sphereenglish.com/e-kitaplar' },
