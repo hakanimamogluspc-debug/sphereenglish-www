@@ -27,6 +27,9 @@ const nextConfig = {
   },
   images: {
     remotePatterns: imageHosts,
+    formats: ['image/avif', 'image/webp'],
+    // Optimize edilmiş kapaklar 7 gün cache (kaynak URL ?v= cache-buster taşıyor)
+    minimumCacheTTL: 60 * 60 * 24 * 7,
   },
   async headers() {
     // RFC 8288 — AI agent keşfi için Link header'ları

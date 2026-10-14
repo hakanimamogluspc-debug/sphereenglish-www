@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import AddToCartButton from '@/components/AddToCartButton';
@@ -286,16 +287,16 @@ export default async function EKitaplarPage() {
             <article className="rounded-2xl bg-gradient-to-br from-[#0B1F3A] to-[#1B365D] text-white p-6 flex flex-col gap-4 md:col-span-1 relative overflow-hidden">
               <span className="self-start px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500 text-white">En çok tercih edilen</span>
               {set.cover_image_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={set.cover_image_url} alt={set.title} loading="lazy"
-                  className="w-full aspect-[4/3] object-cover rounded-xl border border-white/10" />
+                <div className="relative w-full aspect-[4/3] rounded-xl border border-white/10 overflow-hidden">
+                  <Image src={set.cover_image_url} alt={set.title} fill
+                    sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
+                </div>
               ) : (
                 <div className="grid grid-cols-5 gap-1.5">
                   {set.items_preview.slice(0, 5).map((it) => (
-                    <div key={it.id} className="aspect-[3/4] rounded-md overflow-hidden bg-white/10">
+                    <div key={it.id} className="relative aspect-[3/4] rounded-md overflow-hidden bg-white/10">
                       {it.cover_image_url && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={it.cover_image_url} alt={it.title} loading="lazy" className="w-full h-full object-cover" />
+                        <Image src={it.cover_image_url} alt={it.title} fill sizes="80px" className="object-cover" />
                       )}
                     </div>
                   ))}
@@ -374,9 +375,9 @@ export default async function EKitaplarPage() {
                 <article key={b.id} className="group flex flex-col rounded-2xl overflow-hidden bg-white border border-[#e6ebf2] hover:shadow-xl hover:border-[#0ea5e9]/40 transition-all duration-300">
                   <Link href={`/e-kitaplar/${b.slug}`} className="relative block aspect-[5/7] overflow-hidden bg-gradient-to-br from-[#0B1F3A] to-[#1B365D]">
                     {b.cover_image_url && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={b.cover_image_url} alt={`${b.title} kapak`} loading="lazy"
-                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <Image src={b.cover_image_url} alt={`${b.title} kapak`} fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     )}
                     <div className="absolute top-3 left-3 flex gap-1.5">
                       {(b.downloads_display_count ?? 0) >= 300 ? (

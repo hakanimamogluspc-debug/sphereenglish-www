@@ -4,6 +4,11 @@
 
 export const imageHosts = [
     {
+        // Sphere API — e-kitap kapakları (DB'den stream, Next.js küçültüp WebP'ye çevirir)
+        protocol: 'https',
+        hostname: 'app.sphereenglish.com',
+    },
+    {
         protocol: 'https',
         hostname: 'images.unsplash.com',
     },
