@@ -103,6 +103,8 @@ const organizationJsonLd = {
   '@id': `${BASE_URL}/#organization`,
   name: 'Sphere English',
   alternateName: 'Sphere English Eğitim',
+  legalName: 'İmmer Global Eğitim ve Danışmanlık Limited Şirketi',
+  taxID: '4740935216',
   url: BASE_URL,
   logo: `${BASE_URL}/assets/images/logo-1774019980261.png`,
   image: `${BASE_URL}/assets/images/hero_online_english_lesson.png`,

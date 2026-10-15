@@ -27,8 +27,9 @@ export default function MesafeliSatisSozlesmesiPage() {
           <h2 className="text-[22px] font-bold text-[#1B365D] mt-2 mb-4">1. Taraflar</h2>
           <h3 className="text-[16px] font-bold text-[#1B365D] mt-4 mb-2">1.1. Satıcı (Hizmet Sağlayıcı)</h3>
           <p>
-            <strong>Unvan:</strong> Sphere English Eğitim Hizmetleri
-            <br /><strong>Adres:</strong> 150 Evler Mah. Atatürk Blv. No:456/35, 10400 Ayvalık / Balıkesir
+            <strong>Unvan:</strong> İmmer Global Eğitim ve Danışmanlık Limited Şirketi (Sphere English)
+            <br /><strong>Adres:</strong> 150 Evler Mah. Atatürk Blv. No:456 İç Kapı No:35, 10400 Ayvalık / Balıkesir
+            <br /><strong>Vergi Dairesi / No:</strong> Ayvalık V.D. — 4740935216
             <br /><strong>E-posta:</strong> <a className="text-[#0ea5e9]" href="mailto:info@sphereenglish.com">info@sphereenglish.com</a>
             <br /><strong>WhatsApp:</strong> <a className="text-[#0ea5e9]" href="https://wa.me/905066085810">+90 506 608 58 10</a>
             <br /><strong>Web:</strong> <a className="text-[#0ea5e9]" href="https://www.sphereenglish.com">www.sphereenglish.com</a>

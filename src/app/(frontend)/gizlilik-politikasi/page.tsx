@@ -24,8 +24,8 @@ export default function GizlilikPage() {
 
         <div className="prose prose-slate max-w-none text-[15px] leading-relaxed text-gray-700 space-y-6">
           <p>
-            Sphere English olarak (&quot;Sphere English&quot;, &quot;biz&quot;) kullanıcılarımızın gizliliğine büyük önem
-            veriyoruz. Bu Gizlilik Politikası; <strong>sphereenglish.com</strong> web sitesini,
+            <strong>İmmer Global Eğitim ve Danışmanlık Limited Şirketi</strong> (&quot;Sphere English&quot; markasıyla;
+            &quot;biz&quot;) olarak kullanıcılarımızın gizliliğine büyük önem veriyoruz. Bu Gizlilik Politikası; <strong>sphereenglish.com</strong> web sitesini,
             <strong> app.sphereenglish.com</strong> öğrenci platformunu ve <strong>Sphere English iOS/Android mobil
             uygulamalarını</strong> (topluca &quot;Platform&quot;) kullandığınızda topladığımız verileri nasıl işlediğimizi
             ve koruduğumuzu açıklar.

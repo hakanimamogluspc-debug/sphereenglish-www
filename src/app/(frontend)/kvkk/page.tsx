@@ -24,15 +24,16 @@ export default function KvkkPage() {
 
         <div className="prose prose-slate max-w-none text-[15px] leading-relaxed text-gray-700 space-y-6">
           <p>
-            6698 sayılı Kişisel Verilerin Korunması Kanunu (&quot;KVKK&quot;) uyarınca, Sphere English (&quot;Sphere
-            English&quot; veya &quot;biz&quot;) olarak veri sorumlusu sıfatıyla kişisel verilerinizin işlenmesine
-            ilişkin sizi bilgilendirmek isteriz.
+            6698 sayılı Kişisel Verilerin Korunması Kanunu (&quot;KVKK&quot;) uyarınca, <strong>İmmer Global Eğitim ve
+            Danışmanlık Limited Şirketi</strong> (&quot;Sphere English&quot; markasıyla; &quot;Şirket&quot; veya &quot;biz&quot;)
+            olarak veri sorumlusu sıfatıyla kişisel verilerinizin işlenmesine ilişkin sizi bilgilendirmek isteriz.
           </p>
 
           <h2 className="text-[22px] font-bold text-[#1B365D] mt-10 mb-4">1. Veri Sorumlusu</h2>
           <p>
-            <strong>Sphere English</strong>
-            <br />150 Evler Mah. Atatürk Blv. No:456/35, 10400 Ayvalık / Balıkesir
+            <strong>İmmer Global Eğitim ve Danışmanlık Limited Şirketi</strong> (Sphere English)
+            <br />150 Evler Mah. Atatürk Blv. No:456 İç Kapı No:35, 10400 Ayvalık / Balıkesir
+            <br />Vergi Dairesi / No: Ayvalık V.D. — 4740935216
             <br />E-posta: <a className="text-[#0ea5e9]" href="mailto:info@sphereenglish.com">info@sphereenglish.com</a>
             <br />WhatsApp: <a className="text-[#0ea5e9]" href="https://wa.me/905066085810" target="_blank" rel="noopener noreferrer">+90 506 608 58 10</a>
           </p>

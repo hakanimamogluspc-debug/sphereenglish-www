@@ -29,6 +29,11 @@ export default function KullanimKosullariPage() {
             &quot;Platform&quot;) kullanmadan önce lütfen aşağıdaki koşulları dikkatlice okuyunuz. Platformu
             kullanmaya devam etmeniz bu koşulları kabul ettiğiniz anlamına gelir.
           </p>
+          <p>
+            Platform, <strong>İmmer Global Eğitim ve Danışmanlık Limited Şirketi</strong> (&quot;Sphere English&quot;
+            markasıyla; 150 Evler Mah. Atatürk Blv. No:456 İç Kapı No:35, 10400 Ayvalık / Balıkesir; Ayvalık V.D.
+            4740935216) tarafından işletilmektedir. Bu metinde &quot;Sphere English&quot; ifadesi anılan şirketi ifade eder.
+          </p>
 
           <h2 className="text-[22px] font-bold text-[#1B365D] mt-10 mb-4">1. Hizmet Tanımı</h2>
           <p>
