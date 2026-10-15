@@ -247,7 +247,7 @@ export default function GizlilikPage() {
           <ul className="list-disc pl-6 space-y-2">
             <li>E-posta: <a className="text-[#0ea5e9]" href="mailto:info@sphereenglish.com">info@sphereenglish.com</a></li>
             <li>WhatsApp: <a className="text-[#0ea5e9]" href="https://wa.me/905066085810" target="_blank" rel="noopener noreferrer">+90 506 608 58 10</a></li>
-            <li>Posta: Sphere English, 150 Evler Mah. Atatürk Blv. No:456/35, 10400 Ayvalık / Balıkesir</li>
+            <li>Posta: İmmer Global Eğitim ve Danışmanlık Ltd. Şti., 150 Evler Mah. Atatürk Blv. No:456 İç Kapı No:35, 10400 Ayvalık / Balıkesir</li>
           </ul>
         </div>
       </article>

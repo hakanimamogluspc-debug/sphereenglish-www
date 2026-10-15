@@ -6,15 +6,15 @@
  */
 
 export const LEGAL_UPDATES = {
-  kvkk: '2026-10-02',
-  gizlilik: '2026-10-02',
-  kullanimKosullari: '2026-10-02',
-  mesafeliSatis: '2026-10-02',
-  teslimatIade: '2026-10-02',
+  kvkk: '2026-10-15',
+  gizlilik: '2026-10-15',
+  kullanimKosullari: '2026-10-15',
+  mesafeliSatis: '2026-10-15',
+  teslimatIade: '2026-10-15',
 } as const;
 
 /**
- * '2026-10-02' → '2 Ekim 2026'
+ * '2026-10-15' → '2 Ekim 2026'
  */
 export function formatForTR(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number);

@@ -165,7 +165,7 @@ export default function KvkkPage() {
               <a className="text-[#0ea5e9]" href="mailto:info@sphereenglish.com">info@sphereenglish.com</a> (kayıtlı
               e-posta adresinizden gönderin)</li>
             <li><strong>Uygulama içi hesap silme:</strong> Ayarlar &gt; Güvenlik &gt; Hesabımı Sil</li>
-            <li><strong>Posta:</strong> Sphere English, 150 Evler Mah. Atatürk Blv. No:456/35, 10400 Ayvalık / Balıkesir</li>
+            <li><strong>Posta:</strong> İmmer Global Eğitim ve Danışmanlık Ltd. Şti., 150 Evler Mah. Atatürk Blv. No:456 İç Kapı No:35, 10400 Ayvalık / Balıkesir</li>
           </ul>
           <p>
             Başvurunuz en geç <strong>30 gün</strong> içerisinde sonuçlandırılır. Kimlik doğrulaması yapabilmemiz için
