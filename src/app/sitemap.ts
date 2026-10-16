@@ -6,6 +6,7 @@ import { getBlogPosts } from '@/lib/notion';
 import {
   fetchAllSolutionSlugs,
   fetchPublishedBlogPosts,
+  fetchPublishedCaseStudySlugs,
 } from '@/payload/api';
 
 const BASE_URL = 'https://www.sphereenglish.com';
@@ -20,9 +21,7 @@ async function fetchEbookSlugs(): Promise<{ slug: string; updated_at?: string }[
     if (!r.ok) return [];
     const data = await r.json();
     const list = (data?.ebooks ?? []) as any[];
-    return list
-      .filter((e) => e?.slug)
-      .map((e) => ({ slug: e.slug, updated_at: e.updated_at }));
+    return list.filter((e) => e?.slug).map((e) => ({ slug: e.slug, updated_at: e.updated_at }));
   } catch (err) {
     console.warn('[sitemap] e-kitap slug listesi alınamadı:', err);
     return [];
@@ -50,30 +49,116 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticUrls: MetadataRoute.Sitemap = [
     // / — YENİ canonical anasayfa (eski /home 301 → /)
-    { url: BASE_URL, lastModified: today, changeFrequency: 'weekly', priority: 1.0 },
+    {
+      url: BASE_URL,
+      lastModified: today,
+      changeFrequency: 'weekly',
+      priority: 1.0,
+    },
     // NOT: /home ve /kurslar sitemap'ten çıkarıldı — ikisi de 301 redirect
     // NOT: /is-ingilizcesi-kursu Eylül lansmanına kadar noindex, sitemap'e eklenmedi
-    { url: `${BASE_URL}/hakkimizda`, lastModified: today, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${BASE_URL}/nasil-calisir`, lastModified: today, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${BASE_URL}/cozumler`, lastModified: today, changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${BASE_URL}/blog`, lastModified: today, changeFrequency: 'daily', priority: 0.9 },
-    { url: `${BASE_URL}/iletisim`, lastModified: today, changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE_URL}/ai-studio`, lastModified: today, changeFrequency: 'monthly', priority: 0.7 },
+    {
+      url: `${BASE_URL}/hakkimizda`,
+      lastModified: today,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/nasil-calisir`,
+      lastModified: today,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/cozumler`,
+      lastModified: today,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/referanslar`,
+      lastModified: today,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/blog`,
+      lastModified: today,
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/iletisim`,
+      lastModified: today,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${BASE_URL}/ai-studio`,
+      lastModified: today,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
     // Fiyatlandırma + abonelik: satış açılınca sitemap'e eklenecek
     ...(process.env.NEXT_PUBLIC_SHOW_PRICING === 'true'
       ? [
-          { url: `${BASE_URL}/fiyatlandirma`, lastModified: today, changeFrequency: 'weekly' as const, priority: 0.9 },
-          { url: `${BASE_URL}/abonelik`, lastModified: today, changeFrequency: 'weekly' as const, priority: 0.7 },
+          {
+            url: `${BASE_URL}/fiyatlandirma`,
+            lastModified: today,
+            changeFrequency: 'weekly' as const,
+            priority: 0.9,
+          },
+          {
+            url: `${BASE_URL}/abonelik`,
+            lastModified: today,
+            changeFrequency: 'weekly' as const,
+            priority: 0.7,
+          },
         ]
       : []),
-    { url: `${BASE_URL}/egitmen-ol`, lastModified: today, changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${BASE_URL}/e-kitaplar`, lastModified: today, changeFrequency: 'weekly', priority: 0.85 },
+    {
+      url: `${BASE_URL}/egitmen-ol`,
+      lastModified: today,
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${BASE_URL}/e-kitaplar`,
+      lastModified: today,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    },
     // Hukuki / Iyzico onay sayfaları
-    { url: `${BASE_URL}/kvkk`, lastModified: today, changeFrequency: 'yearly', priority: 0.4 },
-    { url: `${BASE_URL}/gizlilik-politikasi`, lastModified: today, changeFrequency: 'yearly', priority: 0.4 },
-    { url: `${BASE_URL}/kullanim-kosullari`, lastModified: today, changeFrequency: 'yearly', priority: 0.4 },
-    { url: `${BASE_URL}/mesafeli-satis-sozlesmesi`, lastModified: today, changeFrequency: 'yearly', priority: 0.4 },
-    { url: `${BASE_URL}/teslimat-iade`, lastModified: today, changeFrequency: 'yearly', priority: 0.4 },
+    {
+      url: `${BASE_URL}/kvkk`,
+      lastModified: today,
+      changeFrequency: 'yearly',
+      priority: 0.4,
+    },
+    {
+      url: `${BASE_URL}/gizlilik-politikasi`,
+      lastModified: today,
+      changeFrequency: 'yearly',
+      priority: 0.4,
+    },
+    {
+      url: `${BASE_URL}/kullanim-kosullari`,
+      lastModified: today,
+      changeFrequency: 'yearly',
+      priority: 0.4,
+    },
+    {
+      url: `${BASE_URL}/mesafeli-satis-sozlesmesi`,
+      lastModified: today,
+      changeFrequency: 'yearly',
+      priority: 0.4,
+    },
+    {
+      url: `${BASE_URL}/teslimat-iade`,
+      lastModified: today,
+      changeFrequency: 'yearly',
+      priority: 0.4,
+    },
   ];
 
   // E-kitap detay sayfaları (dinamik — api-server'dan slug listesi)
@@ -102,6 +187,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }));
+
+  // Vaka çalışmaları (Payload)
+  let caseUrls: MetadataRoute.Sitemap = [];
+  try {
+    const cases = await fetchPublishedCaseStudySlugs();
+    caseUrls = cases.map(({ slug, updatedAt }) => ({
+      url: `${BASE_URL}/referanslar/${slug}`,
+      lastModified: updatedAt || today,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    }));
+  } catch (err) {
+    console.warn('[sitemap] case studies unavailable:', err);
+  }
 
   // Blog posts: merge Payload (CMS) + Notion (legacy), Payload wins on slug
   const [cmsResult, notionResult] = await Promise.allSettled([
@@ -141,5 +240,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticUrls, ...ebookDetailUrls, ...cozumlerUrls, ...blogUrls];
+  return [...staticUrls, ...ebookDetailUrls, ...cozumlerUrls, ...caseUrls, ...blogUrls];
 }

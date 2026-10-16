@@ -9,6 +9,7 @@ import { Users } from './src/payload/collections/Users';
 import { Media } from './src/payload/collections/Media';
 import { Solutions } from './src/payload/collections/Solutions';
 import { BlogPosts } from './src/payload/collections/BlogPosts';
+import { CaseStudies } from './src/payload/collections/CaseStudies';
 import { HomePage } from './src/payload/globals/HomePage';
 
 const filename = fileURLToPath(import.meta.url);
@@ -21,7 +22,7 @@ export default buildConfig({
       titleSuffix: ' — Sphere English CMS',
     },
   },
-  collections: [Users, Media, Solutions, BlogPosts],
+  collections: [Users, Media, Solutions, BlogPosts, CaseStudies],
   globals: [HomePage],
   editor: lexicalEditor({}),
   secret: (() => {

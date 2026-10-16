@@ -72,6 +72,7 @@ export default function Footer() {
             <p className="text-[11px] font-semibold tracking-[0.22em] text-white/45 mb-6 uppercase">Kurumsal</p>
             <div className="flex flex-col gap-3.5">
               <Link href="/cozumler" className="text-[14px] text-white/70 hover:text-white transition-colors">Çözümler</Link>
+              <Link href="/referanslar" className="text-[14px] text-white/70 hover:text-white transition-colors">Referanslar</Link>
               <Link href="/nasil-calisir" className="text-[14px] text-white/70 hover:text-white transition-colors">Nasıl Çalışır</Link>
               <Link href="/iletisim" className="text-[14px] text-white/70 hover:text-white transition-colors">Kurumsal Teklif Al</Link>
               {process.env.NEXT_PUBLIC_SHOW_PRICING === 'true' && (

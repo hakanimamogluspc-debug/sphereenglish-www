@@ -228,6 +228,7 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
                 <ul className="flex flex-col">
                   {[
                     { href: '/iletisim', label: 'Kurumsal Teklif Al', desc: 'Şirketiniz için özel eğitim' },
+                    { href: '/referanslar', label: 'Referanslar', desc: 'Gerçek şirketler, gerçek sonuçlar' },
                     { href: '/hakkimizda', label: 'Hakkımızda', desc: 'Sphere\'in hikayesi ve ekibi' },
                     { href: '/egitmen-ol', label: 'Eğitmen Ol', desc: 'Kariyer fırsatları' },
                     { href: '/iletisim', label: 'İletişim', desc: 'Bize ulaşın' },
@@ -358,6 +359,7 @@ export default function Header({ forceWhite = false }: { forceWhite?: boolean })
               <div className="mt-3 pl-3 border-l-2 border-[#0ea5e9]/20 flex flex-col gap-3">
                 {[
                   { href: '/iletisim', label: 'Kurumsal Teklif Al' },
+                  { href: '/referanslar', label: 'Referanslar' },
                   { href: '/hakkimizda', label: 'Hakkımızda' },
                   { href: '/egitmen-ol', label: 'Eğitmen Ol' },
                   { href: '/iletisim', label: 'İletişim' },

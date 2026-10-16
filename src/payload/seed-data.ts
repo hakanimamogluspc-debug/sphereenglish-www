@@ -256,24 +256,86 @@ export const HOMEPAGE = {
   whySubtitle:
     'Sadece dil öğretmiyoruz. Çalışanlarınıza iş dünyasında fark yaratan iletişim gücü kazandırıyoruz.',
   whyCards: [
-    { icon: 'GlobeAltIcon', title: 'Uluslararası Müşteri İletişimi', description: 'Çalışanlarınız yabancı müşterilerle güvenle iletişim kurabilir, global iş fırsatlarını kaçırmaz.', tag: 'Global Rekabet' },
-    { icon: 'PresentationChartBarIcon', title: 'Toplantı & Sunum Becerileri', description: 'Uluslararası toplantılarda etkili sunum yapma, fikir savunma ve müzakere yürütme yetkinliği.', tag: 'Profesyonel Gelişim' },
-    { icon: 'EnvelopeOpenIcon', title: 'Profesyonel E-posta Yazımı', description: 'İş dünyasının standartlarına uygun, etkileyici ve net İngilizce yazışma becerisi kazandırın.', tag: 'Yazılı İletişim' },
-    { icon: 'ChartBarSquareIcon', title: 'Ölçülebilir Sonuçlar', description: "Aylık gelişim raporları ve performans değerlendirmeleriyle eğitimin ROI'sini somut verilerle takip edin.", tag: 'Veri Odaklı' },
-    { icon: 'BuildingOffice2Icon', title: 'Kuruma Özel İçerik', description: 'Sektörünüze ve şirketinizin ihtiyaçlarına göre özelleştirilmiş müfredat ve vaka çalışmaları.', tag: 'Kişiselleştirilmiş' },
-    { icon: 'AcademicCapIcon', title: 'Sertifikalı Eğitmenler', description: 'CELTA/DELTA sertifikalı, iş dünyası deneyimli İngiliz ve Amerikan eğitmenlerle birebir çalışın.', tag: 'Uzman Kadro' },
+    {
+      icon: 'GlobeAltIcon',
+      title: 'Uluslararası Müşteri İletişimi',
+      description:
+        'Çalışanlarınız yabancı müşterilerle güvenle iletişim kurabilir, global iş fırsatlarını kaçırmaz.',
+      tag: 'Global Rekabet',
+    },
+    {
+      icon: 'PresentationChartBarIcon',
+      title: 'Toplantı & Sunum Becerileri',
+      description:
+        'Uluslararası toplantılarda etkili sunum yapma, fikir savunma ve müzakere yürütme yetkinliği.',
+      tag: 'Profesyonel Gelişim',
+    },
+    {
+      icon: 'EnvelopeOpenIcon',
+      title: 'Profesyonel E-posta Yazımı',
+      description:
+        'İş dünyasının standartlarına uygun, etkileyici ve net İngilizce yazışma becerisi kazandırın.',
+      tag: 'Yazılı İletişim',
+    },
+    {
+      icon: 'ChartBarSquareIcon',
+      title: 'Ölçülebilir Sonuçlar',
+      description:
+        "Aylık gelişim raporları ve performans değerlendirmeleriyle eğitimin ROI'sini somut verilerle takip edin.",
+      tag: 'Veri Odaklı',
+    },
+    {
+      icon: 'BuildingOffice2Icon',
+      title: 'Kuruma Özel İçerik',
+      description:
+        'Sektörünüze ve şirketinizin ihtiyaçlarına göre özelleştirilmiş müfredat ve vaka çalışmaları.',
+      tag: 'Kişiselleştirilmiş',
+    },
+    {
+      icon: 'AcademicCapIcon',
+      title: 'Sertifikalı Eğitmenler',
+      description:
+        'CELTA/DELTA sertifikalı, iş dünyası deneyimli İngiliz ve Amerikan eğitmenlerle birebir çalışın.',
+      tag: 'Uzman Kadro',
+    },
   ],
 
   modulesKicker: 'DERS İÇERİKLERİ',
   modulesTitle1: 'İş hayatında gerçekten',
   modulesTitle2: 'kullandığınız İngilizce.',
   modules: [
-    { icon: 'EnvelopeIcon', title: 'E-posta Yazımı', description: 'Profesyonel iş yazışmaları, resmi talepler, müzakere e-postaları ve raporlama dili.' },
-    { icon: 'PresentationChartLineIcon', title: 'Sunum Teknikleri', description: 'Boardroom sunumları, ürün tanıtımları ve veri odaklı raporlama becerileri.' },
-    { icon: 'ChatBubbleLeftRightIcon', title: 'Müzakere Dili', description: 'Fiyat görüşmeleri, sözleşme müzakereleri ve çatışma çözümü için güçlü dil kalıpları.' },
-    { icon: 'PhoneIcon', title: 'Telefon & Video Görüşmeleri', description: 'Uluslararası konferans görüşmeleri, müşteri toplantıları ve takip iletişimi.' },
-    { icon: 'DocumentTextIcon', title: 'Rapor & Teklif Yazımı', description: 'İş teklifleri, proje raporları ve yönetici özetleri hazırlama.' },
-    { icon: 'UserGroupIcon', title: 'Toplantı Yönetimi', description: 'Toplantı açma, gündem yürütme, fikir savunma ve karar alma süreçleri.' },
+    {
+      icon: 'EnvelopeIcon',
+      title: 'E-posta Yazımı',
+      description:
+        'Profesyonel iş yazışmaları, resmi talepler, müzakere e-postaları ve raporlama dili.',
+    },
+    {
+      icon: 'PresentationChartLineIcon',
+      title: 'Sunum Teknikleri',
+      description: 'Boardroom sunumları, ürün tanıtımları ve veri odaklı raporlama becerileri.',
+    },
+    {
+      icon: 'ChatBubbleLeftRightIcon',
+      title: 'Müzakere Dili',
+      description:
+        'Fiyat görüşmeleri, sözleşme müzakereleri ve çatışma çözümü için güçlü dil kalıpları.',
+    },
+    {
+      icon: 'PhoneIcon',
+      title: 'Telefon & Video Görüşmeleri',
+      description: 'Uluslararası konferans görüşmeleri, müşteri toplantıları ve takip iletişimi.',
+    },
+    {
+      icon: 'DocumentTextIcon',
+      title: 'Rapor & Teklif Yazımı',
+      description: 'İş teklifleri, proje raporları ve yönetici özetleri hazırlama.',
+    },
+    {
+      icon: 'UserGroupIcon',
+      title: 'Toplantı Yönetimi',
+      description: 'Toplantı açma, gündem yürütme, fikir savunma ve karar alma süreçleri.',
+    },
   ],
 
   aiKicker: 'YAPAY ZEKA KOÇLARIMIZ',
@@ -325,13 +387,110 @@ export const HOMEPAGE = {
   faqTitle2: 'yanıtlıyoruz.',
   faqSubtitle: 'Kurumsal İngilizce eğitimi hakkında en çok merak edilen konuları derledik.',
   faqs: [
-    { question: 'Kurumsal İngilizce eğitim programları ne kadar sürer?', answer: 'Programlarımız şirketinizin ihtiyaçlarına ve çalışanların başlangıç seviyesine göre genellikle 3 ila 12 ay arasında değişir. Her şirket için ücretsiz seviye tespit değerlendirmesi yaparak en uygun program süresini ve yoğunluğunu birlikte belirliyoruz. Haftada 2–3 ders ile sürdürülebilir ve ölçülebilir ilerleme sağlıyoruz.' },
-    { question: 'Eğitmenleriniz kimlerden oluşuyor?', answer: "Tüm eğitmenlerimiz CELTA veya DELTA sertifikalı, iş dünyasında deneyim sahibi profesyonellerdir. Ekibimizde anadili İngilizce olan (native speaker) eğitmenler ile Türkiye'nin önde gelen kurumsal İngilizce uzmanları bir arada çalışmaktadır. Her eğitmen, şirketinizin sektörüne göre özellikle seçilmektedir." },
-    { question: 'Şirketimize özel içerik hazırlanıyor mu?', answer: 'Evet, programlarımızın tamamı şirketinizin sektörüne, kullandığı terminolojiye ve çalışanların iş rollerine göre özelleştirilmektedir. Finans, teknoloji, sağlık, üretim, lojistik gibi pek çok sektörde sektör odaklı vaka çalışmaları ve gerçek iş senaryoları kullanıyoruz.' },
-    { question: 'Kaç kişilik gruplarla çalışıyorsunuz?', answer: "En etkili öğrenme deneyimi için grup derslerimizi maksimum 6 kişi ile sınırlı tutuyoruz. Bire bir (birebir) özel dersler de sunuyoruz. Çalışan sayısı 20'yi aşan şirketler için seviye grupları oluşturarak hem maliyeti optimize ediyor hem de homojen sınıf yapısını koruyoruz." },
-    { question: 'Eğitimin etkisini nasıl ölçüyorsunuz?', answer: 'Her ay detaylı ilerleme raporu sunuyoruz. Çalışanların konuşma akıcılığı, yazılı iletişim, kelime dağarcığı ve iş İngilizcesi kullanımı gibi kriterlerde somut verilerle gelişimini takip ediyoruz. Oxford University Press müfredat kaynaklarıyla uygulanan standart testler aracılığıyla başlangıç ve bitiş seviyeleri karşılaştırmalı olarak raporlanır.' },
-    { question: 'Online eğitim yüz yüze eğitim kadar etkili mi?', answer: 'Araştırmalar, yapılandırılmış online dil eğitiminin yüz yüze eğitimle eşdeğer hatta bazı alanlarda daha etkili olduğunu göstermektedir. Çalışanlar istedikleri yerden katılabildiği için devamsızlık oranı düşüyor, öğrenme sürekliliği artıyor. Canlı video derslerimiz, interaktif alıştırmalar ve yapay zeka destekli telaffuz antrenörümüz sayesinde öğrenme daha verimli hale geliyor.' },
-    { question: 'İngilizce seviyesi belirleme süreci nasıl işliyor?', answer: "Programa başlamadan önce her çalışan için ücretsiz kapsamlı bir seviye tespit sınavı yapıyoruz. Bu değerlendirme; yazılı, sözlü ve dinleme becerilerini CEFR standartları (A1'den C2'ye) çerçevesinde ölçüyor. Sonuçlara göre çalışanlar uygun seviye grubuna yerleştiriliyor ve kişiselleştirilmiş öğrenme hedefleri belirleniyor." },
-    { question: 'Teklif almak ve demo randevusu ayarlamak için ne yapmalıyız?', answer: 'Web sitemizden randevu formumuzu doldurmanız yeterli. 24 saat içinde kurumsal danışmanımız sizi arayarak şirketinizin ihtiyaçlarını dinler ve ücretsiz demo dersi ile birlikte size özel bir teklif hazırlar. Herhangi bir taahhüt gerektirmiyor; deneyip karar verebilirsiniz.' },
+    {
+      question: 'Kurumsal İngilizce eğitim programları ne kadar sürer?',
+      answer:
+        'Programlarımız şirketinizin ihtiyaçlarına ve çalışanların başlangıç seviyesine göre genellikle 3 ila 12 ay arasında değişir. Her şirket için ücretsiz seviye tespit değerlendirmesi yaparak en uygun program süresini ve yoğunluğunu birlikte belirliyoruz. Haftada 2–3 ders ile sürdürülebilir ve ölçülebilir ilerleme sağlıyoruz.',
+    },
+    {
+      question: 'Eğitmenleriniz kimlerden oluşuyor?',
+      answer:
+        "Tüm eğitmenlerimiz CELTA veya DELTA sertifikalı, iş dünyasında deneyim sahibi profesyonellerdir. Ekibimizde anadili İngilizce olan (native speaker) eğitmenler ile Türkiye'nin önde gelen kurumsal İngilizce uzmanları bir arada çalışmaktadır. Her eğitmen, şirketinizin sektörüne göre özellikle seçilmektedir.",
+    },
+    {
+      question: 'Şirketimize özel içerik hazırlanıyor mu?',
+      answer:
+        'Evet, programlarımızın tamamı şirketinizin sektörüne, kullandığı terminolojiye ve çalışanların iş rollerine göre özelleştirilmektedir. Finans, teknoloji, sağlık, üretim, lojistik gibi pek çok sektörde sektör odaklı vaka çalışmaları ve gerçek iş senaryoları kullanıyoruz.',
+    },
+    {
+      question: 'Kaç kişilik gruplarla çalışıyorsunuz?',
+      answer:
+        "En etkili öğrenme deneyimi için grup derslerimizi maksimum 6 kişi ile sınırlı tutuyoruz. Bire bir (birebir) özel dersler de sunuyoruz. Çalışan sayısı 20'yi aşan şirketler için seviye grupları oluşturarak hem maliyeti optimize ediyor hem de homojen sınıf yapısını koruyoruz.",
+    },
+    {
+      question: 'Eğitimin etkisini nasıl ölçüyorsunuz?',
+      answer:
+        'Her ay detaylı ilerleme raporu sunuyoruz. Çalışanların konuşma akıcılığı, yazılı iletişim, kelime dağarcığı ve iş İngilizcesi kullanımı gibi kriterlerde somut verilerle gelişimini takip ediyoruz. Oxford University Press müfredat kaynaklarıyla uygulanan standart testler aracılığıyla başlangıç ve bitiş seviyeleri karşılaştırmalı olarak raporlanır.',
+    },
+    {
+      question: 'Online eğitim yüz yüze eğitim kadar etkili mi?',
+      answer:
+        'Araştırmalar, yapılandırılmış online dil eğitiminin yüz yüze eğitimle eşdeğer hatta bazı alanlarda daha etkili olduğunu göstermektedir. Çalışanlar istedikleri yerden katılabildiği için devamsızlık oranı düşüyor, öğrenme sürekliliği artıyor. Canlı video derslerimiz, interaktif alıştırmalar ve yapay zeka destekli telaffuz antrenörümüz sayesinde öğrenme daha verimli hale geliyor.',
+    },
+    {
+      question: 'İngilizce seviyesi belirleme süreci nasıl işliyor?',
+      answer:
+        "Programa başlamadan önce her çalışan için ücretsiz kapsamlı bir seviye tespit sınavı yapıyoruz. Bu değerlendirme; yazılı, sözlü ve dinleme becerilerini CEFR standartları (A1'den C2'ye) çerçevesinde ölçüyor. Sonuçlara göre çalışanlar uygun seviye grubuna yerleştiriliyor ve kişiselleştirilmiş öğrenme hedefleri belirleniyor.",
+    },
+    {
+      question: 'Teklif almak ve demo randevusu ayarlamak için ne yapmalıyız?',
+      answer:
+        'Web sitemizden randevu formumuzu doldurmanız yeterli. 24 saat içinde kurumsal danışmanımız sizi arayarak şirketinizin ihtiyaçlarını dinler ve ücretsiz demo dersi ile birlikte size özel bir teklif hazırlar. Herhangi bir taahhüt gerektirmiyor; deneyip karar verebilirsiniz.',
+    },
   ],
 };
+
+/* ── Vaka çalışmaları — gerçek müşteri verisi, anonim yayın ───────────────
+ * Her rakam müşteriyle doğrulanmıştır (Ekim 2026). Yeni vaka eklerken aynı
+ * ilke: doğrulanmamış sayı/alıntı girme.
+ */
+export const CASE_STUDIES = [
+  {
+    slug: 'gida-ihracat-satis-ekibi',
+    status: 'Published',
+    anonymous: true,
+    featured: true,
+    consentNote: 'Anonim yayın için sözlü onay — Ekim 2026',
+    title: "6 kişilik satış ekibi, 7 ayda B1'den C1'e",
+    companyName: '',
+    displayName: 'Ayvalık merkezli bir gıda ihracatçısı',
+    industry: 'Gıda / İhracat',
+    companySize: '50 çalışan',
+    region: 'Ayvalık, Balıkesir',
+    participants: 6,
+    roles: 'Satış ve müşteri hizmetleri',
+    period: 'Mart 2026 – devam ediyor',
+    summary:
+      "Avrupa ve İngiltere'deki zincir marketlerle doğrudan görüşmek isteyen bir gıda ihracatçısının 6 kişilik satış ekibi; haftada iki canlı ders ve bir speaking club ile 7 ayda 56 ders tamamladı, ekibin tamamı seviye atladı.",
+    challenge:
+      "Şirket, ürünlerini Avrupa ve İngiltere'deki zincir marketlere satmak istiyordu. Satış ve müşteri hizmetleri ekibi yabancı alıcılarla yazışabiliyor ama telefon ve toplantıda tıkanıyordu; teklifler çoğu zaman aracılar üzerinden ilerliyor, bu da hem süreyi uzatıyor hem de marjı düşürüyordu. Hedef, ekibin tedarikçi ve alıcı görüşmelerini kendi başına yürütebilmesiydi.",
+    approach:
+      'Altı kişi tek grup olarak başladı. Haftada iki canlı ders gıda ticareti terminolojisi, fiyat ve teslimat müzakeresi, numune ve sertifika yazışmaları gibi gerçek işlerinden alınan senaryolar üzerine kuruldu; haftada bir speaking club serbest konuşma pratiği sağladı. Dersler arasında ekip, uygulamadaki AI koçlarla telaffuz ve konuşma çalıştı, sunum simülatöründe ürün tanıtımı prova etti, e-kitap ve kelime modülleriyle sektör terimlerini pekiştirdi.',
+    weeklyProgram: 'Haftada 2 canlı ders + 1 speaking club',
+    modules: [
+      'Canlı ders (grup)',
+      'Speaking club',
+      'AI konuşma koçları',
+      'Sunum simülatörü',
+      'Telaffuz koçu',
+      'Kelime modülü',
+      'Sektör e-kitapları',
+    ],
+    metrics: [
+      { value: '56', label: 'tamamlanan canlı ders' },
+      { value: '84 saat', label: 'konuşma pratiği (5.040 dk)' },
+      { value: '6/6', label: 'katılımcı seviye atladı' },
+      { value: '12 ay', label: '6 aylık program uzatıldı' },
+    ],
+    levelsBefore: [
+      { level: 'A2', count: 2 },
+      { level: 'B1', count: 4 },
+    ],
+    levelsAfter: [
+      { level: 'B1', count: 1 },
+      { level: 'B2', count: 1 },
+      { level: 'C1', count: 4 },
+    ],
+    levelSource: 'Sphere English seviye değerlendirmesi, Ekim 2026',
+    observations:
+      'Yönetim, ekibin yabancı tedarikçi ve alıcılarla artık aracısız iletişim kurduğunu ve çalışanların özgüvenindeki artışın gözle görülür olduğunu aktardı. Başlangıçta 6 ay planlanan program 12 aya uzatıldı.',
+    outcome: '6 aylık program 12 aya uzatıldı',
+    quote: {
+      text: 'Çalışanlarımızın seviyelerindeki ve özgüvendeki artışı çok net bir şekilde gözlemleyebiliyoruz. Yabancı tedarikçilerimiz ile çok rahat iletişim kurup satış gerçekleştirebiliyorlar. Sphere English ekibine teşekkür ederiz.',
+      authorName: '',
+      authorTitle: 'Şirket yöneticisi',
+    },
+    seoTitle: 'Gıda İhracatçısı Satış Ekibi İngilizce Eğitimi Vaka Çalışması',
+    sortOrder: 10,
+  },
+];

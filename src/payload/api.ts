@@ -68,3 +68,46 @@ export async function fetchBlogPostBySlug(slug: string) {
   });
   return result.docs[0] || null;
 }
+
+// ── Vaka çalışmaları (/referanslar) ─────────────────────────────────────────
+
+export async function fetchPublishedCaseStudies() {
+  const payload = await getClient();
+  const result = await payload.find({
+    collection: 'case-studies',
+    where: { status: { equals: 'Published' } },
+    sort: 'sortOrder',
+    limit: 100,
+    pagination: false,
+    depth: 1,
+  });
+  // Öne çıkanlar başa
+  return [...result.docs].sort((a: any, b: any) => Number(!!b.featured) - Number(!!a.featured));
+}
+
+export async function fetchCaseStudyBySlug(slug: string) {
+  const payload = await getClient();
+  const result = await payload.find({
+    collection: 'case-studies',
+    where: { slug: { equals: slug }, status: { equals: 'Published' } },
+    limit: 1,
+    depth: 1,
+  });
+  return result.docs[0] || null;
+}
+
+export async function fetchPublishedCaseStudySlugs(): Promise<
+  { slug: string; updatedAt?: string }[]
+> {
+  const payload = await getClient();
+  const result = await payload.find({
+    collection: 'case-studies',
+    where: { status: { equals: 'Published' } },
+    limit: 100,
+    pagination: false,
+  });
+  return result.docs.map((d: any) => ({
+    slug: d.slug,
+    updatedAt: d.updatedAt,
+  }));
+}

@@ -5,15 +5,15 @@
 import { NextResponse } from 'next/server';
 import { getPayload } from 'payload';
 import config from '@payload-config';
-import { SOLUTIONS, HOMEPAGE } from '@/payload/seed-data';
+import { SOLUTIONS, HOMEPAGE, CASE_STUDIES } from '@/payload/seed-data';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   const token = req.headers.get('x-seed-token');
-  const expected = process.env.SEED_TOKEN
-    || (process.env.NODE_ENV !== 'production' ? 'dev-seed-only' : null);
+  const expected =
+    process.env.SEED_TOKEN || (process.env.NODE_ENV !== 'production' ? 'dev-seed-only' : null);
   if (!expected) {
     return NextResponse.json(
       { error: 'SEED_TOKEN env var must be set in production.' },
@@ -56,9 +56,36 @@ export async function POST(req: Request) {
   }
   log.push(`Solutions — eklenen: ${inserted}, atlanan: ${skipped}`);
 
-  // HomePage global
-  await payload.updateGlobal({ slug: 'home-page', data: HOMEPAGE as any });
-  log.push('HomePage — güncellendi');
+  // Case studies (idempotent — slug varsa atla)
+  let csInserted = 0;
+  let csSkipped = 0;
+  for (const cs of CASE_STUDIES) {
+    const existing = await payload.find({
+      collection: 'case-studies',
+      where: { slug: { equals: cs.slug } },
+      limit: 1,
+    });
+    if (existing.docs.length > 0) {
+      csSkipped++;
+      continue;
+    }
+    const { modules, ...rest } = cs;
+    await payload.create({
+      collection: 'case-studies',
+      data: { ...(rest as any), modules: modules.map((item) => ({ item })) },
+    });
+    csInserted++;
+  }
+  log.push(`Case studies — eklenen: ${csInserted}, atlanan: ${csSkipped}`);
+
+  // HomePage global — yalnızca henüz içerik yoksa yaz (mevcut CMS düzenlemelerini ezme)
+  const existingHome: any = await payload.findGlobal({ slug: 'home-page' });
+  if (!existingHome?.updatedAt) {
+    await payload.updateGlobal({ slug: 'home-page', data: HOMEPAGE as any });
+    log.push('HomePage — oluşturuldu');
+  } else {
+    log.push('HomePage — mevcut, atlandı');
+  }
 
   return NextResponse.json({ ok: true, log });
 }
