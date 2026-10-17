@@ -87,6 +87,7 @@ export default function Footer() {
             <div className="flex flex-col gap-3.5">
               <Link href="/hakkimizda" className="text-[14px] text-white/70 hover:text-white transition-colors">Hakkımızda</Link>
               <Link href="/iletisim" className="text-[14px] text-white/70 hover:text-white transition-colors">İletişim</Link>
+              <Link href="/yardim" className="text-[14px] text-white/70 hover:text-white transition-colors">Yardım Merkezi</Link>
               <Link href="/egitmen-ol" className="text-[14px] text-white/70 hover:text-white transition-colors">Eğitmen Ol</Link>
             </div>
           </div>

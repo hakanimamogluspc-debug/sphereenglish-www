@@ -81,6 +81,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+    { url: `${BASE_URL}/yardim`, lastModified: today, changeFrequency: 'weekly', priority: 0.6 },
     {
       url: `${BASE_URL}/blog`,
       lastModified: today,
@@ -202,6 +203,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.warn('[sitemap] case studies unavailable:', err);
   }
 
+  // Yardım makaleleri (api-server)
+  let helpUrls: MetadataRoute.Sitemap = [];
+  try {
+    const r = await fetch(`${API_BASE.replace(/\/$/, '')}/api/help/articles?limit=200`, {
+      cache: 'no-store',
+    });
+    if (r.ok) {
+      const data = await r.json();
+      helpUrls = ((data?.articles ?? []) as { slug: string; updatedAt?: string }[]).map((a) => ({
+        url: `${BASE_URL}/yardim/${a.slug}`,
+        lastModified: a.updatedAt || today,
+        changeFrequency: 'monthly' as const,
+        priority: 0.5,
+      }));
+    }
+  } catch (err) {
+    console.warn('[sitemap] help articles unavailable:', err);
+  }
+
   // Blog posts: merge Payload (CMS) + Notion (legacy), Payload wins on slug
   const [cmsResult, notionResult] = await Promise.allSettled([
     fetchPublishedBlogPosts(),
@@ -240,5 +260,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticUrls, ...ebookDetailUrls, ...cozumlerUrls, ...caseUrls, ...blogUrls];
+  return [
+    ...staticUrls,
+    ...ebookDetailUrls,
+    ...cozumlerUrls,
+    ...caseUrls,
+    ...helpUrls,
+    ...blogUrls,
+  ];
 }
