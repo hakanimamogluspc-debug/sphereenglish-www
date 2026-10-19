@@ -22,9 +22,9 @@ const timelineEvents = [
   },
   {
     year: '2024',
-    title: 'Sektör Lideri',
+    title: 'Büyüme',
     description:
-      '50+ kurumsal müşteri, 500+ eğitim alan çalışan ve %94 memnuniyet oranıyla Türkiye\'nin önde gelen kurumsal İngilizce eğitim markası haline gelindi.',
+      '50+ kurumsal müşteri ve 500+ eğitim alan çalışana ulaşıldı.',
     side: 'left',
   },
 ];
@@ -32,7 +32,7 @@ const timelineEvents = [
 const stats = [
   { value: '500+', label: 'Eğitim Alan Çalışan', icon: '👥' },
   { value: '50+', label: 'Kurumsal Şirket', icon: '🏢' },
-  { value: '%94', label: 'Memnuniyet Oranı', icon: '⭐' },
+  { value: '2020', label: 'Kuruluş Yılı', icon: '📍' },
 ];
 
 export default function HakkimizdaPage() {

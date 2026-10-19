@@ -6,6 +6,7 @@ import { NextResponse } from 'next/server';
 import { getPayload } from 'payload';
 import config from '@payload-config';
 import { SOLUTIONS, HOMEPAGE, CASE_STUDIES } from '@/payload/seed-data';
+import { applyClaimFixes } from '@/payload/claim-fixes';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -86,6 +87,27 @@ export async function POST(req: Request) {
   } else {
     log.push('HomePage — mevcut, atlandı');
   }
+
+  // Eski, kanıtlanamayan iddiaları mevcut CMS içeriğinde düzelt (bkz. payload/claim-fixes.ts)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const strip = ({ id, createdAt, updatedAt, globalType, ...rest }: any) => rest;
+  const home: any = await payload.findGlobal({ slug: 'home-page' });
+  const homeFix = applyClaimFixes(strip(home));
+  if (homeFix.changes > 0) {
+    await payload.updateGlobal({ slug: 'home-page', data: homeFix.value as any });
+  }
+  log.push(`İddia düzeltmesi — HomePage: ${homeFix.changes} metin`);
+
+  const sols = await payload.find({ collection: 'solutions', limit: 200, depth: 0 });
+  let solChanges = 0;
+  for (const doc of sols.docs as any[]) {
+    const fix = applyClaimFixes(strip(doc));
+    if (fix.changes > 0) {
+      await payload.update({ collection: 'solutions', id: doc.id, data: fix.value as any });
+      solChanges += fix.changes;
+    }
+  }
+  log.push(`İddia düzeltmesi — Çözümler: ${solChanges} metin`);
 
   return NextResponse.json({ ok: true, log });
 }

@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
   export const metadata: Metadata = {
     title: 'Nasıl Çalışır | İş İngilizcesi Eğitim Süreci',
     description:
-      "Sphere English iş İngilizcesi eğitim süreci: seviye tespiti, kişiselleştirilmiş program, canlı online dersler, aylık raporlama ve katılım sertifikası. Bireyler ve şirketler için adım adım süreç.",
+      "Sphere English iş İngilizcesi eğitim süreci: seviye tespiti, kişiselleştirilmiş program, canlı online dersler, aylık raporlama ve seviye değerlendirmesi. Bireyler ve şirketler için adım adım süreç.",
     alternates: { canonical: 'https://www.sphereenglish.com/nasil-calisir' },
     openGraph: {
       title: 'Nasıl Çalışır | İş İngilizcesi Eğitim Süreci',

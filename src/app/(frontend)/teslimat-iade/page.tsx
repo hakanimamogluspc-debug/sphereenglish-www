@@ -44,7 +44,7 @@ export default function TeslimatIadePage() {
             olup, web ve mobil tabanlı eğitim platformu üzerinden çevrimiçi (online) olarak
             kullanıcıya sunulan kurumsal İş İngilizcesi eğitim aboneliklerinden oluşur. Bu
             kapsamda canlı dersler, AI Studio modülleri, müfredat erişimi, kelime/quiz/koç
-            uygulamaları ve sertifika çıktıları dijital hizmet niteliğindedir.
+            uygulamaları dijital hizmet niteliğindedir.
           </p>
 
           <h2 className="text-[22px] font-bold text-[#1B365D] mt-10 mb-4">3. Teslimat</h2>

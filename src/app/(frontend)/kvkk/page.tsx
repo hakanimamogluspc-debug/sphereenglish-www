@@ -49,7 +49,7 @@ export default function KvkkPage() {
 
           <h3 className="text-[17px] font-bold text-[#1B365D] mt-6 mb-2">Hizmet Kullanım Verileri</h3>
           <p>Tamamladığınız dersler, seviye tespit sonuçları, ilerleme kayıtları, CEFR seviyeniz, kazandığınız
-          sertifikalar, platform üzerinde geçirdiğiniz süre.</p>
+          rozetler, platform üzerinde geçirdiğiniz süre.</p>
 
           <h3 className="text-[17px] font-bold text-[#1B365D] mt-6 mb-2">AI Modülleri Tarafından İşlenen Veriler</h3>
           <p>

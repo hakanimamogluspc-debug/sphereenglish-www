@@ -56,8 +56,7 @@ export default function MesafeliSatisSozlesmesiPage() {
             <strong>Hizmet Türü:</strong> Çevrimiçi (online) kurumsal İş İngilizcesi eğitim aboneliği
             <br /><strong>Kapsam:</strong> AI Studio modülleri (Telaffuz Koçu, Yazma Koçu, Dilbilgisi
             Koçu, Kelime Oyunu, İş Senaryoları, Mülakat Simülatörü, Sunum Simülatörü vb.), canlı
-            Zoom dersleri (planda yer alan saatlerde), seviye tespit sınavı, ilerleme raporları,
-            tamamlanma sertifikası
+            Zoom dersleri (planda yer alan saatlerde), seviye tespit sınavı ve ilerleme raporları
             <br /><strong>Plan Detayları:</strong> Alıcı&apos;nın seçtiği planın tam içeriği ve fiyatı
             sipariş onayında ve <a className="text-[#0ea5e9]" href="https://app.sphereenglish.com/student/subscription">Aboneliğim</a> sayfasında
             görüntülenir.

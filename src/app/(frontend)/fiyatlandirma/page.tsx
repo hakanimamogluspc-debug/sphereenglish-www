@@ -44,7 +44,7 @@ export default function FiyatlandirmaPage() {
           </h1>
           <p className="text-[17px] lg:text-[19px] text-gray-600 max-w-2xl mx-auto leading-relaxed">
             Bireyden ekiplere, başlangıçtan executive seviyeye — her ölçeğe uygun bir planımız var.
-            Tüm planlar AI Studio modüllerini, canlı koçluğu ve sertifika programını içerir.
+            Tüm planlar AI Studio modüllerini ve canlı koçluğu içerir.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 mt-7 text-[13px] text-gray-500">
             <span className="inline-flex items-center gap-1.5">

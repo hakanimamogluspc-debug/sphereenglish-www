@@ -101,7 +101,7 @@ const SOLUTIONS = [
       "Liderlik iletişiminizi İngilizce'de de güçlendirin. Sphere English'in Yöneticiler programı; ekip yönetimi, performans görüşmeleri, stratejik sunum ve uluslararası paydaş iletişimi konularına odaklanır.",
     body: [
       "Liderlik iletişimi birden fazla dilde de aynı otorite ve netliği taşımalıdır. Sphere English'in Yöneticiler için programı; C-suite iletişiminden ekip toplantısı yönetimine, performans görüşmelerinden kriz iletişimine kadar üst düzey yönetim senaryolarına odaklanır. Çok uluslu ekipleri yöneten, yabancı iş ortaklarıyla müzakere eden ya da uluslararası yatırımcılara rapor sunan yöneticiler için özel olarak tasarlanmış bu program; teknik dil bilgisinin ötesinde empati, ikna ve liderlik söylemini İngilizce'de somutlaştırmayı hedefler.",
-      "Türkiye'nin önde gelen şirketlerinde görev yapan üst düzey yöneticiler Sphere English'i tercih etmektedir. Program kapsamında; uluslararası yönetim kurulu sunumları, çok kültürlü ekiplerle iletişim, değişim yönetimi konuşmaları ve medya ile analist görüşmeleri gibi gerçek liderlik senaryoları üzerinden yoğun pratik yapılmaktadır. Programa katılan yöneticiler, uluslararası toplantılardaki katılım kalitesini ve özgüvenlerini belirgin biçimde artırmaktadır.",
+      "Program, farklı sektörlerden üst düzey yöneticilerin ihtiyaçlarına göre tasarlanmıştır. Program kapsamında; uluslararası yönetim kurulu sunumları, çok kültürlü ekiplerle iletişim, değişim yönetimi konuşmaları ve medya ile analist görüşmeleri gibi gerçek liderlik senaryoları üzerinden yoğun pratik yapılmaktadır. Amaç, yöneticilerin uluslararası toplantılarda daha etkin ve özgüvenli konuşmasıdır.",
     ],
     highlights: [
       'Ekip toplantılarını yönetme',
@@ -155,7 +155,7 @@ const SOLUTIONS = [
       "Teknik bilginizi İngilizce'de net ve etkili aktarın. Sphere English'in Teknik Ekipler programı; teknik dokümantasyon, proje toplantıları, kod review ve uluslararası ekip iletişimi konularını kapsar.",
     body: [
       "Yazılım geliştirme, veri analizi ya da mühendislik alanında çalışan profesyoneller için İngilizce; kod kadar kritik bir iletişim aracıdır. Sphere English'in Teknik Ekipler programı; sprint planlaması, kod review, teknik dokümantasyon ve uluslararası takım toplantıları gibi gerçek yazılım geliştirme senaryolarına dayalı dil becerileri kazandırır. GitHub, Confluence ve Jira gibi araçlarda profesyonel İngilizce yazışma pratikleri de programa dahildir.",
-      "Global teknoloji şirketlerinde remote çalışan Türk mühendisler ve Türkiye'deki çok uluslu teknoloji şirketlerinin teknik kadroları bu programı tercih etmektedir. Teknik bilgiyi İngilizce'de sade ve anlaşılır biçimde aktarma, teknik olmayan paydaşlara iletebilme ve global takımlarda görünür olma konularında somut gelişme sağlayan program; kariyer gelişimini uluslararası ölçeğe taşımak isteyen mühendisler ve teknik liderler için stratejik bir yatırımdır.",
+      "Program, global teknoloji şirketlerinde remote çalışan Türk mühendisler ve Türkiye'deki çok uluslu teknoloji şirketlerinin teknik kadroları için tasarlanmıştır. Teknik bilgiyi İngilizce'de sade ve anlaşılır biçimde aktarma, teknik olmayan paydaşlara iletebilme ve global takımlarda görünür olma konularında gelişmeyi hedefleyen program; kariyer gelişimini uluslararası ölçeğe taşımak isteyen mühendisler ve teknik liderler için stratejik bir yatırımdır.",
     ],
     highlights: [
       'Teknik kavramları sade dille açıklama',
@@ -248,9 +248,9 @@ const HOMEPAGE = {
   heroCta1Text: 'HEMEN TEKLİF AL',
   heroCta2Text: 'ÜCRETSİZ DEMO RANDEVUSU',
   heroBadge: 'Canlı Ders Devam Ediyor',
-  heroStatValue: '+2',
-  heroStatLabel: 'Seviye',
-  heroStatNote: '6 aylık program sonrası',
+  heroStatValue: '50+',
+  heroStatLabel: 'Kurumsal müşteri',
+  heroStatNote: "2020'den bu yana",
 
   whyKicker: 'NEDEN SPHERE ENGLISH?',
   whyTitle1: 'Şirketinizi global arenada',
@@ -295,9 +295,9 @@ const HOMEPAGE = {
     },
     {
       icon: 'AcademicCapIcon',
-      title: 'Sertifikalı Eğitmenler',
+      title: 'Deneyimli Eğitmenler',
       description:
-        'CELTA/DELTA sertifikalı, iş dünyası deneyimli İngiliz ve Amerikan eğitmenlerle birebir çalışın.',
+        'İş dünyasını tanıyan, kurumsal eğitimde deneyimli eğitmenlerle çalışın.',
       tag: 'Uzman Kadro',
     },
   ],
@@ -400,7 +400,7 @@ const HOMEPAGE = {
     {
       question: 'Eğitmenleriniz kimlerden oluşuyor?',
       answer:
-        "Tüm eğitmenlerimiz CELTA veya DELTA sertifikalı, iş dünyasında deneyim sahibi profesyonellerdir. Ekibimizde anadili İngilizce olan (native speaker) eğitmenler ile Türkiye'nin önde gelen kurumsal İngilizce uzmanları bir arada çalışmaktadır. Her eğitmen, şirketinizin sektörüne göre özellikle seçilmektedir.",
+        "Eğitmenlerimiz İngilizce öğretiminde deneyimli, iş dünyasını tanıyan profesyonellerdir. Her eğitmen, şirketinizin sektörüne ve çalışanlarınızın seviyesine göre seçilir.",
     },
     {
       question: 'Şirketimize özel içerik hazırlanıyor mu?',

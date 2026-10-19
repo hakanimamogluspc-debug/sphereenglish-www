@@ -29,7 +29,7 @@ nihai teklif satış ekibi tarafından özel olarak hazırlanır.
 
 - **Başlangıç fiyatı:** Aylık 18.000 TL'den başlar
 - **Format:** Haftada 2× 60 dakika küçük grup canlı dersi + 7/24 AI Studio erişimi
-- **Kapsam:** Oxford sertifikalı müfredat, sektör senaryoları, yönetici raporlama, ilerleme dashboard
+- **Kapsam:** Oxford University Press müfredat ve kaynakları, sektör senaryoları, yönetici raporlama, ilerleme dashboard
 - **Sözleşme süresi:** 3, 6 veya 12 ay
 - **CTA:** https://www.sphereenglish.com/iletisim
 
@@ -52,7 +52,7 @@ nihai teklif satış ekibi tarafından özel olarak hazırlanır.
 
 ## Programa Dahil Olanlar (Tüm Planlarda)
 
-- Oxford University Press sertifikalı müfredat (A1–C2 CEFR seviyeleri)
+- Oxford University Press müfredat ve kaynakları (A1–C2 CEFR seviyeleri)
 - Canlı Zoom dersleri (öğretmen seviye ve sektöre göre eşleşir)
 - Sphere AI Studio erişimi:
   - 12 yapay zeka koçu ile 7/24 konuşma pratiği
@@ -63,7 +63,6 @@ nihai teklif satış ekibi tarafından özel olarak hazırlanır.
   - Kelime Oyunu (4000+ iş İngilizcesi kelimesi)
 - CEFR bazlı seviye tespit sınavı
 - Aylık ilerleme raporu (öğrenci + yönetici/İK)
-- Tamamlanma sertifikası
 
 ## Hangi Plan Sizin İçin?
 

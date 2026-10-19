@@ -47,7 +47,7 @@ Sphere English kurumsal İngilizce ihtiyaçlarını üç açıdan ele alır: bec
 |---|---|
 | 3 ay | Hedef odaklı kısa süreli ihtiyaçlar (örn. mülakat hazırlığı) |
 | 6 ay (en popüler) | Tam CEFR seviye atlama (örn. B1 → B2) |
-| 12 ay | Çok seviyeli kapsamlı program; sertifika hedefi |
+| 12 ay | Çok seviyeli kapsamlı program |
 
 ## Format Seçenekleri
 

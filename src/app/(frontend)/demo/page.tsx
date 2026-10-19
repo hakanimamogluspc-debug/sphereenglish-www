@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { trackLead } from '@/lib/analytics/meta-pixel';
+import { trackLinkedInConversion } from '@/lib/analytics/linkedin';
 
 // Sphere backend base URL
 const API_BASE =
@@ -269,6 +270,7 @@ function BookingForm({ date, slot, onBack }: { date: string; slot: Slot; onBack:
       if (!res.ok) throw new Error(data.error || 'Bir hata oluştu.');
       setSuccess(true);
       trackLead({ source: 'demo_booking', value: 0 });
+      trackLinkedInConversion('demo');
     } catch (err: any) {
       setError(err.message);
     } finally { setLoading(false); }

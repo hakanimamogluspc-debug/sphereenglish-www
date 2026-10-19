@@ -33,9 +33,7 @@ Sphere English ile kurumsal İngilizce eğitim süreci 4 ana adımdan oluşur.
 
 ## Tipik Program Sonuçları
 
-- 6 ayda ortalama **+2 CEFR seviye** ilerleme
-- **%87** ortalama ders katılım oranı
-- **%94** kurumsal müşteri memnuniyeti
+- Anonim referans vaka (gıda/ihracat şirketi, 6 katılımcı, Mart 2026'dan beri): 6 kişinin 6'sı seviye atladı; program 6 aydan 12 aya uzatıldı. Ayrıntı: https://www.sphereenglish.com/referanslar
 
 ## Kim Hangi Modülü Kullanır?
 
@@ -50,7 +48,7 @@ Sphere English ile kurumsal İngilizce eğitim süreci 4 ana adımdan oluşur.
 | Hukuk / uyum | Elena + Yazma Koçu (sözleşme) |
 | Üretim / fabrika | James + İş Senaryoları + Yazma Koçu (talimat) |
 | Sağlık turizmi | Dr. Olivia + Telaffuz Koçu + Yazma Koçu |
-| Akademik / sertifika hedefi | Dr. Claire + Gramer Koçu + Kelime Oyunu |
+| Akademik İngilizce | Dr. Claire + Gramer Koçu + Kelime Oyunu |
 
 ## Süreç Süresi
 

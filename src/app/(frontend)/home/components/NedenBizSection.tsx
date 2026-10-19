@@ -25,7 +25,7 @@ const DEFAULT_CARDS: WhyCard[] = [
   { icon: 'EnvelopeOpenIcon', title: 'Profesyonel E-posta Yazımı', description: 'İş dünyasının standartlarına uygun, etkileyici ve net İngilizce yazışma becerisi kazandırın.', tag: 'Yazılı İletişim' },
   { icon: 'ChartBarSquareIcon', title: 'Ölçülebilir Sonuçlar', description: "Aylık gelişim raporları ve performans değerlendirmeleriyle eğitimin ROI'sini somut verilerle takip edin.", tag: 'Veri Odaklı' },
   { icon: 'BuildingOffice2Icon', title: 'Kuruma Özel İçerik', description: 'Sektörünüze ve şirketinizin ihtiyaçlarına göre özelleştirilmiş müfredat ve vaka çalışmaları.', tag: 'Kişiselleştirilmiş' },
-  { icon: 'AcademicCapIcon', title: 'Sertifikalı Eğitmenler', description: 'CELTA/DELTA sertifikalı, iş dünyası deneyimli İngiliz ve Amerikan eğitmenlerle birebir çalışın.', tag: 'Uzman Kadro' },
+  { icon: 'AcademicCapIcon', title: 'Deneyimli Eğitmenler', description: 'İş dünyasını tanıyan, kurumsal eğitimde deneyimli eğitmenlerle çalışın.', tag: 'Uzman Kadro' },
 ];
 
 export default function NedenBizSection({ data }: NedenBizProps = {}) {

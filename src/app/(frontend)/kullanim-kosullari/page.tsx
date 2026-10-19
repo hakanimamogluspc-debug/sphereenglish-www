@@ -47,7 +47,6 @@ export default function KullanimKosullariPage() {
             <li><strong>AI destekli öğrenme modülleri</strong> — Yazma Koçu, Telaffuz Koçu, Dilbilgisi Koçu, Kişisel
               Tutor, AI Quiz, İş Senaryoları, Sunum ve Mülakat Simülasyonu</li>
             <li><strong>CEFR seviye tespiti</strong> ve ilerleme takibi</li>
-            <li><strong>Sertifikasyon</strong> — ders tamamlama sertifikaları</li>
           </ul>
           <p>
             Kurumsal grup programları ayrı sözleşme şartları çerçevesinde sağlanır.

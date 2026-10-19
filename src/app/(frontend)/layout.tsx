@@ -9,6 +9,7 @@ import AnalyticsTracker from '../../components/AnalyticsTracker';
 import MetaPixelRouteTracker from '../../components/MetaPixelRouteTracker';
 import FbclidCapture from '../../components/FbclidCapture';
 import ContactClickTracker from '../../components/ContactClickTracker';
+import LinkedInInsight from '../../components/LinkedInInsight';
 import CookieConsent from '@/components/CookieConsent';
 import SentryInit from '@/components/SentryInit';
 import { CartProvider } from '../../lib/cart/cart-context';
@@ -109,7 +110,7 @@ const organizationJsonLd = {
   logo: `${BASE_URL}/assets/images/logo-1774019980261.png`,
   image: `${BASE_URL}/assets/images/hero_online_english_lesson.png`,
   description:
-    "Türkiye'nin önde gelen kurumsal İş İngilizcesi eğitim platformu. Oxford University Press müfredat kaynakları ile şirket çalışanlarına ölçülebilir, raporlanabilir ve hedef odaklı İngilizce eğitimi sunmaktadır.",
+    "Türk şirketleri için kurumsal İş İngilizcesi eğitim platformu. Oxford University Press müfredat kaynakları ile şirket çalışanlarına ölçülebilir, raporlanabilir ve hedef odaklı İngilizce eğitimi sunmaktadır.",
   foundingDate: '2020',
   areaServed: {
     '@type': 'Country',
@@ -192,7 +193,7 @@ const faqJsonLd = {
       name: 'Sphere English nedir?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Sphere English, Türkiye'nin önde gelen kurumsal İş İngilizcesi eğitim platformudur. B2B model ile şirket çalışanlarına ölçülebilir, raporlanabilir ve hedef odaklı İngilizce eğitimi sunmaktadır. Oxford University Press müfredat ve kaynaklarını kullanmaktadır.",
+        text: "Sphere English, Türk şirketlerine yönelik kurumsal İş İngilizcesi eğitim platformudur. B2B model ile şirket çalışanlarına ölçülebilir, raporlanabilir ve hedef odaklı İngilizce eğitimi sunmaktadır. Oxford University Press müfredat ve kaynaklarını kullanmaktadır.",
       },
     },
     {
@@ -216,7 +217,7 @@ const faqJsonLd = {
       name: 'Oxford University Press müfredatı nasıl kullanılıyor?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Sphere English, Oxford University Press'in yayınladığı müfredat ve kaynakları kullanmaktadır. Bu sayede Oxford'un küresel ölçekte kabul görmüş müfredatı ve materyalleri kullanılmakta, program sonunda katılım sertifikası düzenlenmektedir.",
+        text: "Sphere English, Oxford University Press'in yayınladığı müfredat ve kaynakları kullanmaktadır. Dersler bu kaynaklar üzerine, Türk profesyonellerin iş ihtiyaçlarına göre uyarlanarak kurulur.",
       },
     },
     {
@@ -232,7 +233,7 @@ const faqJsonLd = {
       name: 'Türkiye\'de en iyi kurumsal ingilizce eğitimi hangisi?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Sphere English, Oxford University Press müfredat kaynakları, AI destekli teknolojisi ve ölçülebilir sonuç garantisi ile Türkiye'nin önde gelen kurumsal İngilizce eğitim platformları arasında yer almaktadır. 6 aylık program sonunda ortalama 2 seviye ilerleme kayıt altına alınmaktadır.",
+        text: "Seçim yaparken müfredat kaynağına, canlı ders ve pratik imkânına ve ilerlemenin nasıl raporlandığına bakmanızı öneririz. Sphere English; Oxford University Press müfredat kaynakları, canlı dersler, AI destekli pratik ve şirket yöneticilerine düzenli ilerleme raporlarını birlikte sunar.",
       },
     },
     {
@@ -260,7 +261,7 @@ const websiteJsonLd = {
   '@id': `${BASE_URL}/#website`,
   name: 'Sphere English',
   url: BASE_URL,
-  description: "Kurumsal İş İngilizcesi eğitiminde Türkiye'nin önde gelen platformu.",
+  description: "Türk şirketleri için kurumsal İş İngilizcesi eğitim platformu.",
   inLanguage: 'tr-TR',
   potentialAction: {
     '@type': 'SearchAction',
@@ -395,6 +396,8 @@ export default function RootLayout({
           </Suspense>
           {/* WhatsApp/telefon/mail linki tıklamalarında Contact event */}
           <ContactClickTracker />
+          {/* LinkedIn Insight Tag — yalnızca marketing rızası sonrası yüklenir */}
+          <LinkedInInsight />
           {/* KVKK/GDPR Çerez rıza banner'ı */}
           <SentryInit />
           <CookieConsent />

@@ -164,7 +164,7 @@ export default function CookieConsent() {
                   <div className="flex-1 pr-3">
                     <div className="font-semibold text-[#1B365D] text-sm">🎯 Pazarlama Çerezleri</div>
                     <div className="text-xs text-slate-500 mt-1">
-                      Meta Pixel, retargeting reklamları. Reklamları daha alakalı hale getirir.
+                      Meta Pixel, LinkedIn Insight Tag, retargeting reklamları. Reklamları daha alakalı hale getirir.
                     </div>
                   </div>
                   <ToggleSwitch

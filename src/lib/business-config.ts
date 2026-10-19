@@ -70,9 +70,8 @@ export const GROUP_SIZE = {
 export const METRICS = {
   employeesTrained: '500+',
   corporateClients: '50+',
-  satisfactionPct: '%94',
-  participationPct: '%87',
-  cefrGain: '+2 seviye',
+  // satisfactionPct / participationPct / cefrGain kaldırıldı (Ekim 2026): kanıtlanamayan oranlar
+  // kullanılmaz. Sonuç anlatırken /referanslar'daki doğrulanmış vaka verisini kullan.
   ebookDownloadsDisplay: '500+ profesyonel',
 } as const;
 

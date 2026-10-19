@@ -30,7 +30,7 @@ export default function AbonelikPage({
             Premium Plan ile İngilizceni Hızlandır
           </h1>
           <p className="text-[16px] text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Tüm AI Studio modülleri, canlı dersler ve sertifika programı.
+            Tüm AI Studio modülleri ve canlı dersler.
             Iyzico ile güvenli, 3D Secure korumalı ödeme.
           </p>
         </div>

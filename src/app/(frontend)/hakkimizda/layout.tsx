@@ -8,7 +8,7 @@ import type { Metadata } from 'next';
     alternates: { canonical: 'https://www.sphereenglish.com/hakkimizda' },
     openGraph: {
       title: 'Hakkımızda — Kurumsal İngilizce Uzmanları',
-      description: "Kurumsal iş İngilizcesi eğitiminde Türkiye'nin öncü platformu. Sertifikalı eğitmenler, Oxford müfredatı, 50+ şirket deneyimi.",
+      description: "2020'den bu yana kurumsal iş İngilizcesi eğitimi. Deneyimli eğitmenler, Oxford University Press müfredatı, 50+ şirket deneyimi.",
       url: 'https://www.sphereenglish.com/hakkimizda',
     },
   };

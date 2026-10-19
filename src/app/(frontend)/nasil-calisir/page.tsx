@@ -37,8 +37,8 @@ const steps = [
   },
   {
     number: '06',
-    title: 'Raporlama ve Sertifika',
-    description: 'Aylık gelişim raporları. Program tamamlama sertifikası.',
+    title: 'Raporlama ve Değerlendirme',
+    description: 'Aylık gelişim raporları ve dönem sonu seviye değerlendirmesi.',
     icon: '🏆',
   },
 ];

@@ -2,7 +2,7 @@
 
 **Kanonik URL:** https://www.sphereenglish.com/hakkimizda
 
-Sphere English, Türkiye'nin kurumsal İş İngilizcesi eğitiminde Oxford University Press ortaklığıyla farklılaşan B2B platformudur.
+Sphere English, Türk şirketlerine kurumsal İş İngilizcesi eğitimi veren B2B platformudur. Eğitimlerde Oxford University Press müfredat ve kaynakları kullanılır.
 
 ## Misyon
 
@@ -16,7 +16,7 @@ Türkiye'nin en güvenilir kurumsal İngilizce eğitim platformu olmak; iş dün
 
 ### Didem İmamoğlu
 Kurucu — Eğitim Vizyonu
-15+ yıl kurumsal eğitim deneyimi. Oxford University Press iş ortaklığını ve kurumsal müşteri ilişkilerini yönetir.
+15+ yıl kurumsal eğitim deneyimi. Müfredat ve kurumsal müşteri ilişkilerini yönetir.
 
 ### Merve Eş
 Kurucu — Platform & Operasyon
@@ -30,9 +30,9 @@ Kurumsal müşteri başarısı ve operasyon süreçlerini yönetir. Kurumsal rap
 - **İnsan + AI** — Canlı öğretmen + 24/7 AI koç dengesi
 - **Türk şirketleri için** — Yerel iş kültürünü tanıyan içerik
 
-## Ortaklarımız
+## Kullandığımız kaynak ve teknolojiler
 
-- **Oxford University Press** — Türkiye'deki resmi kurumsal eğitim ortağı; uluslararası geçerli sertifikalar
+- **Oxford University Press** — eğitimlerde müfredat ve kaynakları kullanılır
 - **OpenAI** — GPT-4o ve Whisper teknolojileri
 
 ## Kurumsal Müşterilerimizden Bazıları

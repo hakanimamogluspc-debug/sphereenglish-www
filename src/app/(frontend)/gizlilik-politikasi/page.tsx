@@ -51,7 +51,7 @@ export default function GizlilikPage() {
             <li>Hangi dersleri, quizleri, e-kitapları tamamladığınız ve ilerlemeniz</li>
             <li>Platform üzerinde geçirdiğiniz süre, kullanılan modüller</li>
             <li>Seviye tespit sınav sonuçları ve CEFR ilerlemeniz</li>
-            <li>Sertifika ve başarı kayıtları</li>
+            <li>Başarı ve ilerleme kayıtları</li>
           </ul>
 
           <h3 className="text-[17px] font-bold text-[#1B365D] mt-6 mb-2">1.3 AI Modülleri Tarafından İşlenen Veriler</h3>
@@ -183,7 +183,8 @@ export default function GizlilikPage() {
             <li><strong>Zorunlu çerezler:</strong> Oturum yönetimi, güvenlik, sepet işlemleri (çıkış yapılamaz — hizmet
               için gerekli)</li>
             <li><strong>Analitik çerezler:</strong> Google Analytics — kullanım desenlerini anlamak için</li>
-            <li><strong>Pazarlama çerezleri:</strong> Meta Pixel — reklam performansını ölçmek için (opsiyonel)</li>
+            <li><strong>Pazarlama çerezleri:</strong> Meta Pixel ve LinkedIn Insight Tag — reklam performansını ölçmek için
+              (opsiyonel)</li>
             <li><strong>Tercih çerezleri:</strong> Dil, tema gibi kullanıcı tercihlerinizi hatırlamak için</li>
           </ul>
           <p>

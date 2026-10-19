@@ -57,7 +57,7 @@ const packages: Package[] = [
       'Teknik sunum ve yazışma',
       'Uluslararası konferans dili',
       'Sektör uzmanı eğitmenler',
-      'Sertifika programı seçeneği',
+      'Sektöre özel vaka çalışmaları',
     ],
   },
 ];

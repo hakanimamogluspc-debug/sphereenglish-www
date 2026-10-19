@@ -106,8 +106,10 @@ export function applyConsent(consent: CookieConsent) {
     w.fbq('consent', consent.marketing ? 'grant' : 'revoke');
   }
 
-  // ─── LinkedIn Ads (ileride) ─────────────────────────────
-  // if (typeof w._lintrk === 'function') { ... }
+  // ─── LinkedIn Insight Tag ────────────────────────────────
+  // Revoke API'si yok; SDK yalnızca marketing=true iken yüklenir.
+  // <LinkedInInsight /> aşağıdaki 'cookie-consent-updated' olayını dinler.
+  // Rıza geri çekilirse yüklü SDK kaldırılamaz; sayfa yenilenince yüklenmez.
 
   // Custom event — diğer script'ler dinleyebilir
   window.dispatchEvent(new CustomEvent('cookie-consent-updated', { detail: consent }));

@@ -45,7 +45,7 @@ const FAQS = [
   },
   {
     q: '10+ çalışanlı şirketim için kurumsal indirim var mı?',
-    a: 'Evet. Kurumsal teklif için /iletisim sayfasından bize ulaşabilirsin. Ekip büyüklüğüne göre %15-40 arası indirim, dedicated success manager ve kurumsal sertifika programı sunuyoruz.',
+    a: 'Evet. Kurumsal teklif için /iletisim sayfasından bize ulaşabilirsin. Ekip büyüklüğüne göre size özel bir teklif hazırlıyoruz; kurumsal planlarda özel öğrenme planı ve yönetici raporları da yer alır.',
   },
   {
     q: 'Hangi cihazlarda kullanabilirim?',

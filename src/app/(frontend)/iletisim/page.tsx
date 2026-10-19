@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { trackLead } from '@/lib/analytics/meta-pixel';
+import { trackLinkedInConversion } from '@/lib/analytics/linkedin';
 
 interface FormData {
   name: string;
@@ -47,6 +48,7 @@ export default function IletisimPage() {
       setSuccess(true);
       // Meta Pixel — Lead event (kurumsal teklif talebi)
       trackLead({ source: 'iletisim_form', value: 0 });
+      trackLinkedInConversion('lead');
       setForm({ name: '', email: '', phone: '', company: '', sector: '', teamSize: '', message: '' });
     } catch (err: any) {
       setError(err.message || 'Bir hata oluştu. Lütfen tekrar deneyin.');

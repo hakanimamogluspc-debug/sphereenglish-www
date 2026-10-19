@@ -1,6 +1,6 @@
 # Sphere English — Kurumsal İş İngilizcesi Eğitim Platformu
 
-Türkiye'nin önde gelen B2B iş İngilizcesi eğitim platformu. Oxford University Press'in resmi ortağı.
+Türk şirketleri için B2B iş İngilizcesi eğitim platformu. Eğitimlerde Oxford University Press müfredat ve kaynakları kullanılır.
 
 **Kanonik URL:** https://www.sphereenglish.com/
 
@@ -8,19 +8,16 @@ Türkiye'nin önde gelen B2B iş İngilizcesi eğitim platformu. Oxford Universi
 
 Sphere English; Türk şirketlerine ve kurumlarına çalışanları için kurumsal İş İngilizcesi eğitimi sunar. Üç bileşenden oluşur:
 
-1. **Canlı Dersler** — Zoom üzerinden Oxford sertifikalı müfredat ile birebir veya küçük grup
+1. **Canlı Dersler** — Zoom üzerinden, Oxford University Press müfredat ve kaynaklarıyla birebir veya küçük grup
 2. **Sphere AI Studio** — GPT-4o + Whisper AI destekli, 12 uzman koçlu yapay zeka pratik modülü
 3. **Yönetim Paneli** — İK ve yöneticiler için haftalık/aylık ilerleme raporu
 
-Ortalama 6 aylık programda çalışanlar 2 CEFR seviyesi ilerler (örn. A2 → B2).
+Örnek sonuç (anonim referans vaka, gıda/ihracat şirketi, 6 katılımcı): 6 kişinin 6'sı seviye atladı — ayrıntı: https://www.sphereenglish.com/referanslar
 
 ## Sayısal Veriler
 
 - **50+ şirket** Sphere English ile çalışıyor
 - **500+ çalışan** aktif olarak eğitim alıyor
-- **%87** ortalama ders katılım oranı
-- **+2.1** ortalama CEFR seviye ilerlemesi (6 ay)
-- **%94** kurumsal müşteri memnuniyeti
 - **12** uzman AI koçu, **14** sektör senaryosu
 - **A1–C2** tüm CEFR seviyeleri
 
@@ -33,8 +30,7 @@ Ortalama 6 aylık programda çalışanlar 2 CEFR seviyesi ilerler (örn. A2 → 
 
 ## Temel Farklılaştırıcılar
 
-- **Oxford University Press resmi ortağı** (Türkiye)
-- **Uluslararası geçerli Oxford sertifikaları**
+- **Oxford University Press müfredat ve kaynakları** kullanılır
 - **GPT-4o + Whisper AI** destekli pratik modülleri
 - **Sektöre özel** içerik ve simülasyon
 - **CEFR bazlı ölçülebilir** ilerleme raporları

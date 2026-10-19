@@ -39,9 +39,9 @@ export default function HeroSection({ data }: HeroProps = {}) {
   const heroCta1Text = 'KURSLARI İNCELE';
   const heroCta2Text = 'E-KİTAPLARI KEŞFET';
   const heroBadge = data?.heroBadge ?? 'Canlı Ders Devam Ediyor';
-  const heroStatValue = data?.heroStatValue ?? '+2';
-  const heroStatLabel = data?.heroStatLabel ?? 'Seviye';
-  const heroStatNote = data?.heroStatNote ?? '6 aylık program sonrası';
+  const heroStatValue = data?.heroStatValue ?? '50+';
+  const heroStatLabel = data?.heroStatLabel ?? 'Kurumsal müşteri';
+  const heroStatNote = data?.heroStatNote ?? "2020'den bu yana";
 
   useEffect(() => {
     const elements = [headlineRef?.current, subRef?.current, ctaRef?.current];
