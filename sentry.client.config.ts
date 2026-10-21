@@ -1,6 +1,6 @@
 /**
  * Sentry client-side (browser) config
- * Build cache bust: 2026-10-09
+ * Build cache bust: 2026-10-09b (correct DSN project id)
  *
  * Marketing site tarayıcı tarafı hata izleme.
  * SENTRY_DSN yoksa Sentry devre dışı — sessizce atla.
@@ -48,6 +48,11 @@ if (dsn) {
       // Ad blocker gürültüsü
       'fbq is not defined',
       'gtag is not defined',
+      // Instagram / Facebook uygulama içi tarayıcı enjeksiyonları (bizim kodumuz değil)
+      /window\.webkit\.messageHandlers/,
+      /_AutofillCallbackHandler/,
+      /Java object is gone/,
+      /Java bridge method invocation error/,
     ],
 
     integrations: typeof (Sentry as any).replayIntegration === 'function'
