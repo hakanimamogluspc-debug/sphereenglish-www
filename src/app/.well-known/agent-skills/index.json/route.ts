@@ -225,7 +225,7 @@ const skillsData: SkillEntry[] = [
   {
     name: 'sphere-pricing-catalog',
     type: 'knowledge',
-    description: 'Bant fiyatlandırma bilgisi (AI satın alma ajanları için makine-okunabilir markdown).',
+    description: 'Fiyatlandırma modeli: liste fiyatı yok, kuruma özel teklif (makine-okunabilir markdown).',
     url: 'https://www.sphereenglish.com/pricing.md',
     category: 'pricing',
     tags: ['pricing', 'plans', 'b2b'],

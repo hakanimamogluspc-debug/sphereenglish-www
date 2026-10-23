@@ -73,8 +73,8 @@ export default function FiyatlandirmaPage() {
             10+ Çalışanlı Ekipler için Özel Teklif
           </h2>
           <p className="text-[16px] text-white/75 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Kurumsal indirim, özelleştirilmiş öğrenme planı, dedicated success manager, kurumsal sertifika
-            programı ve detaylı yönetici raporları. Ekip büyüklüğüne göre fiyatlandırma yapılır.
+            Kurumsal indirim, özelleştirilmiş öğrenme planı, dedicated success manager ve detaylı
+            yönetici raporları. Ekip büyüklüğüne göre fiyatlandırma yapılır.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a

@@ -1,4 +1,4 @@
-FROM node:20-bookworm-slim AS deps
+FROM node:22-bookworm-slim AS deps
 WORKDIR /app
 COPY package.json ./
 RUN npm install --legacy-peer-deps --include=optional
@@ -14,7 +14,7 @@ RUN if [ -f /app/node_modules/payload/dist/bin/loadEnv.js ]; then \
       echo '[patch] loadEnv.js not found — skipping'; \
     fi
 
-FROM node:20-bookworm-slim AS builder
+FROM node:22-bookworm-slim AS builder
 WORKDIR /app
 # Build-time env vars passed by EasyPanel via --build-arg.
 # Declared as ARG so they are visible to `next build`.
@@ -59,7 +59,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
-FROM node:20-bookworm-slim AS runner
+FROM node:22-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1

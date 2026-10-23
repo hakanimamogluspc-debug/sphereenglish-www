@@ -96,7 +96,7 @@ const SPHERE_TOOLS: WebMCPTool[] = [
   {
     name: 'sphere_pricing_info',
     description:
-      'Sphere English kurumsal İş İngilizcesi platformunun bant fiyatlandırma bilgisini döndürür. Bireysel birebir, kurumsal küçük grup, orta ölçek ve enterprise planları.',
+      'Sphere English kurumsal İş İngilizcesi platformunun fiyatlandırma modelini döndürür. Liste fiyatı yoktur; her kuruma özel teklif hazırlanır.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -108,14 +108,14 @@ const SPHERE_TOOLS: WebMCPTool[] = [
       },
     },
     execute: async ({ plan }: { plan?: string }) => {
+      // Liste fiyatı yayınlanmıyor — her kuruma özel teklif hazırlanır.
+      const quote = ' Fiyat: kuruma özel teklif (https://www.sphereenglish.com/iletisim).';
       const plans: Record<string, string> = {
-        bireysel: 'Bireysel Birebir — Aylık 4.500 TL\'den başlar. Haftada 2× 45 dk birebir Zoom dersi + AI Studio.',
-        'kurumsal-grup':
-          'Kurumsal Küçük Grup (5–15 kişi) — Aylık 18.000 TL\'den başlar. Haftada 2× 60 dk grup dersi + AI Studio + raporlama.',
+        bireysel: 'Birebir eğitim — eğitmenle canlı birebir online ders + AI Studio.' + quote,
+        'kurumsal-grup': 'Kurumsal küçük grup — canlı grup dersleri + AI Studio + raporlama.' + quote,
         'kurumsal-orta':
-          'Kurumsal Orta Ölçek (16–50 kişi) — Aylık 45.000 TL\'den başlar. Paralel gruplar + dedicated success manager.',
-        enterprise:
-          'Enterprise (50+ kişi) — Özel teklif. SSO, custom analytics, dedicated account manager. sales@sphereenglish.com',
+          'Geniş ekipler — farklı seviyelerde paralel gruplar, ihtiyaç analizi, yönetici raporlaması.' + quote,
+        enterprise: 'Kurumsal (büyük ekipler) — kapsam ihtiyaca göre belirlenir.' + quote,
       };
 
       let content = '';
