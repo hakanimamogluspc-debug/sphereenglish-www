@@ -361,8 +361,8 @@ export default async function EKitaplarPage({ searchParams }: { searchParams: Pr
               </div>
               <h3 className="text-[18px] font-extrabold text-[#1B365D] leading-snug">{g.label}</h3>
               <p className="text-[13px] text-gray-600 leading-relaxed">{g.desc}</p>
-              <Link href={`/e-kitaplar?kategori=${g.key}#katalog`} scroll={false} className="mt-auto text-[13px] font-bold text-[#0ea5e9] hover:underline">
-                {g.label} kitaplarını gör →
+              <Link href={`/e-kitaplar?kategori=${g.key}#katalog`} className="mt-auto text-[13px] font-bold text-[#0ea5e9] hover:underline">
+                Kitapları gör →
               </Link>
             </article>
           ))}
@@ -420,7 +420,7 @@ export default async function EKitaplarPage({ searchParams }: { searchParams: Pr
                 {l} <span className="text-[11px]">· yakında</span>
               </span>
             ) : (
-              <Link key={k} href={k === 'tumu' ? '/e-kitaplar#katalog' : `/e-kitaplar?kategori=${k}#katalog`} scroll={false}
+              <Link key={k} href={k === 'tumu' ? '/e-kitaplar#katalog' : `/e-kitaplar?kategori=${k}#katalog`}
                 aria-current={filter === k ? 'page' : undefined}
                 className={`px-3.5 py-1.5 rounded-full text-[13px] font-semibold border transition-colors ${
                   filter === k ? 'bg-[#1B365D] text-white border-[#1B365D]' : 'bg-white text-[#1B365D] border-[#e6ebf2] hover:border-[#0ea5e9]'}`}>
