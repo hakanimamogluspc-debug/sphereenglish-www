@@ -84,14 +84,41 @@ function linkify(text: string) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────
 
-export default async function EKitaplarPage() {
-  const [ebooks, bundles, faq, guide, interests] = await Promise.all([
+// Kitap grupları — admin'de kitabın "Kategori" alanına aşağıdaki adlardan biri yazılınca o gruba girer
+// (büyük/küçük harf ve tam yazım önemsiz; "beceri" / "sektör" geçmesi yeterli).
+// Bu gruplardan birine girmeyen kitaplar (kategori boş, "1000 Kelime" vb.) "İş İngilizcesinde Kullanılan 1000 Kelime" serisi sayılır.
+const GROUPS = [
+  {
+    key: 'sektorel', label: 'Sektörel İngilizce', match: 'sektör',
+    desc: 'Havacılıktan sağlığa, turizmden lojistiğe: her sektörün günlük iş dili, terimleri ve senaryoları.',
+  },
+  {
+    key: 'beceri', label: 'Beceri Kitapları', match: 'beceri',
+    desc: 'Sektörden bağımsız: e-posta, toplantı, sunum, müzakere, mülakat ve rapor yazımı.',
+  },
+] as const;
+type GroupKey = (typeof GROUPS)[number]['key'];
+const groupOf = (b: { category: string | null }): GroupKey | null => {
+  const c = (b.category ?? '').toLocaleLowerCase('tr-TR');
+  return GROUPS.find((g) => c.includes(g.match))?.key ?? null;
+};
+
+export default async function EKitaplarPage({ searchParams }: { searchParams: Promise<{ kategori?: string }> }) {
+  const { kategori } = await searchParams;
+  const [allEbooks, bundles, faq, guide, interests] = await Promise.all([
     getJson<Ebook[]>('/api/ebooks', 'ebooks', []),
     getJson<Bundle[]>('/api/bundles', 'bundles', []),
     getJson<Faq[]>('/api/ebook-marketing/faq', 'faq', []),
     getJson<Guide[]>('/api/ebook-marketing/guide', 'guide', []),
     getJson<InterestOption[]>('/api/ebook-marketing/interests', 'interests', []),
   ]);
+
+  // "1000 Kelime" serisi istatistikleri yalnızca seri kitaplarından hesaplanır (sektörel/beceri hariç)
+  const ebooks = allEbooks.filter((b) => groupOf(b) === null);
+  const groups = GROUPS.map((g) => ({ ...g, books: allEbooks.filter((b) => groupOf(b) === g.key) }));
+  const activeGroup = groups.find((g) => g.key === kategori && g.books.length > 0);
+  const filter: string = activeGroup ? activeGroup.key : kategori === 'seri' ? 'seri' : 'tumu';
+  const catalog = activeGroup ? activeGroup.books : filter === 'seri' ? ebooks : allEbooks;
 
   const set = bundles.find((b) => b.is_featured) ?? bundles[0] ?? null;
   const setPrice = set ? Number(set.price_try) : null;
@@ -125,11 +152,11 @@ export default async function EKitaplarPage() {
       },
       {
         '@type': 'ItemList',
-        itemListElement: ebooks.map((b, i) => ({
+        itemListElement: allEbooks.map((b, i) => ({
           '@type': 'ListItem', position: i + 1, url: `${SITE}/e-kitaplar/${b.slug}`, name: b.title,
         })),
       },
-      ...ebooks.map((b) => ({
+      ...allEbooks.map((b) => ({
         '@type': 'Product',
         name: b.title,
         url: `${SITE}/e-kitaplar/${b.slug}`,
@@ -188,13 +215,13 @@ export default async function EKitaplarPage() {
               </h1>
               <p className="mt-5 text-[16px] lg:text-[17px] text-gray-600 leading-relaxed max-w-2xl">
                 Türk profesyoneller için Türkçe açıklamalı, gerçek iş senaryolu PDF kitaplar.
-                Şu an {ebooks.length} kitap ve tam set mevcut; farklı sektör ve konularda yeni kitaplar yolda.
+                Şu an {allEbooks.length} kitap ve tam set mevcut; farklı sektör ve konularda yeni kitaplar yolda.
                 Ödemeden hemen sonra e-postanızda.
               </p>
 
               <div className="mt-7 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl">
                 {[
-                  [String(ebooks.length), 'kitap'],
+                  [String(allEbooks.length), 'kitap'],
                   [kalip.toLocaleString('tr-TR'), 'kalıp'],
                   [totalPages.toLocaleString('tr-TR'), 'sayfa'],
                   ['30+', 'yeni kitap yolda'],
@@ -265,6 +292,9 @@ export default async function EKitaplarPage() {
               Şu an <strong className="text-[#1B365D]">İş İngilizcesinde Kullanılan 1000 Kelime</strong> serisinin {ebooks.length} kitabı satıştadır.
               Her kitapta 50 kurumsal kalıp ve 150 terim vardır.
               {singlePrice !== null && <> Tek kitap {fmtTRY(singlePrice)}{setPrice !== null && <>, {set!.item_count} kitaplık set {fmtTRY(setPrice)}</>}&apos;dur.</>}
+              {groups.filter((g) => g.books.length > 0).map((g) => (
+                <span key={g.key}> {g.label} grubunda {g.books.length} kitap satıştadır.</span>
+              ))}
               {' '}Yazar Didem İmamoğlu, yayıncı Sphere English. Farklı sektörler ve beceriler için yeni kitaplar hazırlanmaktadır.
             </p>
             {updated && (
@@ -317,10 +347,26 @@ export default async function EKitaplarPage() {
             </article>
           ) : null}
 
-          {[
-            ['Sektörel İngilizce', 'Havacılıktan sağlığa, turizmden lojistiğe: her sektörün günlük iş dili, terimleri ve senaryoları.'],
-            ['Beceri Kitapları', 'Sektörden bağımsız: e-posta, toplantı, sunum, müzakere, mülakat ve rapor yazımı.'],
-          ].map(([t, d]) => (
+          {groups.filter((g) => g.books.length > 0).map((g) => (
+            <article key={g.key} className="rounded-2xl bg-white border border-[#e6ebf2] p-6 flex flex-col gap-3 hover:border-[#0ea5e9]/40 hover:shadow-lg transition-all">
+              <span className="self-start px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500 text-white">
+                Yayında · {g.books.length} kitap
+              </span>
+              <div className="flex gap-1.5">
+                {g.books.slice(0, 4).map((b) => (
+                  <div key={b.id} className="relative w-14 aspect-[5/7] rounded-md overflow-hidden bg-[#1B365D]">
+                    {b.cover_image_url && <Image src={b.cover_image_url} alt={b.title} fill sizes="56px" className="object-cover" />}
+                  </div>
+                ))}
+              </div>
+              <h3 className="text-[18px] font-extrabold text-[#1B365D] leading-snug">{g.label}</h3>
+              <p className="text-[13px] text-gray-600 leading-relaxed">{g.desc}</p>
+              <Link href={`/e-kitaplar?kategori=${g.key}#katalog`} scroll={false} className="mt-auto text-[13px] font-bold text-[#0ea5e9] hover:underline">
+                {g.label} kitaplarını gör →
+              </Link>
+            </article>
+          ))}
+          {groups.filter((g) => g.books.length === 0).map((g) => [g.label, g.desc] as [string, string]).map(([t, d]) => (
             <article key={t} className="rounded-2xl bg-[#f5f8fc] border border-dashed border-[#cbd5e1] p-6 flex flex-col gap-3">
               <span className="self-start px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-[#e6f5fd] text-[#0369a1]">Yakında</span>
               <h3 className="text-[18px] font-extrabold text-[#1B365D] leading-snug">{t}</h3>
@@ -356,18 +402,41 @@ export default async function EKitaplarPage() {
         <div className="mb-6 flex items-end justify-between flex-wrap gap-3">
           <div>
             <span className="text-[12px] font-extrabold tracking-[0.2em] uppercase text-[#0ea5e9]">Mağaza</span>
-            <h2 id="catH" className="mt-1 text-[28px] lg:text-[36px] font-extrabold text-[#1B365D] leading-tight">Mevcut kitaplar</h2>
+            <h2 id="catH" className="mt-1 text-[28px] lg:text-[36px] font-extrabold text-[#1B365D] leading-tight">
+              {activeGroup ? activeGroup.label : filter === 'seri' ? 'İş İngilizcesinde Kullanılan 1000 Kelime' : 'Tüm kitaplar'}
+            </h2>
           </div>
-          <span className="text-[13px] text-gray-500 font-semibold" aria-live="polite">{ebooks.length} kitap</span>
+          <span className="text-[13px] text-gray-500 font-semibold" aria-live="polite">{catalog.length} kitap</span>
         </div>
 
-        {ebooks.length === 0 ? (
+        <nav aria-label="Kategori" className="mb-6 flex flex-wrap gap-2">
+          {([
+            ['tumu', 'Tüm kitaplar', allEbooks.length],
+            ['seri', '1000 Kelime serisi', ebooks.length],
+            ...groups.map((g) => [g.key, g.label, g.books.length]),
+          ] as Array<[string, string, number]>).map(([k, l, n]) =>
+            n === 0 && k !== 'tumu' ? (
+              <span key={k} className="px-3.5 py-1.5 rounded-full text-[13px] font-semibold border border-dashed border-[#cbd5e1] text-gray-400 cursor-default">
+                {l} <span className="text-[11px]">· yakında</span>
+              </span>
+            ) : (
+              <Link key={k} href={k === 'tumu' ? '/e-kitaplar#katalog' : `/e-kitaplar?kategori=${k}#katalog`} scroll={false}
+                aria-current={filter === k ? 'page' : undefined}
+                className={`px-3.5 py-1.5 rounded-full text-[13px] font-semibold border transition-colors ${
+                  filter === k ? 'bg-[#1B365D] text-white border-[#1B365D]' : 'bg-white text-[#1B365D] border-[#e6ebf2] hover:border-[#0ea5e9]'}`}>
+                {l} <span className={filter === k ? 'text-white/70' : 'text-gray-400'}>({n})</span>
+              </Link>
+            ),
+          )}
+        </nav>
+
+        {catalog.length === 0 ? (
           <div className="text-center py-20 bg-[#f5f8fc] rounded-3xl">
             <p className="text-[16px] text-gray-500">Kitaplar yakında yayınlanacak.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {ebooks.map((b) => {
+            {catalog.map((b) => {
               const price = Number(b.price_try);
               const list = b.list_price_try ? Number(b.list_price_try) : null;
               const off = list && list > price ? Math.round(((list - price) / list) * 100) : 0;

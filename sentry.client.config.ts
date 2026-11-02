@@ -52,6 +52,8 @@ if (dsn) {
       /window\.webkit\.messageHandlers/,
       /_AutofillCallbackHandler/,
       /Java object is gone/,
+      // Microsoft Outlook / Safe Links bağlantı tarayıcısı (e-postadaki linkleri açan bot) — kullanıcı değil
+      /Object Not Found Matching Id:\d+, MethodName:\w+, ParamCount:\d+/,
       /Java bridge method invocation error/,
     ],
 

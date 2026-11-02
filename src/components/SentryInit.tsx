@@ -25,6 +25,8 @@ export const IGNORE_ERRORS: Array<string | RegExp> = [
   /_AutofillCallbackHandler/,
   /webkit\.messageHandlers.*undefined/,
   /Java object is gone/,
+  // Microsoft Outlook / Safe Links bağlantı tarayıcısı (e-postadaki linkleri açan bot) — kullanıcı değil
+  /Object Not Found Matching Id:\d+, MethodName:\w+, ParamCount:\d+/,
   /Java bridge method invocation error/,
 ];
 
