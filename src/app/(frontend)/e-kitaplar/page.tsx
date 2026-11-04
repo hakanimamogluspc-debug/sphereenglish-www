@@ -7,6 +7,7 @@ import AddToCartButton from '@/components/AddToCartButton';
 import PreviewLinkButton from '@/components/PreviewLinkButton';
 import WaitlistForm, { type InterestOption } from './WaitlistForm';
 import { getEbookPrices, fmtTry } from '@/lib/ebook-prices';
+import { stripMarkdown } from '@/lib/markdown-lite';
 
 // Açıklamalardaki fiyatlar admin'deki güncel fiyattan gelir (bkz. lib/ebook-prices)
 export async function generateMetadata(): Promise<Metadata> {
@@ -169,7 +170,7 @@ export default async function EKitaplarPage({ searchParams }: { searchParams: Pr
         name: b.title,
         url: `${SITE}/e-kitaplar/${b.slug}`,
         image: b.cover_image_url ?? undefined,
-        description: b.description,
+        description: stripMarkdown(b.description),
         brand: { '@type': 'Brand', name: 'Sphere English' },
         offers: {
           '@type': 'Offer', priceCurrency: 'TRY', price: Number(b.price_try),
@@ -474,7 +475,7 @@ export default async function EKitaplarPage({ searchParams }: { searchParams: Pr
                       <Link href={`/e-kitaplar/${b.slug}`} className="group-hover:text-[#0ea5e9] transition-colors">{b.title}</Link>
                     </h3>
                     {b.subtitle && <p className="text-[12px] text-gray-500 mt-1 line-clamp-1">{b.subtitle}</p>}
-                    <p className="mt-2 text-[13px] text-gray-600 leading-relaxed line-clamp-3">{b.description}</p>
+                    <p className="mt-2 text-[13px] text-gray-600 leading-relaxed line-clamp-3">{stripMarkdown(b.description)}</p>
 
                     <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-gray-500 font-semibold">
                       {b.page_count ? <span>{b.page_count} sayfa</span> : null}

@@ -5,6 +5,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import DiscountCountdown from '@/components/DiscountCountdown';
 import BuyBundleButton from './BuyBundleButton';
+import EbookDescription from '@/components/EbookDescription';
+import { stripMarkdown } from '@/lib/markdown-lite';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -78,7 +80,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const title = bundle.seo_title || `${bundle.title} | Sphere English`;
   const description =
     bundle.seo_description ||
-    (bundle.description ?? '').slice(0, 280) ||
+    stripMarkdown(bundle.description ?? '').slice(0, 280) ||
     `${bundle.items?.length ?? 0} kitaplık iş İngilizcesi seti — %${bundle.savings_percent} indirim`;
 
   return {
@@ -117,7 +119,7 @@ export default async function BundleDetailPage({ params }: { params: { slug: str
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: bundle.title,
-    description: bundle.description,
+    description: bundle.description ? stripMarkdown(bundle.description) : undefined,
     image: bundle.cover_image_url,
     offers: {
       '@type': 'Offer',
@@ -233,15 +235,7 @@ export default async function BundleDetailPage({ params }: { params: { slug: str
             )}
 
             {bundle.description && (
-              <div className="prose prose-slate max-w-none mb-8">
-                {bundle.description.split('\n').map((paragraph, i) =>
-                  paragraph.trim() ? (
-                    <p key={i} className="text-[15px] text-gray-700 leading-relaxed mb-3 whitespace-pre-wrap">
-                      {paragraph}
-                    </p>
-                  ) : null,
-                )}
-              </div>
+              <EbookDescription text={bundle.description} />
             )}
 
             {/* İçerik listesi */}

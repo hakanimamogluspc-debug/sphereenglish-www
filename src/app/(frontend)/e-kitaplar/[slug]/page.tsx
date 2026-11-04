@@ -7,6 +7,8 @@ import EbookGallery from './EbookGallery';
 import BuyEbookButton from './BuyEbookButton';
 import EbookViewTracker from '@/components/EbookViewTracker';
 import DiscountCountdown from '@/components/DiscountCountdown';
+import EbookDescription from '@/components/EbookDescription';
+import { stripMarkdown } from '@/lib/markdown-lite';
 
 // Cache'i tamamen kapat — admin değişikliği anında yansısın
 export const dynamic = 'force-dynamic';
@@ -96,7 +98,7 @@ export async function generateMetadata({
   // SEO title format: "İş İngilizcesi Kitabı: [Konu]" — layout template " | Sphere English" ekler
   // ebook.seo_title DB'de spesifik override varsa onu kullan, yoksa standardize et
   const title = ebook.seo_title || `İş İngilizcesi Kitabı: ${ebook.title}`;
-  const description = ebook.seo_description || ebook.description.slice(0, 280);
+  const description = ebook.seo_description || stripMarkdown(ebook.description).slice(0, 280);
   const url = `https://www.sphereenglish.com/e-kitaplar/${ebook.slug}`;
   return {
     title,
@@ -157,7 +159,7 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
     author: { '@type': 'Person', name: ebook.author },
     publisher: { '@type': 'Organization', name: ebook.publisher },
     datePublished: ebook.published_at,
-    description: ebook.description,
+    description: stripMarkdown(ebook.description),
     image: allImages.length > 0 ? allImages : undefined,
     url: `https://www.sphereenglish.com/e-kitaplar/${ebook.slug}`,
   };
@@ -166,7 +168,7 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: ebook.title,
-    description: ebook.description,
+    description: stripMarkdown(ebook.description),
     image: allImages.length > 0 ? allImages : undefined,
     brand: { '@type': 'Brand', name: ebook.publisher },
     category: ebook.category ?? 'İş İngilizcesi',
@@ -305,9 +307,7 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
             </div>
 
             {/* Açıklama */}
-            <p className="text-[16px] text-gray-700 leading-relaxed mb-7">
-              {ebook.long_description || ebook.description}
-            </p>
+            <EbookDescription text={ebook.long_description || ebook.description} />
 
             {/* Meta rozetleri */}
             <div className="flex flex-wrap items-center gap-3 mb-8">
