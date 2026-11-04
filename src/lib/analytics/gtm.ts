@@ -3,7 +3,7 @@
  *
  * Kullanım:
  *   import { trackEvent } from '@/lib/analytics/gtm';
- *   trackEvent('view_item', { currency: 'TRY', value: 199, items: [{ item_id: 'ebook-42', ... }] });
+ *   trackEvent('view_item', { currency: 'TRY', value: fiyat, items: [{ item_id: 'ebook-42', ... }] });
  *
  * GA4 standard e-commerce şeması: https://developers.google.com/analytics/devguides/collection/ga4/reference/events
  *

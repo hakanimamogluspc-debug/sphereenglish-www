@@ -76,18 +76,11 @@ export const METRICS = {
 } as const;
 
 /**
- * Ürün fiyatları — canlı fiyat farklılığı olabilir.
- * DB'de dinamik fiyat varsa oradan çek, bunlar sadece landing page/marketing fallback.
+ * Ürün fiyatları.
+ * E-kitap fiyatları burada TUTULMAZ — admin panelindeki güncel fiyat kullanılır:
+ * sunucu tarafında `getEbookPrices()` (src/lib/ebook-prices.ts). (Eski 199/799 sabitleri kaldırıldı, Kasım 2026.)
  */
 export const PRICING = {
-  ebook: {
-    singleTry: 199,
-    bundleFiveTry: 799,
-    singleDisplay: '199 TL',
-    bundleDisplay: '799 TL',
-    singleCompareAt: 299,
-    bundleCompareAt: 995,
-  },
   course: {
     programTry: 4999,
     programDisplay: '4.999 TL',

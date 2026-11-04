@@ -6,7 +6,7 @@
  *
  * Örnek:
  *   trackMetaEvent('Purchase', {
- *     value: 199,
+ *     value: fiyat,
  *     currency: 'TRY',
  *     content_ids: ['ebook-67'],
  *     content_type: 'product',

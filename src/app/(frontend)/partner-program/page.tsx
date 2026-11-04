@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getEbookPrices, fmtTry } from "@/lib/ebook-prices";
 
 export const metadata: Metadata = {
   title: "Partner Programı — Sphere English",
@@ -12,7 +13,12 @@ export const metadata: Metadata = {
 
 const LMS_URL = "https://app.sphereenglish.com";
 
-export default function PartnerProgramPage() {
+export default async function PartnerProgramPage() {
+  // E-kitap komisyon örneği güncel fiyattan hesaplanır (admin'de fiyat değişince kendiliğinden güncellenir)
+  const { single } = await getEbookPrices(3600);
+  const ebookExample = single !== null
+    ? <>{fmtTry(single)}'lik e-kitap satışından komisyonun: <strong>{new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(Math.round(single * 20) / 100)}</strong></>
+    : <>Her e-kitap satışının <strong>%20</strong>'si komisyon olarak hesabına geçer</>;
   return (
     <main className="min-h-screen bg-gradient-to-b from-sapphire-light/60 via-white to-white">
       {/* Hero */}
@@ -65,7 +71,7 @@ export default function PartnerProgramPage() {
             <div className="text-3xl font-bold text-sapphire mb-1">%20</div>
             <p className="text-sm text-slate-600 mb-3">Tek seferlik satış komisyonu</p>
             <div className="text-xs bg-sapphire-light p-3 rounded-md text-sapphire-dark mt-12">
-              <strong>Örnek:</strong> 199 TL'lik e-kitap satışından komisyonun: <strong>39,80 TL</strong>
+              <strong>Örnek:</strong> {ebookExample}
             </div>
           </Card>
         </div>

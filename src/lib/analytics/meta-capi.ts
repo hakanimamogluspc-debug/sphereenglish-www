@@ -21,7 +21,7 @@
  *     eventId: `purchase_${orderId}`,
  *     eventSourceUrl: 'https://www.sphereenglish.com/odeme/basarili',
  *     userData: { email, phone, clientIpAddress, clientUserAgent, fbp, fbc },
- *     customData: { value: 199, currency: 'TRY', contentIds: ['ebook-42'] },
+ *     customData: { value: fiyat, currency: 'TRY', contentIds: ['ebook-42'] },
  *   });
  */
 

@@ -6,28 +6,36 @@ import Footer from '@/components/Footer';
 import AddToCartButton from '@/components/AddToCartButton';
 import PreviewLinkButton from '@/components/PreviewLinkButton';
 import WaitlistForm, { type InterestOption } from './WaitlistForm';
+import { getEbookPrices, fmtTry } from '@/lib/ebook-prices';
 
-export const metadata: Metadata = {
-  title: 'İş İngilizcesi PDF E-Kitapları: 1000 Kelime Serisi',
-  description:
-    'Toplantı, satış, liderlik, finans ve teknoloji için Türkçe açıklamalı iş İngilizcesi PDF e-kitapları. Tek kitap ₺199, 5 kitaplık set ₺799. Yeni seriler yolda.',
-  alternates: { canonical: 'https://www.sphereenglish.com/e-kitaplar' },
-  robots: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
-  openGraph: {
-    title: 'İş İngilizcesi PDF E-Kitapları | Sphere English',
-    description: '250 kurumsal kalıp + 750 terim, 5 PDF kitap. Tek kitap ₺199, tam set ₺799. Yeni seriler yakında.',
-    url: 'https://www.sphereenglish.com/e-kitaplar',
-    siteName: 'Sphere English',
-    type: 'website',
-    locale: 'tr_TR',
-  },
-  twitter: { card: 'summary_large_image' },
-  keywords: [
-    'iş ingilizcesi kitap', 'business english pdf', 'kurumsal ingilizce', 'toplantı ingilizcesi',
-    'e-posta ingilizcesi', 'plaza dili', 'sphere english kitap', 'dijital ingilizce kitap',
-    '1000 kelime', 'iş ingilizcesi pdf indir',
-  ],
-};
+// Açıklamalardaki fiyatlar admin'deki güncel fiyattan gelir (bkz. lib/ebook-prices)
+export async function generateMetadata(): Promise<Metadata> {
+  const p = await getEbookPrices();
+  const priceText = p.single !== null
+    ? ` Tek kitap ${fmtTry(p.single)}${p.set !== null ? `, ${p.setCount ?? 5} kitaplık set ${fmtTry(p.set)}` : ''}.`
+    : '';
+  return {
+    title: 'İş İngilizcesi PDF E-Kitapları: 1000 Kelime Serisi',
+    description:
+      `Toplantı, satış, liderlik, finans ve teknoloji için Türkçe açıklamalı iş İngilizcesi PDF e-kitapları.${priceText} Yeni seriler yolda.`,
+    alternates: { canonical: 'https://www.sphereenglish.com/e-kitaplar' },
+    robots: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
+    openGraph: {
+      title: 'İş İngilizcesi PDF E-Kitapları | Sphere English',
+      description: `250 kurumsal kalıp + 750 terim, PDF kitaplar.${priceText} Yeni seriler yakında.`,
+      url: 'https://www.sphereenglish.com/e-kitaplar',
+      siteName: 'Sphere English',
+      type: 'website',
+      locale: 'tr_TR',
+    },
+    twitter: { card: 'summary_large_image' },
+    keywords: [
+      'iş ingilizcesi kitap', 'business english pdf', 'kurumsal ingilizce', 'toplantı ingilizcesi',
+      'e-posta ingilizcesi', 'plaza dili', 'sphere english kitap', 'dijital ingilizce kitap',
+      '1000 kelime', 'iş ingilizcesi pdf indir',
+    ],
+  };
+}
 
 // Admin değişikliği anında yansısın
 export const dynamic = 'force-dynamic';
