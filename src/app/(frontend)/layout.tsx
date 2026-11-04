@@ -11,6 +11,7 @@ import FbclidCapture from '../../components/FbclidCapture';
 import ContactClickTracker from '../../components/ContactClickTracker';
 import LinkedInInsight from '../../components/LinkedInInsight';
 import CookieConsent from '@/components/CookieConsent';
+import SitePopup from '@/components/SitePopup';
 import SentryInit from '@/components/SentryInit';
 import { CartProvider } from '../../lib/cart/cart-context';
 import MiniCartDrawer from '../../components/MiniCartDrawer';
@@ -401,6 +402,8 @@ export default function RootLayout({
           {/* KVKK/GDPR Çerez rıza banner'ı */}
           <SentryInit />
           <CookieConsent />
+          {/* Admin → Site Pop-up'ları'ndan yönetilen duyuru / bülten pop-up'ı */}
+          <SitePopup />
         </CartProvider>
       </body>
     </html>
