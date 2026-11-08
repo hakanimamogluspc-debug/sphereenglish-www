@@ -17,7 +17,16 @@
 
 const env = (short: string | undefined, long: string | undefined) => (short || long || '').trim();
 
-export const LINKEDIN_PARTNER_ID = env(process.env.NEXT_PUBLIC_LI_PARTNER_ID, process.env.NEXT_PUBLIC_LINKEDIN_PARTNER_ID);
+/**
+ * Sphere English Insight Tag Partner ID (gizli değil — her ziyaretçinin tarayıcısında görünür).
+ * Ortam değişkeni derlemeye ulaşmazsa (Easypanel'de yanlış servise girilmesi, derlemeden sonra eklenmesi)
+ * etiket hiç yüklenmiyordu; bu yüzden production derlemesinde varsayılan olarak kullanılır.
+ * Yerel geliştirmede varsayılan devreye girmez (test verisi LinkedIn'e karışmasın).
+ */
+const DEFAULT_PARTNER_ID = process.env.NODE_ENV === 'production' ? '11285537' : '';
+
+export const LINKEDIN_PARTNER_ID =
+  env(process.env.NEXT_PUBLIC_LI_PARTNER_ID, process.env.NEXT_PUBLIC_LINKEDIN_PARTNER_ID) || DEFAULT_PARTNER_ID;
 
 export const LINKEDIN_CONVERSIONS = {
   lead: env(process.env.NEXT_PUBLIC_LI_CONV_LEAD, process.env.NEXT_PUBLIC_LINKEDIN_CONV_LEAD),
