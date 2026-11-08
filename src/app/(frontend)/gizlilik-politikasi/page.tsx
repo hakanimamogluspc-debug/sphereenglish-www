@@ -183,8 +183,9 @@ export default function GizlilikPage() {
             <li><strong>Zorunlu çerezler:</strong> Oturum yönetimi, güvenlik, sepet işlemleri (çıkış yapılamaz — hizmet
               için gerekli)</li>
             <li><strong>Analitik çerezler:</strong> Google Analytics — kullanım desenlerini anlamak için</li>
-            <li><strong>Pazarlama çerezleri:</strong> Meta Pixel ve LinkedIn Insight Tag — reklam performansını ölçmek için
-              (opsiyonel)</li>
+            <li><strong>Pazarlama çerezleri:</strong> Meta Pixel (Meta Platforms Ireland Ltd.) ve LinkedIn Insight Tag
+              (LinkedIn Ireland Unlimited Company) — reklam ölçümü ve yeniden hedefleme (opsiyonel; yalnızca
+              pazarlama çerezlerine izin verirseniz yüklenir)</li>
             <li><strong>Tercih çerezleri:</strong> Dil, tema gibi kullanıcı tercihlerinizi hatırlamak için</li>
           </ul>
           <p>

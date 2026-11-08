@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { trackPurchase, trackMetaEvent } from '@/lib/analytics/meta-pixel';
+import { trackLinkedInConversion } from '@/lib/analytics/linkedin';
 
 /**
  * Ödeme başarılı sayfasında Meta Pixel Purchase event tetikleyici.
@@ -44,6 +45,9 @@ export default function PurchaseTracker(props: {
       orderId: props.orderId,
       eventId: props.eventId, // purchase_<conv> — CAPI Purchase ile dedup
     });
+
+    // LinkedIn dönüşümü — e-kitap satın alma (rıza yoksa kuyrukta bekler, rıza gelmezse gönderilmez)
+    if (props.type === 'ebook') trackLinkedInConversion('ebook_purchase');
 
     // Subscription satın alma ise Subscribe event de tetikle (LTV tracking)
     if (props.type === 'subscription') {

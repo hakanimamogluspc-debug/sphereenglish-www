@@ -6,17 +6,24 @@
  * rızası verildikten SONRA enjekte edilir (bkz. <LinkedInInsight />).
  * Rıza öncesi çağrılan dönüşümler kuyruğa alınır, SDK yüklenince boşaltılır.
  *
- * Env:
- *   NEXT_PUBLIC_LINKEDIN_PARTNER_ID   — Campaign Manager → Analyze → Insight Tag → Partner ID
- *   NEXT_PUBLIC_LINKEDIN_CONV_LEAD    — "Teklif talebi" dönüşümünün conversion_id'si (opsiyonel)
- *   NEXT_PUBLIC_LINKEDIN_CONV_DEMO    — "Demo randevusu" dönüşümünün conversion_id'si (opsiyonel)
+ * Env (Next.js NEXT_PUBLIC_* değişkenleri BUILD sırasında koda gömülür → Dockerfile'da ARG olarak tanımlı
+ * olmalı ve değiştirince yeniden dağıtım gerekir). Kısa (LI_) ve uzun (LINKEDIN_) adların ikisi de okunur:
+ *   NEXT_PUBLIC_LI_PARTNER_ID            — Insight Tag Partner ID (Sphere English: 11285537). Boşsa hiçbir şey yüklenmez.
+ *   NEXT_PUBLIC_LI_CONV_DEMO             — "Demo talebi" conversion_id   (demo randevusu başarılı olunca)
+ *   NEXT_PUBLIC_LI_CONV_LEAD             — "Teklif talebi" conversion_id (iletişim formu başarılı olunca)
+ *   NEXT_PUBLIC_LI_CONV_EBOOK_PURCHASE   — "E-kitap satın alma" conversion_id (ödeme başarılı sayfası)
+ *   NEXT_PUBLIC_LI_CONV_SIGNUP           — "Kayıt" conversion_id (kayıt app.sphereenglish.com'da; www'de çağrı noktası yok)
  */
 
-export const LINKEDIN_PARTNER_ID = process.env.NEXT_PUBLIC_LINKEDIN_PARTNER_ID || '';
+const env = (short: string | undefined, long: string | undefined) => (short || long || '').trim();
+
+export const LINKEDIN_PARTNER_ID = env(process.env.NEXT_PUBLIC_LI_PARTNER_ID, process.env.NEXT_PUBLIC_LINKEDIN_PARTNER_ID);
 
 export const LINKEDIN_CONVERSIONS = {
-  lead: process.env.NEXT_PUBLIC_LINKEDIN_CONV_LEAD || '',
-  demo: process.env.NEXT_PUBLIC_LINKEDIN_CONV_DEMO || '',
+  lead: env(process.env.NEXT_PUBLIC_LI_CONV_LEAD, process.env.NEXT_PUBLIC_LINKEDIN_CONV_LEAD),
+  demo: env(process.env.NEXT_PUBLIC_LI_CONV_DEMO, process.env.NEXT_PUBLIC_LINKEDIN_CONV_DEMO),
+  ebook_purchase: env(process.env.NEXT_PUBLIC_LI_CONV_EBOOK_PURCHASE, process.env.NEXT_PUBLIC_LINKEDIN_CONV_EBOOK_PURCHASE),
+  signup: env(process.env.NEXT_PUBLIC_LI_CONV_SIGNUP, process.env.NEXT_PUBLIC_LINKEDIN_CONV_SIGNUP),
 } as const;
 
 export type LinkedInConversion = keyof typeof LINKEDIN_CONVERSIONS;
