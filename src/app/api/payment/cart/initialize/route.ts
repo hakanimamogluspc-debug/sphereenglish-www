@@ -334,8 +334,9 @@ export async function POST(req: NextRequest) {
     basketId: conversationId,
     paymentGroup: 'PRODUCT',
     callbackUrl,
-    // Taksit — Iyzico merchant panel'indeki tüm banka anlaşmalarına izin ver (1-12 arası)
-    enabledInstallments: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    // Yalnızca tek çekim: taksitte iyzico vade farkını müşteriye ekliyor, tahsil edilen tutar
+    // faturadaki tutardan yüksek çıkıyordu (ör. 799 → 828,52). E-kitap fiyatları taksit gerektirmiyor.
+    enabledInstallments: [1],
     buyer: {
       id: email,
       name: firstName,
