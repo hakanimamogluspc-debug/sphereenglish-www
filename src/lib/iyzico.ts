@@ -76,6 +76,47 @@ export function signInternalPayload(body: object): string {
 }
 
 /**
+ * E-posta yazım hatası yakalayıcı. Kitap e-postayla teslim edildiği için "gmail.con" gibi bir
+ * hata, ödeme olsa bile kitabın hiç ulaşmaması demek. Şüpheli adreste düzeltme önerisi döner.
+ */
+const DOMAIN_FIXES: Record<string, string> = {
+  "gmail.con": "gmail.com", "gmail.co": "gmail.com", "gmail.cm": "gmail.com", "gmail.om": "gmail.com", "gmail.comm": "gmail.com",
+  "gmail.c": "gmail.com", "gmial.com": "gmail.com", "gmal.com": "gmail.com", "gmaill.com": "gmail.com", "gamil.com": "gmail.com",
+  "gnail.com": "gmail.com", "gmail.com.tr": "gmail.com",
+  "hotmail.con": "hotmail.com", "hotmial.com": "hotmail.com", "hotmal.com": "hotmail.com", "hotmail.co": "hotmail.com",
+  "outlook.con": "outlook.com", "outlok.com": "outlook.com", "yahoo.con": "yahoo.com", "yaho.com": "yahoo.com",
+  "icloud.con": "icloud.com", "yandex.con": "yandex.com",
+};
+export function emailTypoSuggestion(email: string): string | null {
+  const at = email.lastIndexOf("@");
+  if (at < 1) return null;
+  const domain = email.slice(at + 1).toLowerCase();
+  const fix = DOMAIN_FIXES[domain] ?? (domain.endsWith(".con") ? domain.slice(0, -4) + ".com" : null);
+  return fix ? `${email.slice(0, at)}@${fix}` : null;
+}
+
+/**
+ * E-kitap/sepet: iyzico ödeme formu AÇILAMADIYSA (initialize hata verdi) pre-create ile yazılmış
+ * "bekleyen" satırları hemen "başarısız"a çevirir ve iyzico'nun hata mesajını kaydeder.
+ * Eskiden bu satırlar sonsuza dek BEKLEYEN kalıyordu; müşteri her denemede yeni bir bekleyen satır üretiyordu
+ * ve admin panelinde gerçek hatanın ne olduğu görünmüyordu.
+ */
+export async function markEbookCheckoutFailed(conversationId: string, errorMsg: string): Promise<void> {
+  const base = (process.env.INTERNAL_API_BASE_URL ?? "http://sphere-english_sphere-english-app:3000").replace(/\/$/, "");
+  try {
+    const payload = { iyzicoConversationId: conversationId, iyzicoPaymentId: "", paymentError: `Ödeme formu açılamadı: ${errorMsg}`.slice(0, 500) };
+    const r = await fetch(`${base}/api/internal/ebook-purchase/mark-failed`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Internal-Signature": signInternalPayload(payload) },
+      body: JSON.stringify(payload),
+    });
+    if (!r.ok) console.error("[iyzico] mark-failed HTTP", r.status);
+  } catch (e: any) {
+    console.error("[iyzico] mark-failed hata:", e?.message);
+  }
+}
+
+/**
  * Abonelik formu sonrası, Iyzico'ya request atmadan ÖNCE çağrılır.
  * api-server'a fatura bilgilerini draft olarak yazar. Callback'te activate
  * aynı conversationId ile bu draft'tan fatura bilgilerini okur.

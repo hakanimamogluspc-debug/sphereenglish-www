@@ -6,6 +6,8 @@ import {
   newConversationId,
   paymentBaseUrl,
   signInternalPayload,
+  markEbookCheckoutFailed,
+  emailTypoSuggestion,
 } from "@/lib/iyzico";
 import { captureMetaIdentity } from "@/lib/analytics/meta-capi";
 
@@ -104,6 +106,9 @@ export async function POST(req: NextRequest) {
 
   // ── Server-side validasyon ──
   if (!slug) return NextResponse.json({ error: "slug gerekli" }, { status: 400 });
+  const emailFix = emailTypoSuggestion(email);
+  if (emailFix)
+    return NextResponse.json({ error: `E-posta adresinde yazım hatası var gibi görünüyor: "${emailFix}" mi demek istediniz? Kitabınız bu adrese gönderileceği için lütfen düzeltin.` }, { status: 400 });
   if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
     return NextResponse.json({ error: "Geçerli e-posta gerekli" }, { status: 400 });
   if (!fullName || fullName.length < 2)
@@ -283,7 +288,11 @@ export async function POST(req: NextRequest) {
     );
 
     if (result?.status !== "success") {
-      console.error("[payment/ebook/initialize] Iyzico başarısız:", result);
+      console.error("[payment/ebook/initialize] Iyzico başarısız:", JSON.stringify({
+        errorCode: result?.errorCode, errorMessage: result?.errorMessage, errorGroup: result?.errorGroup,
+        email, conversationId,
+      }));
+      await markEbookCheckoutFailed(conversationId, `${result?.errorCode ?? ""} ${result?.errorMessage ?? "bilinmeyen"}`.trim());
       return NextResponse.json(
         {
           error: result?.errorMessage || "Ödeme formu oluşturulamadı",
@@ -301,6 +310,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (e: any) {
     console.error("[payment/ebook/initialize] HATA:", e?.message ?? e);
+    await markEbookCheckoutFailed(conversationId, e?.message ?? "bağlantı hatası");
     return NextResponse.json(
       { error: "Ödeme başlatılamadı: " + (e?.message ?? "Bilinmeyen hata") },
       { status: 500 },
