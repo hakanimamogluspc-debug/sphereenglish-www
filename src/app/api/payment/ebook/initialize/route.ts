@@ -8,6 +8,8 @@ import {
   signInternalPayload,
   markEbookCheckoutFailed,
   emailTypoSuggestion,
+  isIyzicoValidEmail,
+  friendlyIyzicoError,
 } from "@/lib/iyzico";
 import { captureMetaIdentity } from "@/lib/analytics/meta-capi";
 
@@ -106,6 +108,8 @@ export async function POST(req: NextRequest) {
 
   // ── Server-side validasyon ──
   if (!slug) return NextResponse.json({ error: "slug gerekli" }, { status: 400 });
+  if (!isIyzicoValidEmail(email))
+    return NextResponse.json({ error: "E-posta adresiniz geçersiz görünüyor. Türkçe karakter (ı, ş, ğ, ü, ö, ç) ve boşluk kullanmadan, ör. ad@gmail.com biçiminde girin." }, { status: 400 });
   const emailFix = emailTypoSuggestion(email);
   if (emailFix)
     return NextResponse.json({ error: `E-posta adresinde yazım hatası var gibi görünüyor: "${emailFix}" mi demek istediniz? Kitabınız bu adrese gönderileceği için lütfen düzeltin.` }, { status: 400 });
@@ -295,7 +299,7 @@ export async function POST(req: NextRequest) {
       await markEbookCheckoutFailed(conversationId, `${result?.errorCode ?? ""} ${result?.errorMessage ?? "bilinmeyen"}`.trim());
       return NextResponse.json(
         {
-          error: result?.errorMessage || "Ödeme formu oluşturulamadı",
+          error: friendlyIyzicoError(result),
           errorCode: result?.errorCode,
         },
         { status: 502 },

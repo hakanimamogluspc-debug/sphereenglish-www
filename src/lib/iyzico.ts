@@ -87,6 +87,24 @@ const DOMAIN_FIXES: Record<string, string> = {
   "outlook.con": "outlook.com", "outlok.com": "outlook.com", "yahoo.con": "yahoo.com", "yaho.com": "yahoo.com",
   "icloud.con": "icloud.com", "yandex.con": "yandex.com",
 };
+/**
+ * iyzico'nun kabul ettiği e-posta biçimi: yalnızca İngilizce harf/rakam, geçerli uzantı.
+ * Türkçe karakter (ı, ş, ğ…), boşluk, ".." ya da geçersiz uzantı iyzico'da
+ * "email hatalı format ile gönderilmiştir" (kod 5) hatası verir ve ödeme formu hiç açılmaz.
+ */
+export function isIyzicoValidEmail(email: string): boolean {
+  return /^[a-z0-9._%+-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/.test(email) && !email.includes("..");
+}
+
+/** iyzico'nun teknik hata mesajını müşteriye anlaşılır hale getirir */
+export function friendlyIyzicoError(result: any): string {
+  const msg = String(result?.errorMessage ?? "");
+  if (/email/i.test(msg)) return "E-posta adresiniz geçersiz görünüyor. Lütfen kontrol edip tekrar deneyin (ör. ad@gmail.com).";
+  if (/gsm|telefon/i.test(msg)) return "Telefon numaranız geçersiz görünüyor. Lütfen 05xx xxx xx xx biçiminde girin.";
+  if (/identity|kimlik/i.test(msg)) return "TC kimlik numaranız geçersiz görünüyor. Lütfen kontrol edin.";
+  return msg || "Ödeme formu oluşturulamadı";
+}
+
 export function emailTypoSuggestion(email: string): string | null {
   const at = email.lastIndexOf("@");
   if (at < 1) return null;
