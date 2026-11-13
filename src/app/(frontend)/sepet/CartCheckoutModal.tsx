@@ -237,10 +237,9 @@ export default function CartCheckoutModal({
         currency: 'TRY',
       });
 
-      // Mobilde tam sayfa Iyzico hosted checkout (responsive garanti).
-      // Desktop'ta inline modal (mevcut deneyim korunur).
-      const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-      if (isMobile && data.paymentPageUrl) {
+      // Her cihazda iyzico'nun kendi ödeme sayfası (gömülü formda 3D Secure yarıda kalıyordu).
+      // Gömülü form yalnızca link gelmezse yedek.
+      if (data.paymentPageUrl) {
         window.location.href = data.paymentPageUrl;
         return;
       }

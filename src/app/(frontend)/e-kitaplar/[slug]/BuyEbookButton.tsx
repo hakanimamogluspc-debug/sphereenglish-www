@@ -245,11 +245,11 @@ export default function BuyEbookButton({ slug, title, subtitle, coverImageUrl, p
         currency: 'TRY',
       });
 
-      // Mobilde tam sayfa Iyzico hosted checkout (responsive garanti).
-      // Desktop'ta inline modal.
+      // Her cihazda iyzico'nun kendi ödeme sayfasına git. Sayfa içine gömülü formda 3D Secure adımı
+      // ("3DS başlatıldı") yarıda kalıp ödeme tamamlanmıyordu; banka doğrulaması iyzico sayfasında daha sağlam.
+      // Gömülü form yalnızca link gelmezse yedek olarak kullanılır.
       const paymentPageUrl = (data as any).paymentPageUrl as string | undefined;
-      const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-      if (isMobile && paymentPageUrl) {
+      if (paymentPageUrl) {
         window.location.href = paymentPageUrl;
         return;
       }

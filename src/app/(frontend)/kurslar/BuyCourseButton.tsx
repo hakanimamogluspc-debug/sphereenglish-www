@@ -129,8 +129,8 @@ export default function BuyCourseButton({
       if (!r.ok) throw new Error(data?.error || "Ödeme başlatılamadı");
 
       const paymentPageUrl = (data as any)?.paymentPageUrl as string | undefined;
-      const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-      if (isMobile && paymentPageUrl) {
+      // Her cihazda iyzico'nun kendi ödeme sayfası (gömülü formda 3D Secure yarıda kalıyordu)
+      if (paymentPageUrl) {
         window.location.href = paymentPageUrl;
         return;
       }
