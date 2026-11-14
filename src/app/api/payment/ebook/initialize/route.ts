@@ -11,6 +11,7 @@ import {
   isIyzicoValidEmail,
   friendlyIyzicoError,
 } from "@/lib/iyzico";
+import { fetchQuote, quoteCampaignId } from "@/lib/campaign-quote";
 import { captureMetaIdentity } from "@/lib/analytics/meta-capi";
 
 /**
@@ -144,36 +145,19 @@ export async function POST(req: NextRequest) {
   const price = parseFloat(ebook.price_try);
   if (!(price > 0)) return NextResponse.json({ error: "Kitap fiyatı geçersiz" }, { status: 500 });
 
-  // Kupon / Affiliate validate
-  let finalAmount = price;
-  let appliedCouponCode: string | null = null;
-  let appliedAffiliateCode: string | null = cookieRef;
-  let couponDiscountKurus = 0;
-
-  if (couponCodeRaw) {
-    try {
-      const r = await fetch(`${process.env.INTERNAL_API_BASE_URL ?? "http://api-server:3000"}/api/coupons/validate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: couponCodeRaw, scope: "ebook", amountKurus: Math.round(price * 100) }),
-      });
-      const data: any = await r.json().catch(() => ({}));
-      if (data?.ok) {
-        if (data.type === "coupon") {
-          finalAmount = (data.finalAmountKurus ?? Math.round(price * 100)) / 100;
-          couponDiscountKurus = Number(data.discountKurus ?? 0);
-          appliedCouponCode = data.code;
-        } else if (data.type === "affiliate") {
-          appliedAffiliateCode = data.affiliateCode;
-        }
-      } else if (data?.error) {
-        return NextResponse.json({ error: `Kupon: ${data.error}` }, { status: 400 });
-      }
-    } catch (e: any) {
-      console.error("[ebook/initialize] coupon validate err:", e?.message);
-      return NextResponse.json({ error: "Kupon doğrulanamadı" }, { status: 502 });
-    }
+  // Fiyat: kampanya motorundan teklif (süreli indirim + kupon). Tek kitapta sepet kampanyası
+  // genelde devreye girmez ama eşik/indirim kampanyaları burada da aynı kurallarla uygulanır.
+  const quote = await fetchQuote([{ type: "ebook", slug }], couponCodeRaw || null);
+  if ("error" in quote) return NextResponse.json({ error: quote.error }, { status: quote.status });
+  if (couponCodeRaw && quote.couponError && !quote.cartCampaign) {
+    return NextResponse.json({ error: `Kupon: ${quote.couponError}` }, { status: 400 });
   }
+  const finalAmount = quote.finalKurus / 100;
+  const appliedCouponCode: string | null = quote.coupon?.code ?? null;
+  const appliedAffiliateCode: string | null = quote.affiliateCode ?? cookieRef;
+  const couponDiscountKurus = quote.coupon?.discountKurus ?? 0;
+  const campaignId = quoteCampaignId(quote);
+  const campaignDiscountKurus = Math.max(0, quote.listKurus - quote.finalKurus - couponDiscountKurus);
 
   // ── Conversation ID + buyer parse ──
   // ÖNEMLİ: conversationId ve basketId AYNI string. Iyzico response'da conversationId
@@ -211,6 +195,8 @@ export async function POST(req: NextRequest) {
     billingPostalCode: billingPostalCode || null,
     couponCode: appliedCouponCode,
     couponDiscountKurus,
+    campaignId,
+    campaignDiscountKurus,
     affiliateCode: appliedAffiliateCode,
     originalPriceKurus: Math.round(price * 100),
     // Meta kimlik — attribution için kritik (callback'te CAPI userData'ya yazılır)

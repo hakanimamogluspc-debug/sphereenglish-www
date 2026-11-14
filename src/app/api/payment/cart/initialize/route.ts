@@ -11,6 +11,7 @@ import {
   friendlyIyzicoError,
 } from '@/lib/iyzico';
 import { captureMetaIdentity } from '@/lib/analytics/meta-capi';
+import { fetchQuote } from '@/lib/campaign-quote';
 
 /**
  * Sepet (multi-item) Iyzico Checkout Form Initialize.
@@ -68,42 +69,6 @@ type ResolvedBasketItem = {
   itemType: 'VIRTUAL';
   price: string; // 2 desimal string
 };
-
-async function fetchEbookForBasket(slug: string): Promise<{ id: number; title: string; priceTry: number } | null> {
-  try {
-    const r = await fetch(`${API_BASE.replace(/\/$/, '')}/api/ebooks/${slug}`, { cache: 'no-store' });
-    if (!r.ok) return null;
-    const d = await r.json();
-    if (!d?.ebook) return null;
-    return {
-      id: Number(d.ebook.id),
-      title: String(d.ebook.title),
-      priceTry: parseFloat(d.ebook.price_try),
-    };
-  } catch {
-    return null;
-  }
-}
-
-async function fetchBundleForBasket(slug: string): Promise<{ id: number; title: string; priceTry: number; items: Array<{ id: number; title: string }> } | null> {
-  try {
-    const r = await fetch(`${API_BASE.replace(/\/$/, '')}/api/bundles/${slug}`, { cache: 'no-store' });
-    if (!r.ok) return null;
-    const d = await r.json();
-    if (!d?.bundle) return null;
-    return {
-      id: Number(d.bundle.id),
-      title: String(d.bundle.title),
-      priceTry: parseFloat(d.bundle.price_try),
-      items: (d.bundle.items ?? []).map((it: any) => ({
-        id: Number(it.id),
-        title: String(it.title),
-      })),
-    };
-  } catch {
-    return null;
-  }
-}
 
 export async function POST(req: NextRequest) {
   let body: any;
@@ -183,106 +148,26 @@ export async function POST(req: NextRequest) {
   if (!billingCity) return NextResponse.json({ error: 'İl gerekli' }, { status: 400 });
   if (!billingDistrict) return NextResponse.json({ error: 'İlçe gerekli' }, { status: 400 });
 
-  // ── Item'ları resolve et (fiyat + Iyzico basketItems) ──
-  const basketItems: ResolvedBasketItem[] = [];
-  let subtotalTry = 0;
-
-  for (const it of items) {
-    if (it.type === 'ebook') {
-      const eb = await fetchEbookForBasket(it.slug);
-      if (!eb) return NextResponse.json({ error: `Kitap bulunamadı: ${it.slug}` }, { status: 404 });
-      basketItems.push({
-        id: `ebook_${eb.id}`,
-        name: eb.title.slice(0, 100),
-        category1: 'Dijital Kitap',
-        itemType: 'VIRTUAL',
-        price: eb.priceTry.toFixed(2),
-      });
-      subtotalTry += eb.priceTry;
-    } else {
-      const bundle = await fetchBundleForBasket(it.slug);
-      if (!bundle) return NextResponse.json({ error: `Paket bulunamadı: ${it.slug}` }, { status: 404 });
-      if (bundle.items.length === 0)
-        return NextResponse.json({ error: `Paket boş: ${it.slug}` }, { status: 400 });
-
-      // Bundle'ı içindeki ebook'lara açalım — Iyzico'da fiyat toplamı = bundle.priceTry olmalı
-      const perItem = Math.floor((bundle.priceTry * 100) / bundle.items.length) / 100;
-      const remainder = bundle.priceTry - perItem * bundle.items.length;
-      bundle.items.forEach((eb, idx) => {
-        const price = idx === bundle.items.length - 1 ? perItem + remainder : perItem;
-        basketItems.push({
-          id: `bundle${bundle.id}_ebook${eb.id}`,
-          name: `${bundle.title.slice(0, 40)} — ${eb.title.slice(0, 60)}`,
-          category1: 'Dijital Kitap Paketi',
-          itemType: 'VIRTUAL',
-          price: price.toFixed(2),
-        });
-      });
-      subtotalTry += bundle.priceTry;
-    }
+  // ── Fiyat: kampanya motorundan teklif (süreli indirim + sepet kampanyası | kupon, hangisi iyiyse) ──
+  const quote = await fetchQuote(items, couponCodeRaw || null);
+  if ('error' in quote) return NextResponse.json({ error: quote.error }, { status: quote.status });
+  // Kupon girildi ama geçersizse müşteriye söyle (kampanya yine de geçerli kalır, ödeme durdurulmaz)
+  if (couponCodeRaw && quote.couponError && !quote.cartCampaign) {
+    return NextResponse.json({ error: `Kupon: ${quote.couponError}` }, { status: 400 });
   }
+  const appliedCouponCode: string | null = quote.coupon?.code ?? null;
+  const appliedAffiliateCode: string | null = quote.affiliateCode ?? cookieRef;
+  const couponDiscountKurus = quote.coupon?.discountKurus ?? 0;
+  const finalAmountTry = quote.finalKurus / 100;
 
-  // ── Kupon validate ──
-  let finalAmountTry = subtotalTry;
-  let appliedCouponCode: string | null = null;
-  let appliedAffiliateCode: string | null = cookieRef;
-  let couponDiscountKurus = 0;
-
-  if (couponCodeRaw) {
-    try {
-      const r = await fetch(
-        `${API_BASE.replace(/\/$/, '')}/api/coupons/validate`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            code: couponCodeRaw,
-            scope: 'ebook',
-            amountKurus: Math.round(subtotalTry * 100),
-          }),
-        },
-      );
-      const data: any = await r.json().catch(() => ({}));
-      if (data?.ok) {
-        if (data.type === 'coupon') {
-          finalAmountTry = (data.finalAmountKurus ?? Math.round(subtotalTry * 100)) / 100;
-          couponDiscountKurus = Number(data.discountKurus ?? 0);
-          appliedCouponCode = data.code;
-        } else if (data.type === 'affiliate') {
-          appliedAffiliateCode = data.affiliateCode;
-        }
-      } else if (data?.error) {
-        return NextResponse.json({ error: `Kupon: ${data.error}` }, { status: 400 });
-      }
-    } catch (e: any) {
-      console.error('[cart/initialize] coupon validate err:', e?.message);
-      return NextResponse.json({ error: 'Kupon doğrulanamadı' }, { status: 502 });
-    }
-  }
-
-  // İndirim varsa basketItems'ı proratize et — Iyzico toplamının price === paidPrice olması gerek
-  if (couponDiscountKurus > 0) {
-    const finalKurus = Math.round(finalAmountTry * 100);
-    const subtotalKurus = Math.round(subtotalTry * 100);
-    if (finalKurus <= 0) {
-      return NextResponse.json({ error: '%100 indirim desteklenmiyor' }, { status: 400 });
-    }
-    // Her basketItem'ın fiyatını finalKurus/subtotalKurus oranıyla küçült
-    const ratio = finalKurus / subtotalKurus;
-    let accumulated = 0;
-    basketItems.forEach((it, idx) => {
-      const originalKurus = Math.round(parseFloat(it.price) * 100);
-      let newKurus: number;
-      if (idx === basketItems.length - 1) {
-        // Son item — kalanı ver (rounding artığı burada eğitilir)
-        newKurus = finalKurus - accumulated;
-      } else {
-        newKurus = Math.floor(originalKurus * ratio);
-        accumulated += newKurus;
-      }
-      it.price = (newKurus / 100).toFixed(2);
-    });
-  }
+  // iyzico kalemleri: her satırın indirimli tutarı (toplamı = paidPrice)
+  const basketItems: ResolvedBasketItem[] = quote.lines.map((l) => ({
+    id: `${l.type}_${l.id}`,
+    name: l.title.slice(0, 100),
+    category1: l.type === 'bundle' ? 'Dijital Kitap Paketi' : 'Dijital Kitap',
+    itemType: 'VIRTUAL',
+    price: (l.finalKurus / 100).toFixed(2),
+  }));
 
   // ── Conversation ID ──
   const conversationId = `CART-${Date.now()}-${Math.floor(Math.random() * 100000)}`;
@@ -312,6 +197,7 @@ export async function POST(req: NextRequest) {
     billingPostalCode: billingPostalCode || null,
     couponCode: appliedCouponCode,
     couponDiscountKurus,
+    expectedFinalKurus: quote.finalKurus,
     affiliateCode: appliedAffiliateCode,
     iyzicoConversationId: conversationId,
     // Meta kimlik — attribution için kritik

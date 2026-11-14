@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { ShoppingBag, Trash2, Package, ArrowLeft, Tag, Loader2, Check, AlertCircle } from 'lucide-react';
@@ -21,6 +21,32 @@ export default function SepetPage() {
   const [couponError, setCouponError] = useState<string | null>(null);
   const [couponMessage, setCouponMessage] = useState<string | null>(null);
 
+  // Fiyat önizleme: kampanya motoru (süreli indirim + sepet kampanyası | kupon, hangisi iyiyse)
+  type Quote = {
+    listKurus: number; saleKurus: number; finalKurus: number;
+    cartCampaign: { id: number; name: string; discountKurus: number } | null;
+    coupon: { code: string; discountKurus: number } | null;
+    applied: 'campaign' | 'coupon' | null; couponNote: string | null; couponError: string | null;
+    affiliateCode: string | null;
+  };
+  const [quote, setQuote] = useState<Quote | null>(null);
+  const [quoteCode, setQuoteCode] = useState<string | null>(null); // teklif hesabına giren kod
+
+  const itemsKey = items.map((i) => `${i.type}:${i.slug}`).join(',');
+  async function loadQuote(code: string | null) {
+    if (items.length === 0) { setQuote(null); return null; }
+    const r = await fetch('/api/cart/quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: items.map((i) => ({ type: i.type, slug: i.slug })), couponCode: code }),
+    });
+    const d = await r.json().catch(() => null);
+    if (!r.ok || !d) return null;
+    setQuote(d);
+    return d as Quote;
+  }
+  useEffect(() => { loadQuote(quoteCode).catch(() => {}); }, [itemsKey, quoteCode]); // eslint-disable-line react-hooks/exhaustive-deps
+
   async function applyCoupon() {
     const code = couponCode.trim().toUpperCase();
     if (!code) return;
@@ -28,25 +54,21 @@ export default function SepetPage() {
     setCouponError(null);
     setCouponMessage(null);
     try {
-      const amountKurus = Math.round(subtotal * 100);
-      // Not: Sepette birden fazla ürün var, ama validate endpoint tek scope alıyor.
-      // Şimdilik "ebook" scope ile validate ediyoruz. Faz 5'te sepet-scope endpoint eklenebilir.
-      const r = await fetch('/api/coupons/validate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, scope: 'ebook', amountKurus }),
-      });
-      const data = await r.json();
-      if (!data?.ok) {
-        setCouponError(data?.error || 'Geçersiz kod');
-        return;
+      const q = await loadQuote(code);
+      if (!q) { setCouponError('Kod şu an doğrulanamadı'); return; }
+      if (q.couponError) { setCouponError(q.couponError); return; }
+      setQuoteCode(code);
+      if (q.coupon) {
+        setAppliedCoupon({ code: q.coupon.code, discountKurus: q.coupon.discountKurus, type: 'coupon' });
+        setCouponMessage('Kupon uygulandı');
+      } else if (q.affiliateCode) {
+        setAppliedCoupon({ code, discountKurus: 0, type: 'affiliate' });
+        setCouponMessage('Partner kodu kaydedildi');
+      } else {
+        // Kupon geçerli ama sepet kampanyası daha avantajlı
+        setAppliedCoupon({ code, discountKurus: 0, type: 'coupon' });
+        setCouponMessage(q.couponNote ?? 'Kampanya daha avantajlı olduğu için kampanya uygulandı');
       }
-      setAppliedCoupon({
-        code: data.code || code,
-        discountKurus: Number(data.discountKurus ?? 0),
-        type: data.type,
-      });
-      setCouponMessage(data.message || 'Kupon uygulandı');
     } catch (e: any) {
       setCouponError(e?.message || 'Doğrulama hatası');
     } finally {
@@ -59,10 +81,13 @@ export default function SepetPage() {
     setCouponCode('');
     setCouponError(null);
     setCouponMessage(null);
+    setQuoteCode(null);
   }
 
-  const discount = appliedCoupon ? Number(appliedCoupon.discountKurus) / 100 : 0;
-  const finalTotal = Math.max(0, subtotal - discount);
+  // Teklif gelene kadar sepet fiyatıyla göster
+  const timedSavings = quote ? (quote.listKurus - quote.saleKurus) / 100 : 0;
+  const discount = quote ? (quote.saleKurus - quote.finalKurus) / 100 : (appliedCoupon ? Number(appliedCoupon.discountKurus) / 100 : 0);
+  const finalTotal = quote ? quote.finalKurus / 100 : Math.max(0, subtotal - discount);
 
   return (
     <main className="bg-white min-h-screen">
@@ -261,13 +286,28 @@ export default function SepetPage() {
                       <span className="text-emerald-600 font-semibold">-{formatTRY(savings)}</span>
                     </div>
                   )}
-                  {appliedCoupon && discount > 0 && (
+                  {timedSavings > 0 && (
+                    <div className="flex items-center justify-between text-[13px]">
+                      <span className="text-emerald-600 font-semibold">Kampanyalı fiyat indirimi</span>
+                      <span className="text-emerald-600 font-bold">-{formatTRY(timedSavings)}</span>
+                    </div>
+                  )}
+                  {quote?.applied === 'campaign' && quote.cartCampaign && discount > 0 && (
+                    <div className="flex items-center justify-between text-[13px]">
+                      <span className="text-emerald-600 font-semibold">{quote.cartCampaign.name}</span>
+                      <span className="text-emerald-600 font-bold">-{formatTRY(discount)}</span>
+                    </div>
+                  )}
+                  {(quote ? quote.applied === 'coupon' : !!appliedCoupon) && discount > 0 && (
                     <div className="flex items-center justify-between text-[13px]">
                       <span className="text-emerald-600 font-semibold">
-                        Kupon indirimi ({appliedCoupon.code})
+                        Kupon indirimi ({quote?.coupon?.code ?? appliedCoupon?.code})
                       </span>
                       <span className="text-emerald-600 font-bold">-{formatTRY(discount)}</span>
                     </div>
+                  )}
+                  {quote?.couponNote && (
+                    <p className="text-[11px] text-gray-500 leading-snug">{quote.couponNote}</p>
                   )}
                 </div>
 
@@ -282,7 +322,7 @@ export default function SepetPage() {
                 <CheckoutButton
                   items={items}
                   finalTotal={finalTotal}
-                  appliedCouponCode={appliedCoupon?.code ?? null}
+                  appliedCouponCode={quoteCode}
                 />
 
                 <div className="pt-2 space-y-1.5 text-[11px] text-gray-500 leading-relaxed">

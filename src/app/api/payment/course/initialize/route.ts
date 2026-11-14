@@ -7,6 +7,7 @@ import {
   signInternalPayload,
 } from '@/lib/iyzico';
 import { fetchCourseBySlug } from '@/lib/api/courses';
+import { fetchQuote, quoteCampaignId } from '@/lib/campaign-quote';
 
 /**
  * Kurs ödemesi Iyzico Checkout Form Initialize.
@@ -124,7 +125,11 @@ export async function POST(req: NextRequest) {
   // ── IDs ──
   const orderToken = newOrderToken();
   const conversationId = `CO-${orderToken}`;
-  const amountTry = programme.price_kurus / 100;
+  // Fiyat: kampanya motorundan (süreli kurs indirimi / eşik kampanyası). Motor erişilemezse liste fiyatı.
+  const quote = await fetchQuote([{ type: 'course', slug: programme.slug }]);
+  const amountKurus = 'error' in quote ? programme.price_kurus : quote.finalKurus;
+  const campaignId = 'error' in quote ? null : quoteCampaignId(quote);
+  const amountTry = amountKurus / 100;
   const { firstName, lastName } = splitName(buyerName);
 
   // ── Iyzico callback ──
@@ -211,7 +216,9 @@ export async function POST(req: NextRequest) {
       billingPostalCode: billingPostalCode || null,
       iyzicoConversationId: conversationId,
       iyzicoToken: result.token,
-      amountKurus: programme.price_kurus,
+      amountKurus,
+      campaignId,
+      listAmountKurus: programme.price_kurus,
     });
 
     if (!pre.ok) {
