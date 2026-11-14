@@ -347,6 +347,19 @@ export default function RootLayout({
                 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
                 if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[]}(window);
                 fbq('consent', 'revoke');
+                // Daha önce pazarlama çerezlerine izin verilmişse: izni hemen uygula ve SDK'yı
+                // React'i beklemeden şimdi indir (eskiden 3,5 sn / ilk etkileşim bekleniyordu).
+                // Kontrol lib/cookieConsent.ts getConsent() ile aynı: sürüm 1, 365 gün, marketing=true.
+                try {
+                  var c = JSON.parse(localStorage.getItem('sphere_cookie_consent_v1') || 'null');
+                  if (c && c.version === 1 && c.marketing === true && (Date.now() - c.timestamp) < 365 * 864e5) {
+                    fbq('consent', 'grant');
+                    window.__spherePixelSdk = true;
+                    var s = document.createElement('script');
+                    s.async = true; s.src = 'https://connect.facebook.net/en_US/fbevents.js';
+                    document.head.appendChild(s);
+                  }
+                } catch (e) {}
                 fbq('init', '${process.env.NEXT_PUBLIC_META_PIXEL_ID}');
                 fbq('track', 'PageView');
               `,

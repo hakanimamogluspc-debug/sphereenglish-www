@@ -11,7 +11,7 @@ import { stripMarkdown } from '@/lib/markdown-lite';
 
 // Açıklamalardaki fiyatlar admin'deki güncel fiyattan gelir (bkz. lib/ebook-prices)
 export async function generateMetadata(): Promise<Metadata> {
-  const p = await getEbookPrices();
+  const p = await getEbookPrices(120);
   const priceText = p.single !== null
     ? ` Tek kitap ${fmtTry(p.single)}${p.set !== null ? `, ${p.setCount ?? 5} kitaplık set ${fmtTry(p.set)}` : ''}.`
     : '';
@@ -38,9 +38,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// Admin değişikliği anında yansısın
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Katalog verisi 120 sn önbellekte tutulur: admin'deki fiyat/kitap değişikliği en geç 2 dk'da yansır.
+// Eskiden force-dynamic + no-store ile her ziyarette 5+ API isteği yapılıyordu (reklam trafiğinde yavaş açılış).
+// Not: sayfa ?kategori= parametresini okuduğu için HTML yine istek başına üretilir; kazanç API önbelleğinden gelir.
+export const revalidate = 120;
+const DATA_TTL = 120;
 
 const API_BASE = (process.env.INTERNAL_API_BASE_URL ?? 'http://sphere-english_sphere-english-app:3000').replace(/\/$/, '');
 const SITE = 'https://www.sphereenglish.com';
@@ -68,7 +70,7 @@ interface Guide { id: number; roleLabel: string; description: string; ctaText: s
 
 async function getJson<T>(path: string, key: string, fallback: T): Promise<T> {
   try {
-    const r = await fetch(`${API_BASE}${path}`, { cache: 'no-store' });
+    const r = await fetch(`${API_BASE}${path}`, { next: { revalidate: DATA_TTL } });
     if (!r.ok) return fallback;
     const data = await r.json();
     return (data?.[key] ?? fallback) as T;

@@ -131,6 +131,7 @@ function hashLower(v?: string): string | undefined {
  */
 export async function sendCapiEvent(input: CapiEventInput): Promise<{ ok: boolean; error?: string; response?: any }> {
   if (!ACCESS_TOKEN) {
+    console.warn(`[capi] GÖNDERİLMEDİ: ${input.eventName} — META_CAPI_ACCESS_TOKEN tanımlı değil`);
     return { ok: false, error: 'META_CAPI_ACCESS_TOKEN missing' };
   }
 
@@ -200,7 +201,10 @@ export async function sendCapiEvent(input: CapiEventInput): Promise<{ ok: boolea
       console.warn('[capi] Meta CAPI hata:', res.status, data?.error?.message || data);
       return { ok: false, error: data?.error?.message || `HTTP ${res.status}`, response: data };
     }
-    // Başarılı — events_received: 1 döner
+    // Başarılı — events_received: 1 döner. Kişisel veri yazmadan iz bırak (log'dan doğrulama için)
+    console.info(
+      `[capi] gönderildi: ${input.eventName} event_id=${input.eventId ?? '-'} events_received=${data?.events_received ?? '?'} fbtrace_id=${data?.fbtrace_id ?? '-'}${TEST_EVENT_CODE ? ' (test modu)' : ''}`,
+    );
     return { ok: true, response: data };
   } catch (e: any) {
     console.warn('[capi] CAPI network hata:', e?.message);
