@@ -8,6 +8,7 @@ import PreviewLinkButton from '@/components/PreviewLinkButton';
 import WaitlistForm, { type InterestOption } from './WaitlistForm';
 import { getEbookPrices, fmtTry } from '@/lib/ebook-prices';
 import { stripMarkdown } from '@/lib/markdown-lite';
+import { getActiveCampaigns, ebookOffer } from '@/lib/campaign-display';
 
 // Açıklamalardaki fiyatlar admin'deki güncel fiyattan gelir (bkz. lib/ebook-prices)
 export async function generateMetadata(): Promise<Metadata> {
@@ -123,6 +124,7 @@ export default async function EKitaplarPage({ searchParams }: { searchParams: Pr
     getJson<Guide[]>('/api/ebook-marketing/guide', 'guide', []),
     getJson<InterestOption[]>('/api/ebook-marketing/interests', 'interests', []),
   ]);
+  const campaigns = await getActiveCampaigns();
 
   // "1000 Kelime" serisi istatistikleri yalnızca seri kitaplarından hesaplanır (sektörel/beceri hariç)
   const ebooks = allEbooks.filter((b) => groupOf(b) === null);
@@ -448,8 +450,13 @@ export default async function EKitaplarPage({ searchParams }: { searchParams: Pr
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {catalog.map((b) => {
-              const price = Number(b.price_try);
-              const list = b.list_price_try ? Number(b.list_price_try) : null;
+              // Kampanya (süreli indirim + rozet) — gösterim; ödeme tutarı sunucuda yeniden hesaplanır
+              const offer = ebookOffer(campaigns, {
+                id: b.id, category: b.category, priceTry: Number(b.price_try),
+                listTry: b.list_price_try ? Number(b.list_price_try) : null,
+              });
+              const price = offer.priceTry;
+              const list = offer.strikeTry;
               const off = list && list > price ? Math.round(((list - price) / list) * 100) : 0;
               return (
                 <article key={b.id} className="group flex flex-col rounded-2xl overflow-hidden bg-white border border-[#e6ebf2] hover:shadow-xl hover:border-[#0ea5e9]/40 transition-all duration-300">
@@ -467,6 +474,13 @@ export default async function EKitaplarPage({ searchParams }: { searchParams: Pr
                       ) : null}
                       {off > 0 && <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold text-white bg-[#0ea5e9] shadow">%{off}</span>}
                     </div>
+                    {offer.badges.length > 0 && (
+                      <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5">
+                        {offer.badges.map((t) => (
+                          <span key={t} className="px-2.5 py-1 rounded-full text-[11px] font-extrabold text-white bg-[#1e3a6e]/90 shadow">{t}</span>
+                        ))}
+                      </div>
+                    )}
                   </Link>
 
                   <div className="flex flex-col flex-1 p-5">

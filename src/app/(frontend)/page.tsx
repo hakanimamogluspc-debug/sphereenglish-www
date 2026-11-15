@@ -19,7 +19,7 @@ import type { Metadata } from 'next';
 import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import HeroSection from './home/components/HeroSection';
+import HeroSection, { type HeroBanner } from './home/components/HeroSection';
 import CoursesSection from './home/components/CoursesSection';
 import FounderQuoteSection from './home/components/FounderQuoteSection';
 import MerveFounderQuoteSection from './home/components/MerveFounderQuoteSection';
@@ -49,7 +49,21 @@ export const metadata: Metadata = {
   },
 };
 
+/** Admin → Ana Sayfa Banner'ları (60 sn önbellek). Hata olursa hero varsayılan slaytla açılır. */
+async function fetchHomeBanners(): Promise<HeroBanner[]> {
+  try {
+    const base = (process.env.INTERNAL_API_BASE_URL ?? 'http://sphere-english_sphere-english-app:3000').replace(/\/$/, '');
+    const r = await fetch(`${base}/api/home-banners`, { next: { revalidate: 60 } });
+    if (!r.ok) return [];
+    const d = await r.json();
+    return Array.isArray(d?.banners) ? d.banners : [];
+  } catch {
+    return [];
+  }
+}
+
 export default async function HomePage() {
+  const banners = await fetchHomeBanners();
   let cms: any = null;
   try {
     cms = await fetchHomePage();
@@ -61,7 +75,7 @@ export default async function HomePage() {
     <div className="min-h-screen bg-white font-sans">
       <Header />
       <main>
-        <HeroSection data={cms} />
+        <HeroSection data={cms} banners={banners} />
         {/* Yeni: Kurslar bölümü — hero'dan hemen sonra birincil ticari alan (§9) */}
         <CoursesSection />
         <NedenBizSection data={cms} />

@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import EbookGallery from './EbookGallery';
 import BuyEbookButton from './BuyEbookButton';
+import { getActiveCampaigns, ebookOffer } from '@/lib/campaign-display';
 import EbookViewTracker from '@/components/EbookViewTracker';
 import DiscountCountdown from '@/components/DiscountCountdown';
 import EbookDescription from '@/components/EbookDescription';
@@ -222,13 +223,13 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
     ],
   };
 
-  const hasDiscount =
-    ebook.list_price_try && parseFloat(ebook.list_price_try) > parseFloat(ebook.price_try);
-  const discountPct = hasDiscount
-    ? Math.round(
-        (1 - parseFloat(ebook.price_try) / parseFloat(ebook.list_price_try!)) * 100,
-      )
-    : 0;
+  // Kampanya gösterimi (süreli indirim + rozet); ödeme tutarı sunucuda yeniden hesaplanır
+  const offer = ebookOffer(await getActiveCampaigns(), {
+    id: ebook.id, category: (ebook as any).category ?? null, priceTry: parseFloat(ebook.price_try),
+    listTry: ebook.list_price_try ? parseFloat(ebook.list_price_try) : null,
+  });
+  const hasDiscount = !!offer.strikeTry && offer.strikeTry > offer.priceTry;
+  const discountPct = hasDiscount ? Math.round((1 - offer.priceTry / offer.strikeTry!) * 100) : 0;
 
   return (
     <main className="bg-white min-h-screen">
@@ -358,7 +359,7 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
                   {hasDiscount && (
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-[14px] text-gray-400 line-through">
-                        {formatTRY(ebook.list_price_try!)}
+                        {formatTRY(String(offer.strikeTry))}
                       </span>
                       <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-100 text-emerald-700">
                         %{discountPct} indirim
@@ -366,8 +367,20 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
                     </div>
                   )}
                   <div className="text-[36px] font-extrabold text-[#1B365D] leading-none">
-                    {formatTRY(ebook.price_try)}
+                    {formatTRY(String(offer.priceTry))}
                   </div>
+                  {offer.badges.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {offer.badges.map((t) => (
+                        <span key={t} className="px-2.5 py-1 rounded-full text-[11px] font-extrabold text-white bg-[#1e3a6e]">{t}</span>
+                      ))}
+                    </div>
+                  )}
+                  {offer.endsAt && (
+                    <div className="text-[11px] text-[#0e7da6] font-semibold mt-1">
+                      Kampanya {new Date(offer.endsAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', timeZone: 'Europe/Istanbul' })} tarihine kadar
+                    </div>
+                  )}
                   <div className="text-[11px] text-gray-500 mt-1">KDV dahil · Tek seferlik ödeme</div>
                 </div>
               </div>
@@ -377,8 +390,8 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
                 title={ebook.title}
                 subtitle={ebook.subtitle}
                 coverImageUrl={ebook.cover_image_url}
-                price={ebook.price_try}
-                listPriceTry={ebook.list_price_try}
+                price={String(offer.priceTry)}
+                listPriceTry={offer.strikeTry ? String(offer.strikeTry) : null}
               />
               <p className="text-center text-[11px] text-gray-500 mt-3">
                 🔒 Iyzico 3D Secure · Kart bilgileri bize ulaşmaz

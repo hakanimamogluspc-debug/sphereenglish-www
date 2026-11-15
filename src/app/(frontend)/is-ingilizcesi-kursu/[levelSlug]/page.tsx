@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BuyCourseButton from '../../kurslar/BuyCourseButton';
+import { getActiveCampaigns, courseOffer } from '@/lib/campaign-display';
 import { fetchAllCourses, fetchCourseByLevelSlug, cohortStatusMessage } from '@/lib/api/courses';
 import { GROUP_SIZE, CONTACT, OXFORD } from '@/lib/business-config';
 import {
@@ -77,7 +78,11 @@ export default async function LevelDetailPage({ params }: Props) {
   if (!c) notFound();
 
   const isWaitlist = c.cohort_status === 'waitlist';
-  const priceDisplay = c.price_display ?? `${(c.price_kurus / 100).toFixed(0)} TL`;
+  // Kampanya (süreli kurs indirimi) varsa indirimli fiyat + üstü çizili liste fiyatı
+  const offer = courseOffer(await getActiveCampaigns(), { slug: c.slug, priceTry: c.price_kurus / 100 });
+  const fmtTl = (n: number) => new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 0 }).format(n) + ' TL';
+  const hasCampaignPrice = offer.priceTry < c.price_kurus / 100;
+  const priceDisplay = hasCampaignPrice ? fmtTl(offer.priceTry) : (c.price_display ?? `${(c.price_kurus / 100).toFixed(0)} TL`);
 
   // JSON-LD
   const url = `https://www.sphereenglish.com/is-ingilizcesi-kursu/${c.level_slug}`;
@@ -264,6 +269,14 @@ export default async function LevelDetailPage({ params }: Props) {
               <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-gray-400 mb-1">
                 {c.duration_weeks ?? c.weeks.length} HAFTALIK PROGRAM
               </div>
+              {hasCampaignPrice && (
+                <div className="flex items-center gap-2 mb-1">
+                  <s className="text-[14px] text-gray-400">{fmtTl(c.price_kurus / 100)}</s>
+                  {offer.badges.map((t) => (
+                    <span key={t} className="px-2 py-0.5 rounded-full text-[11px] font-extrabold text-white bg-[#1e3a6e]">{t}</span>
+                  ))}
+                </div>
+              )}
               <div className="text-[36px] font-extrabold text-[#1B365D] leading-none mb-1">
                 {priceDisplay}
               </div>
