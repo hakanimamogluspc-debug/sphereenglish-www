@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function MerveFounderQuoteSection() {
   return (
-    <section className="py-16 sm:py-20 bg-white">
+    <section className="py-10 sm:py-14 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <div className="bg-[#1B365D] rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 p-6 sm:p-8 md:p-10 flex flex-col md:flex-row-reverse items-center gap-6 sm:gap-10">
           <div className="flex-shrink-0">

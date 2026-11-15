@@ -74,8 +74,8 @@ export default function ReferencesSection() {
   const handleMouseUp = () => { setIsDragging(false); setIsPaused(false); };
 
   return (
-    <section id="referanslar" className="py-20 bg-white overflow-hidden">
-      <div className="max-w-5xl mx-auto px-6 mb-12 text-center">
+    <section id="referanslar" className="py-12 lg:py-14 bg-white overflow-hidden">
+      <div className="max-w-5xl mx-auto px-6 mb-8 text-center">
         <span className="inline-block text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase mb-4">
           Referanslarımız
         </span>

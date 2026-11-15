@@ -86,11 +86,11 @@ export default function PaketlerSection() {
   }, []);
 
   return (
-    <section id="kurumsal-cozumler" className="py-20 lg:py-28 bg-gradient-to-br from-[#f0f4f8] to-white" ref={sectionRef}>
+    <section id="kurumsal-cozumler" className="py-12 lg:py-16 bg-gradient-to-br from-[#f0f4f8] to-white" ref={sectionRef}>
       <div className="max-w-5xl mx-auto px-6 lg:px-10">
 
         {/* Header */}
-        <div className="text-center mb-14">
+        <div className="text-center mb-8 lg:mb-10">
           <span className="inline-block text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase mb-4">
             KURUMSAL ÇÖZÜMLER
           </span>

@@ -71,7 +71,7 @@ export default function StickyCTA() {
   };
 
   return (
-    <section id="iletisim" className="py-12 lg:py-20 relative overflow-hidden" style={{ background: '#1B365D' }}>
+    <section id="iletisim" className="py-10 lg:py-14 relative overflow-hidden" style={{ background: '#1B365D' }}>
       {/* Background grid */}
       <div
         className="absolute inset-0 pointer-events-none"

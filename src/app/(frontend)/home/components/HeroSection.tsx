@@ -85,7 +85,7 @@ export default function HeroSection({ data, banners }: HeroProps = {}) {
   };
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#f0f4f8] via-white to-[#e8f0fe]" style={{ paddingTop: '72px' }}
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#f0f4f8] via-white to-[#e8f0fe]" style={{ paddingTop: '72px' }}
       aria-roledescription="carousel" aria-label="Öne çıkanlar"
       onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}
@@ -93,11 +93,11 @@ export default function HeroSection({ data, banners }: HeroProps = {}) {
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#082567]/5 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#0ea5e9]/8 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4 pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-0 min-h-[calc(100vh-72px)] items-center pt-[80px] pb-[60px] lg:py-0">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-0 lg:min-h-[min(calc(100vh-72px),780px)] items-center pt-0 pb-10 lg:py-0">
 
-        <div className="flex flex-col justify-center lg:pr-16 lg:pt-[80px] lg:pb-[60px]">
+        <div className="flex flex-col justify-center lg:pr-16 lg:py-10">
           {slide.eyebrow && (
-            <span key={`eb-${slide.id}`} className="inline-flex self-start items-center gap-2 mt-[30px] sm:mt-[60px] -mb-[10px] sm:-mb-[40px] px-3 py-1.5 rounded-full bg-[#1e3a6e] text-white text-[11px] font-extrabold tracking-[0.14em]">
+            <span key={`eb-${slide.id}`} className="inline-flex self-start items-center gap-2 mb-4 sm:mb-5 px-3 py-1.5 rounded-full bg-[#1e3a6e] text-white text-[11px] font-extrabold tracking-[0.14em]">
               {slide.eyebrow}
               {slide.campaign?.endsAt && (
                 <span className="font-semibold tracking-normal text-[#4dcfff]">
@@ -109,7 +109,7 @@ export default function HeroSection({ data, banners }: HeroProps = {}) {
           <h1
             key={`h-${slide.id}`}
             ref={headlineRef}
-            className="text-[28px] sm:text-[44px] lg:text-[60px] xl:text-[68px] font-extrabold leading-[1.18] tracking-[-0.02em] text-[#1B365D] mt-[30px] sm:mt-[60px] mb-[20px] sm:mb-[30px]"
+            className="text-[28px] sm:text-[44px] lg:text-[60px] xl:text-[68px] font-extrabold leading-[1.18] tracking-[-0.02em] text-[#1B365D] mt-0 mb-[20px] sm:mb-[26px]"
           >
             <span className="block pb-1">{slide.titleLine1}</span>
             {slide.titleLine2 && <span className="block pb-1">{slide.titleLine2}</span>}

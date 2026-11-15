@@ -16,9 +16,9 @@ export default async function CoursesSection() {
   if (visible.length === 0) return null;
 
   return (
-    <section className="py-16 lg:py-24 bg-white border-t border-gray-100">
+    <section className="py-12 lg:py-16 bg-white border-t border-gray-100">
       <div className="max-w-6xl mx-auto px-6 lg:px-10">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 lg:mb-10">
           <p className="text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase mb-3">
             İŞ İNGİLİZCESİ KURSLARI
           </p>

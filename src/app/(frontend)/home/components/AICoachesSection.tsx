@@ -119,9 +119,9 @@ export default function AICoachesSection({ data }: AICoachesProps = {}) {
   }, []);
 
   return (
-    <section id="yapay-zeka-koclar" ref={sectionRef} className="py-20 lg:py-28 bg-[#f8fafc]">
+    <section id="yapay-zeka-koclar" ref={sectionRef} className="py-12 lg:py-16 bg-[#f8fafc]">
       <div className="max-w-6xl mx-auto px-6 lg:px-10">
-        <div className="text-center mb-16" ref={headingRef}>
+        <div className="text-center mb-8 lg:mb-10" ref={headingRef}>
           <span className="inline-block text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase mb-4">
             {kicker}
           </span>
@@ -178,7 +178,7 @@ export default function AICoachesSection({ data }: AICoachesProps = {}) {
             );
           })}
         </div>
-        <div className="mt-12 text-center" ref={ctaRef}>
+        <div className="mt-8 text-center" ref={ctaRef}>
           <p className="text-[14px] text-gray-400 mb-4">
             Tüm yapay zeka koçlarımız <span className="font-semibold text-[#1B365D]">app.sphereenglish.com</span> üzerinden erişilebilir.
           </p>

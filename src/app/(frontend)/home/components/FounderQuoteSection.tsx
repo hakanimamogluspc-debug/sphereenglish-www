@@ -46,7 +46,7 @@ export default function FounderQuoteSection() {
   }, []);
 
   return (
-    <section className="py-16 sm:py-20 bg-gradient-to-br from-[#f0f4f8] to-white" ref={sectionRef}>
+    <section className="py-10 sm:py-14 bg-gradient-to-br from-[#f0f4f8] to-white" ref={sectionRef}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <div
           ref={cardRef}

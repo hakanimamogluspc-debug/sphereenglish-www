@@ -39,7 +39,7 @@ export default function AIStudioTeaser() {
 
   return (
     <section
-      className="py-24 lg:py-32 relative overflow-hidden"
+      className="py-14 lg:py-20 relative overflow-hidden"
       style={{ background: 'linear-gradient(135deg, #0f1f3d 0%, #1e3a6e 55%, #1a4a8a 100%)' }}
     >
       {/* grid overlay */}
@@ -92,13 +92,13 @@ export default function AIStudioTeaser() {
           </h2>
 
           {/* sub */}
-          <p className="text-center text-white/60 text-[16px] leading-relaxed max-w-xl mx-auto mb-12">
+          <p className="text-center text-white/60 text-[16px] leading-relaxed max-w-xl mx-auto mb-8">
             Telaffuz koçundan iş senaryolarına, mülakat & sunum simülatöründen kişisel AI öğretmene — 10 güçlü yapay
             zeka aracı tek platformda. 7/24 aktif, sınırsız pratik.
           </p>
 
           {/* tool pills */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
             {TOOLS.map((t) => (
               <span
                 key={t.label}
@@ -112,7 +112,7 @@ export default function AIStudioTeaser() {
           </div>
 
           {/* stats row */}
-          <div className="flex flex-wrap justify-center gap-10 mb-14">
+          <div className="flex flex-wrap justify-center gap-10 mb-10">
             {[
               { value: '10', label: 'Yapay Zeka Aracı' },
               { value: '7/24', label: 'Erişim' },

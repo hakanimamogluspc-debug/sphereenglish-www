@@ -37,9 +37,9 @@ export default function FAQSection({ data }: FAQProps = {}) {
   const faqs: FAQ[] = (data?.faqs && data.faqs.length > 0) ? data.faqs : DEFAULT_FAQS;
 
   return (
-    <section id="sss" className="py-20 lg:py-28 bg-[#f8fafc]">
+    <section id="sss" className="py-12 lg:py-16 bg-[#f8fafc]">
       <div className="max-w-4xl mx-auto px-6 lg:px-10">
-        <div className="text-center mb-14">
+        <div className="text-center mb-8 lg:mb-10">
           <span className="inline-block text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase mb-4">
             {kicker}
           </span>
@@ -87,7 +87,7 @@ export default function FAQSection({ data }: FAQProps = {}) {
           ))}
         </div>
 
-        <div className="text-center mt-12">
+        <div className="text-center mt-8">
           <p className="text-[14px] text-gray-400 mb-4">Başka sorularınız mı var?</p>
           <a
             href="/iletisim"
