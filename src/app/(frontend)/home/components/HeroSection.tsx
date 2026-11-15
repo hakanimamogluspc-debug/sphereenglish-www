@@ -8,7 +8,7 @@ export interface HeroBanner {
   id: number; slot: 'ebook' | 'course' | 'general';
   eyebrow: string | null; titleLine1: string; titleLine2: string | null; titleAccent: string | null; subtitle: string | null;
   cta1Text: string | null; cta1Url: string | null; cta2Text: string | null; cta2Url: string | null;
-  imageUrl: string | null; imageAlt: string | null; imageBadge: string | null;
+  imageUrl: string | null; videoUrl?: string | null; imageAlt: string | null; imageBadge: string | null;
   campaign?: { label: string; endsAt: string | null } | null;
 }
 
@@ -52,7 +52,17 @@ export default function HeroSection({ data, banners }: HeroProps = {}) {
   const slide = slides[idx % slides.length];
   const heroStatValue = data?.heroStatValue ?? '50+';
   const heroStatLabel = data?.heroStatLabel ?? 'Kurumsal müşteri';
-  const heroStatNote = data?.heroStatNote ?? "2020'den bu yana";
+
+  // Hareketi azaltma tercihi → video yerine yalnız görsel
+  const [reduceMotion, setReduceMotion] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (!mq) return;
+    setReduceMotion(mq.matches);
+    const on = () => setReduceMotion(mq.matches);
+    mq.addEventListener?.('change', on);
+    return () => mq.removeEventListener?.('change', on);
+  }, []);
 
   const go = useCallback((d: number) => setIdx((i) => (i + d + slides.length) % slides.length), [slides.length]);
 
@@ -191,42 +201,50 @@ export default function HeroSection({ data, banners }: HeroProps = {}) {
           </div>
         </div>
 
-        <div className="relative flex flex-col items-center justify-center lg:justify-end order-first lg:order-last">
-          <div className="relative w-full max-w-[480px] sm:max-w-[560px] aspect-[16/10] sm:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
-            <AppImage
-              key={`img-${slide.id}`}
-              src={slide.imageUrl || FALLBACK_IMAGE}
-              alt={slide.imageAlt || slide.titleLine1}
-              fill
-              className={slide.slot === 'ebook' ? 'object-contain object-center bg-gradient-to-br from-[#e8eef8] to-white p-4' : 'object-cover object-center'}
-              priority={idx === 0}
-            />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(8,37,103,0.15) 0%, transparent 60%)' }} />
-
-{(slide.campaign?.label ?? slide.imageBadge) && (
-            <div className="absolute top-3 left-3 sm:top-5 sm:left-5 bg-white/95 backdrop-blur-sm border border-gray-100 shadow-lg px-3 py-2 sm:px-4 sm:py-3 flex items-center gap-2 sm:gap-3 rounded-2xl">
-              <div className="w-2 h-2 rounded-full animate-pulse flex-shrink-0 bg-[#0ea5e9]" />
-              <span className="text-[11px] sm:text-[12px] font-semibold text-[#1B365D] whitespace-nowrap">{slide.campaign?.label ?? slide.imageBadge}</span>
-            </div>
-            )}
-
-            <div className="absolute bottom-3 right-3 sm:bottom-5 sm:right-5 bg-white/95 backdrop-blur-sm border border-gray-100 shadow-lg p-3 sm:p-4 rounded-2xl">
-              <p className="text-[9px] sm:text-[10px] font-bold tracking-[0.2em] text-gray-400 mb-1">BİZE GÜVENENLER</p>
-              <div className="flex items-end gap-1.5">
-                <span className="text-[24px] sm:text-[28px] font-extrabold leading-none text-[#0ea5e9]">{heroStatValue}</span>
-                <span className="text-[13px] sm:text-[14px] font-bold mb-1 text-[#0ea5e9]">{heroStatLabel}</span>
+        {/* Görsel alanı — çerçevesiz; kenarları zemine yumuşakça eriyor (mobilde alt, masaüstünde sol + alt) */}
+        <div className="relative order-first lg:order-last w-[calc(100%+2rem)] sm:w-full aspect-[4/5] max-h-[540px] sm:aspect-[4/3] sm:max-h-[600px] lg:aspect-auto lg:max-h-none lg:self-stretch -mx-4 sm:mx-0 lg:w-[calc(100%+2.5rem)] lg:-mr-10 lg:ml-0">
+          {(() => {
+            const isCover = slide.slot === 'ebook';
+            const fade = isCover
+              ? ''
+              : '[mask-image:linear-gradient(to_top,transparent_0%,#000_22%)] lg:[mask-image:linear-gradient(to_right,transparent_0%,#000_26%),linear-gradient(to_top,transparent_0%,#000_14%)] lg:[mask-composite:intersect]';
+            const showVideo = !!slide.videoUrl && !isCover && !reduceMotion;
+            return (
+              <div key={`media-${slide.id}`} className={`absolute inset-0 animate-[heroFade_.7s_ease-out] ${fade}`}>
+                <AppImage
+                  src={slide.imageUrl || FALLBACK_IMAGE}
+                  alt={slide.imageAlt || slide.titleLine1}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className={isCover ? 'object-contain object-center p-6 lg:p-12 drop-shadow-2xl' : 'object-cover object-[50%_20%]'}
+                  priority={idx === 0}
+                />
+                {showVideo && (
+                  <video
+                    className="absolute inset-0 w-full h-full object-cover object-[50%_20%]"
+                    src={slide.videoUrl!}
+                    autoPlay muted loop playsInline preload="metadata"
+                    aria-hidden="true"
+                  />
+                )}
               </div>
-              <p className="text-[9px] sm:text-[10px] text-gray-400 mt-0.5">{heroStatNote}</p>
+            );
+          })()}
+
+          {(slide.campaign?.label ?? slide.imageBadge) && (
+            <div className="absolute top-4 right-4 sm:top-6 sm:right-6 lg:top-[14%] lg:right-10 bg-white/90 backdrop-blur-md shadow-md px-3 py-1.5 flex items-center gap-2 rounded-full">
+              <span className="w-2 h-2 rounded-full animate-pulse flex-shrink-0 bg-[#13a9e0]" />
+              <span className="text-[11px] sm:text-[12px] font-semibold text-[#1e3a6e] whitespace-nowrap">{slide.campaign?.label ?? slide.imageBadge}</span>
+            </div>
+          )}
+
+          <div className="absolute bottom-3 right-4 sm:bottom-6 sm:right-6 lg:bottom-[12%] lg:right-10 bg-white/90 backdrop-blur-md shadow-md px-4 py-2.5 rounded-2xl">
+            <p className="text-[9px] sm:text-[10px] font-bold tracking-[0.2em] text-gray-500 mb-0.5">BİZE GÜVENENLER</p>
+            <div className="flex items-end gap-1.5">
+              <span className="text-[22px] sm:text-[26px] font-extrabold leading-none text-[#0e7da6]">{heroStatValue}</span>
+              <span className="text-[12px] sm:text-[13px] font-bold mb-0.5 text-[#0e7da6]">{heroStatLabel}</span>
             </div>
           </div>
-
-          <div className="w-full max-w-[480px] sm:max-w-[560px] mt-3 flex justify-center">
-            <span className="inline-block text-[11px] font-bold tracking-[0.22em] text-[#0ea5e9] uppercase">
-              BUSINESS ENGLISH FOR PROFESSIONALS
-            </span>
-          </div>
-
-          <div className="absolute -bottom-6 -left-6 w-32 h-32 -z-10 hidden lg:block bg-[#0ea5e9]/15 rounded-full blur-2xl" />
         </div>
       </div>
     </section>
