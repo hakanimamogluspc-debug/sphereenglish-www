@@ -93,13 +93,14 @@ export default function HeroSection({ data, banners }: HeroProps = {}) {
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#082567]/5 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#0ea5e9]/8 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4 pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-0 lg:min-h-[min(calc(100vh-72px),780px)] items-center pt-0 pb-10 lg:py-0">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-0 lg:h-[calc(100vh-72px)] lg:min-h-[560px] lg:max-h-[760px] items-center pt-0 pb-8 lg:py-0">
 
-        <div className="flex flex-col justify-center lg:pr-16 lg:py-10">
-          {slide.eyebrow && (
-            <span key={`eb-${slide.id}`} className="inline-flex self-start items-center gap-2 mb-4 sm:mb-5 px-3 py-1.5 rounded-full bg-[#1e3a6e] text-white text-[11px] font-extrabold tracking-[0.14em]">
+        <div className="flex flex-col justify-center lg:pr-12 lg:py-6">
+          {/* Üst etiket yalnızca kampanyada (ör. "3 AL 2 ÖDE · 30 Kasım'a kadar") */}
+          {slide.campaign && slide.eyebrow && (
+            <span key={`eb-${slide.id}`} className="inline-flex self-start items-center gap-2 mb-3 lg:mb-4 px-3 py-1.5 rounded-full bg-[#1e3a6e] text-white text-[11px] font-extrabold tracking-[0.14em]">
               {slide.eyebrow}
-              {slide.campaign?.endsAt && (
+              {slide.campaign.endsAt && (
                 <span className="font-semibold tracking-normal text-[#4dcfff]">
                   · {new Date(slide.campaign.endsAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', timeZone: 'Europe/Istanbul' })}'e kadar
                 </span>
@@ -109,26 +110,30 @@ export default function HeroSection({ data, banners }: HeroProps = {}) {
           <h1
             key={`h-${slide.id}`}
             ref={headlineRef}
-            className="text-[28px] sm:text-[44px] lg:text-[60px] xl:text-[68px] font-extrabold leading-[1.18] tracking-[-0.02em] text-[#1B365D] mt-0 mb-[20px] sm:mb-[26px]"
+            className="text-[30px] sm:text-[42px] lg:text-[46px] xl:text-[50px] font-extrabold leading-[1.12] tracking-[-0.02em] text-[#1B365D] mt-0 mb-3 lg:mb-4"
           >
-            <span className="block pb-1">{slide.titleLine1}</span>
-            {slide.titleLine2 && <span className="block pb-1">{slide.titleLine2}</span>}
-            {slide.titleAccent && <span className="block text-[#0ea5e9]">{slide.titleAccent}</span>}
+            <span className="block">{slide.titleLine1}</span>
+            {(slide.titleLine2 || slide.titleAccent) && (
+              <span className="block">
+                {slide.titleLine2}{slide.titleLine2 && slide.titleAccent ? ' ' : ''}
+                {slide.titleAccent && <span className="text-[#0ea5e9]">{slide.titleAccent}</span>}
+              </span>
+            )}
           </h1>
 
           <p
             key={`p-${slide.id}`}
             ref={subRef}
-            className="text-[14px] lg:text-[18px] text-gray-500 leading-[1.7] max-w-md mb-6 lg:mb-10"
+            className="text-[14px] lg:text-[16px] text-gray-500 leading-[1.6] max-w-[480px] mb-5"
           >
             {slide.subtitle}
           </p>
 
-          <div ref={ctaRef} className="flex flex-col gap-3 mb-4 lg:mb-6 w-full max-w-sm">
+          <div ref={ctaRef} className="flex flex-col sm:flex-row gap-3 mb-4 w-full sm:w-auto">
             {slide.cta1Text && slide.cta1Url && (
               <Link
                 href={slide.cta1Url}
-                className="bg-[#1B365D] text-white font-bold text-[13px] tracking-widest px-7 py-4 rounded-2xl flex items-center justify-center gap-2 text-center w-full hover:bg-[#0ea5e9] transition-colors duration-300 shadow-md"
+                className="bg-[#1B365D] text-white font-bold text-[12px] tracking-widest px-6 py-3.5 rounded-2xl flex items-center justify-center gap-2 text-center hover:bg-[#0ea5e9] transition-colors duration-300 shadow-md"
               >
                 <Icon name={slide.slot === 'ebook' ? 'BookOpenIcon' : 'AcademicCapIcon'} size={16} />
                 {slide.cta1Text}
@@ -137,7 +142,7 @@ export default function HeroSection({ data, banners }: HeroProps = {}) {
             {slide.cta2Text && slide.cta2Url && (
               <Link
                 href={slide.cta2Url}
-                className="bg-white border-2 border-[#1B365D] text-[#1B365D] font-bold text-[13px] tracking-widest px-7 py-4 rounded-2xl flex items-center justify-center gap-2 text-center w-full hover:border-[#0ea5e9] hover:text-[#0ea5e9] transition-colors duration-300 shadow-sm"
+                className="bg-white border-2 border-[#1B365D] text-[#1B365D] font-bold text-[12px] tracking-widest px-6 py-3 rounded-2xl flex items-center justify-center gap-2 text-center hover:border-[#0ea5e9] hover:text-[#0ea5e9] transition-colors duration-300 shadow-sm"
               >
                 <Icon name={slide.slot === 'course' ? 'PlayCircleIcon' : 'BookOpenIcon'} size={16} />
                 {slide.cta2Text}
@@ -145,59 +150,43 @@ export default function HeroSection({ data, banners }: HeroProps = {}) {
             )}
           </div>
 
-          {/* Slayt göstergeleri */}
-          {slides.length > 1 && (
-            <div className="flex items-center gap-3 mb-6 max-w-sm" role="tablist" aria-label="Slaytlar">
-              <button type="button" onClick={() => go(-1)} aria-label="Önceki" className="w-8 h-8 rounded-full border border-gray-200 text-[#1B365D] hover:border-[#0ea5e9] flex items-center justify-center">‹</button>
-              {slides.map((s2, i) => (
-                <button key={s2.id} type="button" role="tab" aria-selected={i === idx} aria-label={`${i + 1}. slayt`}
-                  onClick={() => setIdx(i)}
-                  className={`h-2 rounded-full transition-all ${i === idx ? 'w-8 bg-[#1B365D]' : 'w-2 bg-gray-300 hover:bg-gray-400'}`} />
-              ))}
-              <button type="button" onClick={() => go(1)} aria-label="Sonraki" className="w-8 h-8 rounded-full border border-gray-200 text-[#1B365D] hover:border-[#0ea5e9] flex items-center justify-center">›</button>
-            </div>
-          )}
-
-          {/* Tertiary link — kurumsal kaybolmasın (§8: → /cozumler, NOT /iletisim) */}
-          <div className="mb-6 lg:mb-10 max-w-sm">
+          {/* Slayt göstergeleri + kurumsal bağlantı (§8: → /cozumler) tek satırda */}
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-3 mb-5">
+            {slides.length > 1 && (
+              <div className="flex items-center gap-2.5" role="tablist" aria-label="Slaytlar">
+                <button type="button" onClick={() => go(-1)} aria-label="Önceki" className="w-7 h-7 rounded-full border border-gray-200 text-[#1B365D] hover:border-[#0ea5e9] flex items-center justify-center">‹</button>
+                {slides.map((s2, i) => (
+                  <button key={s2.id} type="button" role="tab" aria-selected={i === idx} aria-label={`${i + 1}. slayt`}
+                    onClick={() => setIdx(i)}
+                    className={`h-2 rounded-full transition-all ${i === idx ? 'w-7 bg-[#1B365D]' : 'w-2 bg-gray-300 hover:bg-gray-400'}`} />
+                ))}
+                <button type="button" onClick={() => go(1)} aria-label="Sonraki" className="w-7 h-7 rounded-full border border-gray-200 text-[#1B365D] hover:border-[#0ea5e9] flex items-center justify-center">›</button>
+              </div>
+            )}
             <Link
               href="/cozumler"
               className="text-[12px] text-gray-500 hover:text-[#0ea5e9] transition-colors inline-flex items-center gap-1.5"
             >
-              Şirketiniz için eğitim mi arıyorsunuz? <span className="font-semibold text-[#1B365D] hover:text-[#0ea5e9]">Kurumsal Çözümler →</span>
+              Şirketiniz için mi? <span className="font-semibold text-[#1B365D] hover:text-[#0ea5e9]">Kurumsal Çözümler →</span>
             </Link>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 lg:gap-6 pt-5 lg:pt-8 border-t border-gray-200 pb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full flex items-center justify-center bg-[#e8f0fe]">
-                <Icon name="BookOpenIcon" size={16} style={{ color: '#082567' }} />
+          <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 lg:gap-6 pt-4 border-t border-gray-200 max-w-[520px]">
+            {[
+              { icon: 'BookOpenIcon', t: 'Oxford', s: 'University Press' },
+              { icon: 'VideoCameraIcon', t: 'Zoom', s: 'Çevrimiçi Dersler' },
+              { icon: 'ChartBarIcon', t: 'A1 – C2', s: 'Tüm Seviyeler' },
+            ].map((x) => (
+              <div key={x.t} className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-[#e8f0fe]">
+                  <Icon name={x.icon} size={15} style={{ color: '#082567' }} />
+                </div>
+                <div>
+                  <p className="text-[13px] font-bold text-[#1B365D] leading-tight">{x.t}</p>
+                  <p className="text-[10px] text-gray-400 tracking-wide">{x.s}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-[14px] font-bold text-[#1B365D]">Oxford</p>
-                <p className="text-[10px] text-gray-400 tracking-wide">University Press</p>
-              </div>
-            </div>
-            <div className="hidden sm:block w-px h-10 bg-gray-200" />
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full flex items-center justify-center bg-[#e8f0fe]">
-                <Icon name="VideoCameraIcon" size={16} style={{ color: '#082567' }} />
-              </div>
-              <div>
-                <p className="text-[14px] font-bold text-[#1B365D]">Zoom</p>
-                <p className="text-[10px] text-gray-400 tracking-wide">Çevrimiçi Dersler</p>
-              </div>
-            </div>
-            <div className="hidden sm:block w-px h-10 bg-gray-200" />
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full flex items-center justify-center bg-[#e8f0fe]">
-                <Icon name="ChartBarIcon" size={16} style={{ color: '#082567' }} />
-              </div>
-              <div>
-                <p className="text-[14px] font-bold text-[#1B365D]">A1 – C2</p>
-                <p className="text-[10px] text-gray-400 tracking-wide">Tüm Seviyeler</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -205,9 +194,7 @@ export default function HeroSection({ data, banners }: HeroProps = {}) {
         <div className="relative order-first lg:order-last w-[calc(100%+2rem)] sm:w-full aspect-[4/5] max-h-[540px] sm:aspect-[4/3] sm:max-h-[600px] lg:aspect-auto lg:max-h-none lg:self-stretch -mx-4 sm:mx-0 lg:w-[calc(100%+2.5rem)] lg:-mr-10 lg:ml-0">
           {(() => {
             const isCover = slide.slot === 'ebook';
-            const fade = isCover
-              ? ''
-              : '[mask-image:linear-gradient(to_top,transparent_0%,#000_22%)] lg:[mask-image:linear-gradient(to_right,transparent_0%,#000_26%),linear-gradient(to_top,transparent_0%,#000_14%)] lg:[mask-composite:intersect]';
+            const fade = '[mask-image:linear-gradient(to_top,transparent_0%,#000_22%)] lg:[mask-image:linear-gradient(to_right,transparent_0%,#000_26%),linear-gradient(to_top,transparent_0%,#000_14%)] lg:[mask-composite:intersect] lg:[-webkit-mask-composite:source-in]';
             const showVideo = !!slide.videoUrl && !isCover && !reduceMotion;
             return (
               <div key={`media-${slide.id}`} className={`absolute inset-0 animate-[heroFade_.7s_ease-out] ${fade}`}>
@@ -216,7 +203,7 @@ export default function HeroSection({ data, banners }: HeroProps = {}) {
                   alt={slide.imageAlt || slide.titleLine1}
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
-                  className={isCover ? 'object-contain object-center p-6 lg:p-12 drop-shadow-2xl' : 'object-cover object-[50%_20%]'}
+                  className={isCover ? 'object-cover object-[50%_62%]' : 'object-cover object-[50%_20%]'}
                   priority={idx === 0}
                 />
                 {showVideo && (
