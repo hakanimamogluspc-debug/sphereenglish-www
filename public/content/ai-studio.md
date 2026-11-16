@@ -71,11 +71,11 @@ A1 (başlangıç) → C2 (akıcı/üst ileri)
 
 ## Kullanım
 
-Sphere English platformuna kayıtlı kurumsal müşteri çalışanları AI Studio'ya 7/24 erişebilir. Bireysel erişim mevcut değildir (B2B model).
+Sphere English uygulamasına (app.sphereenglish.com) kayıtlı kullanıcılar AI Studio'ya 7/24 erişebilir. Güncel erişim koşulları için: https://www.sphereenglish.com/ai-studio
 
 ## İlgili Sayfalar
 
-- Ana sayfa: https://www.sphereenglish.com/home
+- Ana sayfa: https://www.sphereenglish.com/
 - Çözümler: https://www.sphereenglish.com/cozumler
 - Nasıl Çalışır: https://www.sphereenglish.com/nasil-calisir
 - Demo: https://www.sphereenglish.com/iletisim

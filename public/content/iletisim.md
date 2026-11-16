@@ -47,7 +47,7 @@ C: Hayır, demo sonrası özel teklif gönderilir; düşünmek için süre tanı
 
 ## İlgili Sayfalar
 
-- Ana sayfa: https://www.sphereenglish.com/home
+- Ana sayfa: https://www.sphereenglish.com/
 - Çözümler: https://www.sphereenglish.com/cozumler
 - Nasıl Çalışır: https://www.sphereenglish.com/nasil-calisir
 - Fiyatlandırma (makine okunabilir): https://www.sphereenglish.com/pricing.md

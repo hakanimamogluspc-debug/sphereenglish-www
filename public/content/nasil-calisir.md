@@ -14,7 +14,7 @@ Sphere English ile kurumsal İngilizce eğitim süreci 4 ana adımdan oluşur.
 
 - Sektöre özel müfredat (Oxford University Press materyalleri + Sphere'in iş İngilizcesi içerikleri)
 - Rol bazlı senaryolar (C-level, satış, İK, teknik ekipler vb.)
-- Canlı ders takvimi ve grup yapısı oluşturulur (birebir veya max 4 kişilik küçük gruplar)
+- Canlı ders takvimi ve grup yapısı oluşturulur (birebir veya en fazla 6 kişilik küçük gruplar)
 
 ## 3. Çoklu Kanaldan Pratik
 

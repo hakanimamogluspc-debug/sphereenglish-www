@@ -251,6 +251,45 @@ export default function HakkimizdaPage() {
           </div>
         </section>
 
+        {/* ── ŞİRKET BİLGİLERİ (künye) — markanın arkasındaki tüzel kişi açıkça görünsün ── */}
+        <section id="sirket-bilgileri" className="py-12 sm:py-16 bg-[#f8fafc] border-t border-gray-100">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-[#1B365D] mb-3">Şirket Bilgileri</h2>
+            <p className="text-sm text-gray-600 leading-relaxed mb-6">
+              Sphere English, İmmer Global Eğitim ve Danışmanlık Limited Şirketi&apos;nin markasıdır.
+              Kurslar, e-kitaplar ve kurumsal eğitim hizmetleri bu şirket tarafından sunulur ve faturalandırılır.
+            </p>
+            <dl className="grid sm:grid-cols-[180px_1fr] gap-x-6 gap-y-3 text-sm">
+              <dt className="font-semibold text-[#1B365D]">Ticaret unvanı</dt>
+              <dd className="text-gray-600">İmmer Global Eğitim ve Danışmanlık Limited Şirketi</dd>
+              <dt className="font-semibold text-[#1B365D]">Marka</dt>
+              <dd className="text-gray-600">Sphere English</dd>
+              <dt className="font-semibold text-[#1B365D]">Vergi dairesi / no</dt>
+              <dd className="text-gray-600">Ayvalık V.D. — 4740935216</dd>
+              <dt className="font-semibold text-[#1B365D]">Adres</dt>
+              <dd className="text-gray-600">150 Evler Mah. Atatürk Blv. No:456 İç Kapı No:35, 10400 Ayvalık / Balıkesir</dd>
+              <dt className="font-semibold text-[#1B365D]">Kurucular</dt>
+              <dd className="text-gray-600">Didem İmamoğlu, Merve Eş</dd>
+              <dt className="font-semibold text-[#1B365D]">E-posta</dt>
+              <dd className="text-gray-600"><a href="mailto:info@sphereenglish.com" className="text-[#0e7da6] hover:underline">info@sphereenglish.com</a></dd>
+              <dt className="font-semibold text-[#1B365D]">Telefon / WhatsApp</dt>
+              <dd className="text-gray-600"><a href="https://wa.me/905066085810" className="text-[#0e7da6] hover:underline">+90 506 608 58 10</a></dd>
+              <dt className="font-semibold text-[#1B365D]">Resmî hesaplar</dt>
+              <dd className="text-gray-600">
+                <a href="https://www.linkedin.com/company/sphere-english/" target="_blank" rel="noopener noreferrer me" className="text-[#0e7da6] hover:underline">LinkedIn</a>
+                {' · '}
+                <a href="https://www.instagram.com/sphereenglish" target="_blank" rel="noopener noreferrer me" className="text-[#0e7da6] hover:underline">Instagram</a>
+              </dd>
+              <dt className="font-semibold text-[#1B365D]">Ödeme altyapısı</dt>
+              <dd className="text-gray-600">iyzico (kart bilgileri Sphere English sunucularında tutulmaz)</dd>
+            </dl>
+            <p className="text-xs text-gray-400 mt-6">
+              Eğitimlerimizde Oxford University Press müfredat ve kaynaklarını kullanıyoruz; Oxford University Press&apos;in
+              resmî ortağı değiliz ve Oxford adına sertifika vermiyoruz.
+            </p>
+          </div>
+        </section>
+
         {/* ── CTA ── */}
         <section className="py-16 sm:py-20 bg-gradient-to-br from-[#1B365D] to-[#082567]">
           <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">

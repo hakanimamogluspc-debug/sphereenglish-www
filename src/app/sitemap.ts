@@ -56,7 +56,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1.0,
     },
     // NOT: /home ve /kurslar sitemap'ten çıkarıldı — ikisi de 301 redirect
-    // NOT: /is-ingilizcesi-kursu Eylül lansmanına kadar noindex, sitemap'e eklenmedi
+    { url: `${BASE_URL}/is-ingilizcesi-kursu`, lastModified: today, changeFrequency: 'weekly', priority: 0.95 },
+    { url: `${BASE_URL}/is-ingilizcesi-kursu/a1-a2`, lastModified: today, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/is-ingilizcesi-kursu/b1-b2`, lastModified: today, changeFrequency: 'weekly', priority: 0.9 },
     {
       url: `${BASE_URL}/hakkimizda`,
       lastModified: today,

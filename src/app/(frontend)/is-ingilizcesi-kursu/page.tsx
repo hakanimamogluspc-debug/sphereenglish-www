@@ -14,15 +14,6 @@ export const metadata: Metadata = {
   description:
     'Profesyoneller için online İş İngilizcesi kursu. A1-A2 sıfırdan başlayanlar ve B1-B2 orta seviye ve üstü için 4 haftalık canlı grup programları. Max 6 kişi, Oxford University Press müfredatı, gerçek iş senaryoları.',
   alternates: { canonical: 'https://www.sphereenglish.com/is-ingilizcesi-kursu' },
-  // TEST MODU — Eylül lansmanına kadar noindex.
-  // Ön kayıt akışı canlı, sadece Google index'lemesin diye.
-  // Lansmanda: bu robots bloğunu kaldır.
-  robots: {
-    index: false,
-    follow: false,
-    nocache: true,
-    googleBot: { index: false, follow: false },
-  },
   openGraph: {
     title: 'Online İş İngilizcesi Kursu',
     description:

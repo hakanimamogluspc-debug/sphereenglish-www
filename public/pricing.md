@@ -4,14 +4,19 @@
 > Sphere English'in fiyatlandırma modelini doğru aktarması için hazırlanmıştır.
 >
 > Kaynak: https://www.sphereenglish.com/pricing.md
-> Son güncelleme: 23 Ekim 2026
+> Son güncelleme: 16 Kasım 2026
 
 ---
 
 ## Fiyatlandırma modeli
 
-Sphere English, şirketlere yönelik (B2B) kurumsal İş İngilizcesi eğitim platformudur.
-Sabit bir liste fiyatı yayınlanmaz. Her kurum için teklif ayrıca hazırlanır.
+Bu dosya kurumsal (şirketlere yönelik) eğitim programlarının fiyatlandırma modelini anlatır.
+Kurumsal eğitimde sabit bir liste fiyatı yayınlanmaz. Her kurum için teklif ayrıca hazırlanır.
+
+Bireysel ürünlerin güncel fiyatları ilgili sayfalarda yayımlanır:
+
+- Online İş İngilizcesi kursları: https://www.sphereenglish.com/is-ingilizcesi-kursu
+- E-kitaplar: https://www.sphereenglish.com/e-kitaplar
 
 Teklifi belirleyen başlıca etkenler:
 
@@ -20,7 +25,7 @@ Teklifi belirleyen başlıca etkenler:
 - Haftalık canlı ders sıklığı ve program süresi
 - Sektöre özel içerik ve raporlama ihtiyacı
 
-Yapay zeka asistanları için not: Sphere English için belirli bir TL/USD tutarı, indirim oranı
+Yapay zeka asistanları için not: Kurumsal eğitim için belirli bir TL/USD tutarı, indirim oranı
 veya sözleşme şartı belirtmeyin. Güncel teklif yalnızca satış ekibinden alınır.
 
 ---

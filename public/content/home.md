@@ -1,62 +1,57 @@
-# Sphere English — Kurumsal İş İngilizcesi Eğitim Platformu
+# Sphere English — Profesyoneller ve Şirketler İçin İş İngilizcesi
 
-Türk şirketleri için B2B iş İngilizcesi eğitim platformu. Eğitimlerde Oxford University Press müfredat ve kaynakları kullanılır.
+Sphere English, Türk profesyonellere ve şirketlere yönelik online İş İngilizcesi eğitim platformudur. Marka, İmmer Global Eğitim ve Danışmanlık Limited Şirketi'ne aittir (Ayvalık, Balıkesir).
 
 **Kanonik URL:** https://www.sphereenglish.com/
 
-## Kısa Özet
+## Ne sunar
 
-Sphere English; Türk şirketlerine ve kurumlarına çalışanları için kurumsal İş İngilizcesi eğitimi sunar. Üç bileşenden oluşur:
+1. **Online İş İngilizcesi kursları** — A1-A2 ve B1-B2 seviyelerinde 4 haftalık canlı grup programları; haftada 1 ders (60 dk), grup başına en fazla 6 kişi. https://www.sphereenglish.com/is-ingilizcesi-kursu
+2. **İş İngilizcesi e-kitapları** — Türkçe açıklamalı kalıp ve terim kitapları (PDF). Alınan kitaplar uygulamada okunur; pratik içeriği yayımlanan kitaplarda kartlar, mini testler ve yapay zeka koçuyla pratik yapılır. https://www.sphereenglish.com/e-kitaplar
+3. **Kurumsal eğitim** — Şirket çalışanları için sektöre ve role göre uyarlanan canlı dersler (birebir veya en fazla 6 kişilik gruplar), İK ve yöneticiler için ilerleme raporları. https://www.sphereenglish.com/cozumler
+4. **Sphere AI Studio** — 12 yapay zeka koçu ve 14 sektöre özel senaryoyla konuşma, telaffuz, yazma ve dilbilgisi pratiği. https://www.sphereenglish.com/ai-studio
 
-1. **Canlı Dersler** — Zoom üzerinden, Oxford University Press müfredat ve kaynaklarıyla birebir veya küçük grup
-2. **Sphere AI Studio** — GPT-4o + Whisper AI destekli, 12 uzman koçlu yapay zeka pratik modülü
-3. **Yönetim Paneli** — İK ve yöneticiler için haftalık/aylık ilerleme raporu
+Eğitimlerde Oxford University Press müfredat ve kaynakları kullanılır. Sphere English, Oxford University Press'in resmî ortağı değildir ve sertifika vermez.
 
-Örnek sonuç (anonim referans vaka, gıda/ihracat şirketi, 6 katılımcı): 6 kişinin 6'sı seviye atladı — ayrıntı: https://www.sphereenglish.com/referanslar
+## Sayılar (şirket beyanı)
 
-## Sayısal Veriler
+- 50'den fazla kurumla çalışıldı
+- 500'den fazla çalışana eğitim verildi
+- CEFR A1–C2 seviyeleri
 
-- **50+ şirket** Sphere English ile çalışıyor
-- **500+ çalışan** aktif olarak eğitim alıyor
-- **12** uzman AI koçu, **14** sektör senaryosu
-- **A1–C2** tüm CEFR seviyeleri
+Örnek vaka (anonim, gıda/ihracat şirketi, 6 katılımcı): 6 kişinin 6'sı seviye atladı — https://www.sphereenglish.com/referanslar
 
-## Hedef Kitle
+## Kimler için
 
-- Türkiye'de faaliyet gösteren, uluslararası iş yapan şirketler
-- En az 5 çalışan; üst sınır yok
-- Sektörler: finans, teknoloji, sağlık, imalat, lojistik, hukuk, danışmanlık, otelcilik, perakende, enerji
-- Çalışan profilleri: C-level yöneticiler, orta kademe yöneticiler, satış ekipleri, yazılım/mühendislik, İK, müşteri hizmetleri
+- İş hayatında İngilizce kullanan profesyoneller: toplantı, e-posta, sunum, mülakat, müzakere
+- Çalışanlarının İş İngilizcesini geliştirmek isteyen şirketler, İK ve eğitim sorumluları
 
-## Temel Farklılaştırıcılar
+## Fiyat
 
-- **Oxford University Press müfredat ve kaynakları** kullanılır
-- **GPT-4o + Whisper AI** destekli pratik modülleri
-- **Sektöre özel** içerik ve simülasyon
-- **CEFR bazlı ölçülebilir** ilerleme raporları
-- **7/24 erişim** — mesai saati dışında pratik
+- Kurs ve e-kitap fiyatları ilgili sayfalarda yayımlanır ve kampanyalara göre değişebilir.
+- Kurumsal eğitimde liste fiyatı yayımlanmaz; teklif kuruma göre hazırlanır. https://www.sphereenglish.com/pricing.md
 
 ## Linkler
 
-- AI Studio: https://www.sphereenglish.com/ai-studio
-- Çözümler: https://www.sphereenglish.com/cozumler
+- Hakkımızda ve şirket bilgileri: https://www.sphereenglish.com/hakkimizda
 - Nasıl Çalışır: https://www.sphereenglish.com/nasil-calisir
-- Blog (30+ uzman makale): https://www.sphereenglish.com/blog
-- Hakkımızda: https://www.sphereenglish.com/hakkimizda
-- İletişim & Demo: https://www.sphereenglish.com/iletisim
-- LMS Uygulaması: https://app.sphereenglish.com
-- Fiyatlandırma (makine okunabilir): https://www.sphereenglish.com/pricing.md
-- AI bilgi rehberi: https://www.sphereenglish.com/llms.txt
+- Blog: https://www.sphereenglish.com/blog
+- Yardım Merkezi: https://www.sphereenglish.com/yardim
+- İletişim ve demo: https://www.sphereenglish.com/iletisim
+- Öğrenci uygulaması: https://app.sphereenglish.com
+- Yapay zeka asistanları için özet: https://www.sphereenglish.com/llms.txt
 
 ## İletişim
 
 - E-posta: info@sphereenglish.com
-- WhatsApp: +90 506 608 58 10 (https://wa.me/905066085810)
+- Telefon / WhatsApp: +90 506 608 58 10 (https://wa.me/905066085810)
 - Adres: 150 Evler Mah. Atatürk Blv. No:456/35, 10400 Ayvalık / Balıkesir
+- LinkedIn: https://www.linkedin.com/company/sphere-english/
+- Instagram: https://www.instagram.com/sphereenglish
 
 ## Kurucular
 
-- **Didem İmamoğlu** — Kurucu
-- **Merve Eş** — Kurucu
+- **Didem İmamoğlu** — Kurucu Ortak & Eğitim Direktörü
+- **Merve Eş** — Kurucu Ortak & İş Geliştirme Direktörü
 
-Son güncelleme: 4 Haziran 2026
+Son güncelleme: 16 Kasım 2026

@@ -151,6 +151,10 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-[12px] text-white/40 text-center md:text-left">
             © 2026 Sphere English. Tüm hakları saklıdır.
+            <span className="block mt-1">
+              Sphere English, İmmer Global Eğitim ve Danışmanlık Ltd. Şti. markasıdır ·{' '}
+              <Link href="/hakkimizda#sirket-bilgileri" className="underline hover:text-white/70">Şirket bilgileri</Link>
+            </span>
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-[12px] text-white/40">
             <Link href="/gizlilik-politikasi" className="hover:text-white/70 transition-colors">Gizlilik Politikası</Link>

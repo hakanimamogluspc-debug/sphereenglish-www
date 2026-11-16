@@ -34,6 +34,7 @@ import FAQSection from './home/components/FAQSection';
 import AICoachesSection from './home/components/AICoachesSection';
 import AIStudioTeaser from './home/components/AIStudioTeaser';
 import { fetchHomePage } from '@/payload/api';
+import { DEFAULT_FAQS, type FAQ } from './home/components/faq-data';
 
 export const metadata: Metadata = {
   title: 'Profesyoneller İçin İş İngilizcesi | Kurslar, E-Kitaplar ve AI Studio',
@@ -71,8 +72,62 @@ export default async function HomePage() {
     console.warn('[home] CMS fetch hatası — varsayılan içerik kullanılacak:', err);
   }
 
+  // SSS şeması, sayfada görünen sorularla birebir aynı kaynaktan üretilir (CMS → yoksa varsayılan).
+  const faqs: FAQ[] = Array.isArray(cms?.faqs) && cms.faqs.length > 0 ? cms.faqs : DEFAULT_FAQS;
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    })),
+  };
+  const ORG = { '@id': 'https://www.sphereenglish.com/#organization' };
+  const offeringsJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Sphere English hizmetleri',
+    itemListElement: [
+      {
+        '@type': 'ListItem', position: 1,
+        item: {
+          '@type': 'Service', name: 'Online İş İngilizcesi Kursları',
+          description: 'A1-A2 ve B1-B2 seviyeleri için küçük gruplu, canlı online İş İngilizcesi programları.',
+          url: 'https://www.sphereenglish.com/is-ingilizcesi-kursu', provider: ORG, areaServed: 'TR',
+        },
+      },
+      {
+        '@type': 'ListItem', position: 2,
+        item: {
+          '@type': 'Service', name: 'Kurumsal İş İngilizcesi Eğitimi',
+          description: 'Şirket çalışanları için sektöre göre uyarlanan canlı dersler, yapay zeka destekli pratik ve İK için ilerleme raporları.',
+          url: 'https://www.sphereenglish.com/cozumler', provider: ORG, areaServed: 'TR',
+        },
+      },
+      {
+        '@type': 'ListItem', position: 3,
+        item: {
+          '@type': 'Service', name: 'İş İngilizcesi E-Kitapları',
+          description: 'Türkçe açıklamalı İş İngilizcesi kalıp ve terim kitapları (PDF); alınan kitaplar uygulamada okunur ve kalıplarla pratik yapılır.',
+          url: 'https://www.sphereenglish.com/e-kitaplar', provider: ORG, areaServed: 'TR',
+        },
+      },
+      {
+        '@type': 'ListItem', position: 4,
+        item: {
+          '@type': 'Service', name: 'Sphere AI Studio',
+          description: 'Yapay zeka koçlarıyla konuşma, telaffuz, yazma ve dilbilgisi pratiği.',
+          url: 'https://www.sphereenglish.com/ai-studio', provider: ORG, areaServed: 'TR',
+        },
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-white font-sans">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(offeringsJsonLd) }} />
       <Header />
       <main>
         <HeroSection data={cms} banners={banners} />

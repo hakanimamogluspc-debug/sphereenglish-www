@@ -48,13 +48,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: url },
-    // TEST MODU — Eylül lansmanına kadar noindex. Lansmanda kaldır.
-    robots: {
-      index: false,
-      follow: false,
-      nocache: true,
-      googleBot: { index: false, follow: false },
-    },
     openGraph: {
       title,
       description,
@@ -92,12 +85,7 @@ export default async function LevelDetailPage({ params }: Props) {
     name: c.title,
     alternateName: c.title_en ?? undefined,
     description: c.description ?? c.subtitle ?? '',
-    provider: {
-      '@type': 'EducationalOrganization',
-      name: 'Sphere English',
-      url: 'https://www.sphereenglish.com',
-      sameAs: 'https://www.sphereenglish.com',
-    },
+    provider: { '@id': 'https://www.sphereenglish.com/#organization' },
     url,
     educationalLevel: c.level_cefr ?? c.level ?? '',
     inLanguage: 'tr',

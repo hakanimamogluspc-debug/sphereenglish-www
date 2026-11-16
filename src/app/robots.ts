@@ -18,7 +18,8 @@ export default function robots(): MetadataRoute.Robots {
         // ai-input=yes  → AI sistemleri yanıtlarında Sphere'i kaynak olarak gösterebilir
         userAgent: '*\nContent-Signal: ai-train=yes, search=yes, ai-input=yes',
         allow: '/',
-        disallow: ['/kurslar', '/is-ingilizcesi-kursu'], // Hazırlık aşamasında — hazır olunca kaldırılacak
+        // Kurs sayfaları Kasım 2026'da dizine açıldı. Yalnızca kişiye özel / işlem sayfaları kapalı.
+        disallow: ['/sepet', '/odeme', '/kurslar/kayit', '/hesap-sil'],
       },
       // AI Arama Tarayıcıları — açıkça izin verildi
       { userAgent: 'GPTBot', allow: '/' },
@@ -29,6 +30,10 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: 'anthropic-ai', allow: '/' },
       { userAgent: 'Claude-Web', allow: '/' },
       { userAgent: 'ClaudeBot', allow: '/' },
+      { userAgent: 'Claude-SearchBot', allow: '/' },
+      { userAgent: 'Claude-User', allow: '/' },
+      { userAgent: 'Perplexity-User', allow: '/' },
+      { userAgent: 'bingbot', allow: '/' },
       { userAgent: 'Amazonbot', allow: '/' },
       { userAgent: 'cohere-ai', allow: '/' },
       { userAgent: 'Bytespider', allow: '/' },

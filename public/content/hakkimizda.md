@@ -2,7 +2,9 @@
 
 **Kanonik URL:** https://www.sphereenglish.com/hakkimizda
 
-Sphere English, Türk şirketlerine kurumsal İş İngilizcesi eğitimi veren B2B platformudur. Eğitimlerde Oxford University Press müfredat ve kaynakları kullanılır.
+Sphere English, Türk profesyonellere ve şirketlere yönelik online İş İngilizcesi eğitim platformudur: canlı kurslar, kurumsal eğitim, e-kitaplar ve yapay zeka destekli pratik. Eğitimlerde Oxford University Press müfredat ve kaynakları kullanılır; Sphere English, Oxford University Press'in resmî ortağı değildir ve sertifika vermez.
+
+Sphere English, İmmer Global Eğitim ve Danışmanlık Limited Şirketi'nin markasıdır.
 
 ## Misyon
 
@@ -15,12 +17,12 @@ Türkiye'nin en güvenilir kurumsal İngilizce eğitim platformu olmak; iş dün
 ## Kurucular
 
 ### Didem İmamoğlu
-Kurucu — Eğitim Vizyonu
-15+ yıl kurumsal eğitim deneyimi. Müfredat ve kurumsal müşteri ilişkilerini yönetir.
+Kurucu Ortak & Eğitim Direktörü
+Ankara Üniversitesi İngiliz Dili ve Edebiyatı mezunu. Kariyerini İngilizce eğitimi ve öğretmenlik üzerine kurdu; müfredatı yönetir.
 
 ### Merve Eş
-Kurucu — Platform & Operasyon
-Kurumsal müşteri başarısı ve operasyon süreçlerini yönetir. Kurumsal raporlama altyapısının mimarı.
+Kurucu Ortak & İş Geliştirme Direktörü
+Ankara Üniversitesi İngiliz Dili ve Edebiyatı mezunu. Kariyerine Avrupa merkezli şirketlerde başladı; kurumsal iş dünyası deneyimini programlara taşır.
 
 ## Temel Değerler
 
@@ -46,10 +48,16 @@ Kurumsal müşteri başarısı ve operasyon süreçlerini yönetir. Kurumsal rap
 
 ## Şirket Bilgileri
 
+- **Ticaret unvanı:** İmmer Global Eğitim ve Danışmanlık Limited Şirketi
+- **Marka:** Sphere English
+- **Vergi dairesi / no:** Ayvalık V.D. — 4740935216
 - **Kuruluş:** 2020
 - **Merkez:** Ayvalık, Balıkesir, Türkiye
 - **Hizmet bölgesi:** Türkiye geneli (online)
-- **Çalışma modeli:** B2B kurumsal
+- **Çalışma modeli:** Bireysel profesyoneller (kurs, e-kitap) ve kurumsal eğitim
+- **Ödeme altyapısı:** iyzico
+- **LinkedIn:** https://www.linkedin.com/company/sphere-english/
+- **Instagram:** https://www.instagram.com/sphereenglish
 
 ## Adres
 
@@ -62,9 +70,11 @@ Kurumsal müşteri başarısı ve operasyon süreçlerini yönetir. Kurumsal rap
 
 ## İlgili Sayfalar
 
-- Ana sayfa: https://www.sphereenglish.com/home
+- Ana sayfa: https://www.sphereenglish.com/
+- Kurslar: https://www.sphereenglish.com/is-ingilizcesi-kursu
+- E-kitaplar: https://www.sphereenglish.com/e-kitaplar
 - AI Studio: https://www.sphereenglish.com/ai-studio
 - Blog: https://www.sphereenglish.com/blog
 - İletişim: https://www.sphereenglish.com/iletisim
 
-Son güncelleme: 4 Haziran 2026
+Son güncelleme: 16 Kasım 2026

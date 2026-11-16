@@ -99,24 +99,40 @@ export const metadata: Metadata = {
   },
 };
 
+// Kurum kimliği — tüm sayfalarda tek ve tutarlı kayıt (yapay zeka asistanları ve arama motorları
+// markayı bu kayıtla tanır). Buradaki her bilgi sitede görünür olmalı: /hakkimizda ve footer.
 const organizationJsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'EducationalOrganization',
+  '@type': ['EducationalOrganization', 'OnlineBusiness'],
   '@id': `${BASE_URL}/#organization`,
   name: 'Sphere English',
-  alternateName: 'Sphere English Eğitim',
+  alternateName: ['SphereEnglish', 'Sphere English İş İngilizcesi'],
   legalName: 'İmmer Global Eğitim ve Danışmanlık Limited Şirketi',
   taxID: '4740935216',
+  identifier: {
+    '@type': 'PropertyValue',
+    propertyID: 'Vergi Kimlik Numarası (Ayvalık V.D.)',
+    value: '4740935216',
+  },
   url: BASE_URL,
-  logo: `${BASE_URL}/assets/images/logo-1774019980261.png`,
+  logo: {
+    '@type': 'ImageObject',
+    url: `${BASE_URL}/assets/images/logo-1774019980261.png`,
+  },
   image: `${BASE_URL}/assets/images/hero_online_english_lesson.png`,
   description:
-    "Türk şirketleri için kurumsal İş İngilizcesi eğitim platformu. Oxford University Press müfredat kaynakları ile şirket çalışanlarına ölçülebilir, raporlanabilir ve hedef odaklı İngilizce eğitimi sunmaktadır.",
+    'Sphere English, Türk profesyonellere ve şirketlere yönelik online İş İngilizcesi eğitim platformudur: küçük gruplu canlı kurslar, kurumsal eğitim programları, İş İngilizcesi e-kitapları ve yapay zeka destekli pratik (AI Studio). Eğitimlerde Oxford University Press müfredat ve kaynakları kullanılır.',
+  slogan: 'Profesyoneller için İş İngilizcesi',
   foundingDate: '2020',
-  areaServed: {
-    '@type': 'Country',
-    name: 'Turkey',
-  },
+  areaServed: { '@type': 'Country', name: 'Türkiye' },
+  knowsLanguage: ['tr', 'en'],
+  knowsAbout: [
+    'İş İngilizcesi',
+    'Business English',
+    'Kurumsal İngilizce eğitimi',
+    'Toplantı İngilizcesi',
+    'CEFR',
+  ],
   address: {
     '@type': 'PostalAddress',
     streetAddress: '150 Evler Mah. Atatürk Blv. No:456/35',
@@ -128,8 +144,20 @@ const organizationJsonLd = {
   telephone: '+90 506 608 58 10',
   email: 'info@sphereenglish.com',
   founder: [
-    { '@type': 'Person', name: 'Didem İmamoğlu', jobTitle: 'Kurucu' },
-    { '@type': 'Person', name: 'Merve Eş', jobTitle: 'Kurucu' },
+    {
+      '@type': 'Person',
+      '@id': `${BASE_URL}/hakkimizda#didem-imamoglu`,
+      name: 'Didem İmamoğlu',
+      jobTitle: 'Kurucu Ortak & Eğitim Direktörü',
+      url: `${BASE_URL}/hakkimizda`,
+    },
+    {
+      '@type': 'Person',
+      '@id': `${BASE_URL}/hakkimizda#merve-es`,
+      name: 'Merve Eş',
+      jobTitle: 'Kurucu Ortak & İş Geliştirme Direktörü',
+      url: `${BASE_URL}/hakkimizda`,
+    },
   ],
   contactPoint: {
     '@type': 'ContactPoint',
@@ -139,120 +167,12 @@ const organizationJsonLd = {
     url: `${BASE_URL}/iletisim`,
     availableLanguage: ['Turkish', 'English'],
   },
+  // Markanın resmî profilleri. Yeni profil açıldıkça (Google İşletme Profili, YouTube, Trustpilot…)
+  // buraya ve lib/business-config.ts → CONTACT.socials'a eklenmeli.
   sameAs: [
+    'https://www.linkedin.com/company/sphere-english/',
+    'https://www.instagram.com/sphereenglish',
     'https://app.sphereenglish.com',
-    'https://wa.me/905066085810',
-  ],
-};
-
-const serviceJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'EducationalOccupationalProgram',
-  name: 'Kurumsal İş İngilizcesi Eğitim Programı',
-  description:
-    'Şirket çalışanları için A1-C2 seviye aralığında, sektöre özel hazırlanmış, Zoom üzerinden canlı dersler ve AI destekli pratik ile sunulan kurumsal İngilizce eğitimi. Oxford University Press müfredat ve kaynakları.',
-  provider: {
-    '@type': 'EducationalOrganization',
-    name: 'Sphere English',
-    url: BASE_URL,
-  },
-  url: BASE_URL,
-  educationalLevel: 'A1 to C2',
-  occupationalCategory: 'Business English',
-  timeToComplete: 'P6M',
-  offers: {
-    '@type': 'Offer',
-    category: 'B2B Corporate Training',
-    availabilityStarts: '2024-01-01',
-    url: `${BASE_URL}/iletisim`,
-  },
-  hasCourse: [
-    {
-      '@type': 'Course',
-      name: 'Yöneticiler için İş İngilizcesi',
-      description: 'C-seviye ve üst düzey yöneticilere yönelik ileri düzey iş ingilizcesi programı.',
-    },
-    {
-      '@type': 'Course',
-      name: 'Satış Ekibi İngilizcesi',
-      description: 'Uluslararası satış görüşmeleri, müzakere ve sunum becerilerine odaklanan program.',
-    },
-    {
-      '@type': 'Course',
-      name: 'Teknik Ekip İngilizcesi',
-      description: 'Yazılım, mühendislik ve teknik profesyoneller için sektöre özel iş ingilizcesi.',
-    },
-  ],
-};
-
-const faqJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'Sphere English nedir?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Sphere English, Türk şirketlerine yönelik kurumsal İş İngilizcesi eğitim platformudur. B2B model ile şirket çalışanlarına ölçülebilir, raporlanabilir ve hedef odaklı İngilizce eğitimi sunmaktadır. Oxford University Press müfredat ve kaynaklarını kullanmaktadır.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Sphere English kimlere hitap ediyor?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Sphere English öncelikle çalışanlarının iş İngilizcesini geliştirmek isteyen Türk şirketleri ve kurumlarına hizmet vermektedir. Yöneticiler, satış ekipleri, teknik kadro, İK profesyonelleri ve tüm beyaz yakalı çalışanlar hedef kitledir.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Dersler nasıl yapılıyor?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Dersler Zoom üzerinden canlı, birebir veya küçük gruplarla gerçekleştirilmektedir. Ayrıca platformun AI destekli konuşma koçu sayesinde öğrenciler 7/24 pratik yapabilmektedir. Tüm dersler kayıt altına alınmakta ve ilerleme raporlanmaktadır.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Oxford University Press müfredatı nasıl kullanılıyor?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Sphere English, Oxford University Press'in yayınladığı müfredat ve kaynakları kullanmaktadır. Dersler bu kaynaklar üzerine, Türk profesyonellerin iş ihtiyaçlarına göre uyarlanarak kurulur.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Kurumsal ingilizce eğitimi için hangi seviyeler mevcut?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Sphere English'te A1 (başlangıç) seviyesinden C2 (üst ileri) seviyesine kadar tüm dil seviyeleri için özelleştirilmiş program mevcuttur. Her çalışan için bireysel seviye tespiti yapılmakta ve kişiselleştirilmiş öğrenme yolu oluşturulmaktadır.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Türkiye\'de en iyi kurumsal ingilizce eğitimi hangisi?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Seçim yaparken müfredat kaynağına, canlı ders ve pratik imkânına ve ilerlemenin nasıl raporlandığına bakmanızı öneririz. Sphere English; Oxford University Press müfredat kaynakları, canlı dersler, AI destekli pratik ve şirket yöneticilerine düzenli ilerleme raporlarını birlikte sunar.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Çalışanlar için online ingilizce kursu nasıl işliyor?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Çalışanlar Sphere English platformuna (app.sphereenglish.com) kayıt olduktan sonra haftalık canlı Zoom derslerine katılır, AI konuşma koçu ile günlük pratik yapar ve aylık ilerleme raporlarını takip eder. Tüm süreç şirket İK ve yönetimine raporlanır.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Kurumsal ingilizce eğitimi için demo nasıl alınır?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: `Ücretsiz demo randevusu almak için ${BASE_URL}/iletisim sayfasından form doldurabilir veya doğrudan iletişime geçebilirsiniz. Demo görüşmesinde kurumunuzun ihtiyaçları değerlendirilir ve özel program önerisi sunulur.`,
-      },
-    },
   ],
 };
 
@@ -262,8 +182,9 @@ const websiteJsonLd = {
   '@id': `${BASE_URL}/#website`,
   name: 'Sphere English',
   url: BASE_URL,
-  description: "Türk şirketleri için kurumsal İş İngilizcesi eğitim platformu.",
+  description: 'Türk profesyoneller ve şirketler için İş İngilizcesi kursları, e-kitaplar ve yapay zeka destekli pratik.',
   inLanguage: 'tr-TR',
+  publisher: { '@id': `${BASE_URL}/#organization` },
   potentialAction: {
     '@type': 'SearchAction',
     target: {
@@ -327,14 +248,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-        />
+        {/* SSS ve hizmet şeması yalnızca ana sayfada (page.tsx) — her sayfada tekrarlanmamalı */}
 
 
         {/* Meta Pixel STUB — KVKK: revoke ile başlat, consent verildiğinde grant.

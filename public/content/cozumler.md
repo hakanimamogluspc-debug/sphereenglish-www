@@ -52,7 +52,7 @@ Sphere English kurumsal İngilizce ihtiyaçlarını üç açıdan ele alır: bec
 ## Format Seçenekleri
 
 - **Birebir** — Tek kullanıcı, esnek saat
-- **Küçük grup (2–4 kişi)** — Aynı seviye/role yakın çalışanlar
+- **Küçük grup (en fazla 6 kişi)** — Aynı seviye/role yakın çalışanlar
 - **Hibrit** — Canlı ders + AI Studio yoğun pratik
 
 ## İletişim
