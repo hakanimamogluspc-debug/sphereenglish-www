@@ -498,8 +498,9 @@ export default async function EKitaplarPage({ searchParams }: { searchParams: Pr
                       {b.reading_time_min ? <span>~{b.reading_time_min} dk</span> : null}
                       {(b.tags ?? []).slice(0, 2).map((t) => <span key={t} className="px-1.5 rounded bg-[#f5f8fc] border border-[#e6ebf2]">{t}</span>)}
                     </div>
-                    {(b.downloads_display_count ?? 0) > 0 && (
-                      <span className="mt-2 text-[11px] font-bold text-emerald-600">● {b.downloads_display_count!.toLocaleString('tr-TR')}+ kez indirildi</span>
+                    {/* Gerçek indirme sayısı (API'den). Yeni kitaplarda küçük sayı göstermemek için 50 eşiği. */}
+                    {(b.downloads_display_count ?? 0) >= 50 && (
+                      <span className="mt-2 text-[11px] font-bold text-emerald-600">● {b.downloads_display_count!.toLocaleString('tr-TR')} kez indirildi</span>
                     )}
 
                     <div className="mt-auto pt-4 flex items-center justify-between gap-3 border-t border-[#f1f5f9] mt-4">
