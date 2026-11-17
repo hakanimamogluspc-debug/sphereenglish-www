@@ -91,7 +91,9 @@ export function primaryCtaLabel(): { label: string; href: string } {
     return { label: 'Kursları İncele', href: '/is-ingilizcesi-kursu' };
   }
   if (anyWaitlist) {
-    return { label: 'Eylül Ön Kayıt', href: '/is-ingilizcesi-kursu' };
+    // Ay adı yazma: bu metin sunucuda (arama motorlarının gördüğü HTML'de) çıkar ve eskir.
+    // Güncel ay, Header'da API'den gelen cohort_waitlist_label ile gösterilir.
+    return { label: 'Ön Kayıt', href: '/is-ingilizcesi-kursu' };
   }
   return { label: 'Kurumsal Teklif Al', href: '/iletisim' };
 }

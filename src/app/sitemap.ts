@@ -173,6 +173,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.75,
   }));
 
+  // E-kitap paketleri (setler) — /e-kitaplar/paketler/:slug
+  let bundleUrls: MetadataRoute.Sitemap = [];
+  try {
+    const r = await fetch(`${API_BASE.replace(/\/$/, '')}/api/bundles`, { cache: 'no-store' });
+    if (r.ok) {
+      const list = ((await r.json())?.bundles ?? []) as any[];
+      bundleUrls = list.filter((b) => b?.slug).map((b) => ({
+        url: `${BASE_URL}/e-kitaplar/paketler/${b.slug}`,
+        lastModified: today,
+        changeFrequency: 'weekly' as const,
+        priority: 0.85,
+      }));
+    }
+  } catch (err) {
+    console.warn('[sitemap] paket listesi alınamadı:', err);
+  }
+
   // Solutions: prefer Payload, fall back to hardcoded list
   let solutionSlugs: string[] = [];
   try {
@@ -265,6 +282,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticUrls,
     ...ebookDetailUrls,
+    ...bundleUrls,
     ...cozumlerUrls,
     ...caseUrls,
     ...helpUrls,

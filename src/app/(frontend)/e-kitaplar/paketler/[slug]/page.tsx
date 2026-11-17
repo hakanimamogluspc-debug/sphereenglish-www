@@ -115,21 +115,36 @@ export default async function BundleDetailPage({ params }: { params: { slug: str
   const savingsPercent = Number(bundle.savings_percent ?? 0);
 
   // SEO JSON-LD — Product schema
+  const pageUrl = `https://www.sphereenglish.com/e-kitaplar/paketler/${bundle.slug}`;
   const productLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
+    '@id': `${pageUrl}#product`,
     name: bundle.title,
-    description: bundle.description ? stripMarkdown(bundle.description) : undefined,
-    image: bundle.cover_image_url,
+    description: bundle.description ? stripMarkdown(bundle.description).slice(0, 600) : undefined,
+    image: bundle.cover_image_url ?? undefined,
+    url: pageUrl,
+    sku: `SE-SET-${bundle.id}`,
+    category: 'E-kitap seti (PDF)',
+    inLanguage: 'tr',
+    brand: { '@type': 'Brand', name: 'Sphere English' },
+    // Setteki kitaplar — her biri kendi ürün sayfasına bağlanır
+    isRelatedTo: (bundle.items ?? []).map((it) => ({
+      '@type': 'Book',
+      name: it.title,
+      url: `https://www.sphereenglish.com/e-kitaplar/${it.slug}`,
+      bookFormat: 'https://schema.org/EBook',
+    })),
     offers: {
       '@type': 'Offer',
       priceCurrency: 'TRY',
       price: price,
       availability: 'https://schema.org/InStock',
-      url: `https://www.sphereenglish.com/e-kitaplar/paketler/${bundle.slug}`,
-      seller: { '@type': 'Organization', name: 'Sphere English' },
+      itemCondition: 'https://schema.org/NewCondition',
+      url: pageUrl,
+      ...(bundle.discount_ends_at ? { priceValidUntil: String(bundle.discount_ends_at).slice(0, 10) } : {}),
+      seller: { '@id': 'https://www.sphereenglish.com/#organization' },
     },
-    brand: { '@type': 'Brand', name: 'Sphere English' },
   };
 
   return (

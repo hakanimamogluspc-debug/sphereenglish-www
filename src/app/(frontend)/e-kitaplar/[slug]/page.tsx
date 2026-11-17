@@ -88,6 +88,17 @@ function formatTRY(amount: number | string) {
   }).format(n);
 }
 
+/**
+ * Görsel adresini tam adrese çevirir. Kapaklar çoğunlukla zaten tam adrestir
+ * (https://app.sphereenglish.com/…); başına site adresi eklenince
+ * "https://www.sphereenglish.comhttps://app…" gibi bozuk bir adres çıkıyordu
+ * (og:image ve ürün şemasındaki görseller bu yüzden geçersizdi).
+ */
+function absUrl(u: string): string {
+  if (/^https?:\/\//i.test(u)) return u;
+  return `https://www.sphereenglish.com${u.startsWith('/') ? '' : '/'}${u}`;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -116,7 +127,7 @@ export async function generateMetadata({
       images: ebook.cover_image_url
         ? [
             {
-              url: `https://www.sphereenglish.com${ebook.cover_image_url}`,
+              url: absUrl(ebook.cover_image_url),
               width: 600,
               height: 850,
               alt: `${ebook.title} kapak`,
@@ -140,9 +151,9 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
 
   // Tüm görseller (SEO/Schema için)
   const allImages: string[] = [];
-  if (ebook.cover_image_url) allImages.push(`https://www.sphereenglish.com${ebook.cover_image_url}`);
+  if (ebook.cover_image_url) allImages.push(absUrl(ebook.cover_image_url));
   for (const g of ebook.gallery_urls ?? []) {
-    const full = `https://www.sphereenglish.com${g}`;
+    const full = absUrl(g);
     if (!allImages.includes(full)) allImages.push(full);
   }
 
@@ -179,7 +190,7 @@ export default async function EbookDetailPage({ params }: { params: { slug: stri
       priceCurrency: ebook.currency || 'TRY',
       availability: 'https://schema.org/InStock',
       url: `https://www.sphereenglish.com/e-kitaplar/${ebook.slug}`,
-      seller: { '@type': 'Organization', name: 'Sphere English' },
+      seller: { '@id': 'https://www.sphereenglish.com/#organization' },
       itemCondition: 'https://schema.org/NewCondition',
       ...(ebook.list_price_try && parseFloat(ebook.list_price_try) > parseFloat(ebook.price_try)
         ? {
