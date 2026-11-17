@@ -28,6 +28,13 @@ async function fetchEbookSlugs(): Promise<{ slug: string; updated_at?: string }[
   }
 }
 
+/** Herhangi bir tarih metnini ISO 8601'e çevirir; çevrilemiyorsa null. */
+function isoDate(v: unknown): string | null {
+  if (!v) return null;
+  const d = new Date(String(v).replace(' ', 'T').replace(/([+-]\d{2})$/, '$1:00'));
+  return Number.isNaN(d.getTime()) ? null : d.toISOString();
+}
+
 const FALLBACK_SOLUTION_SLUGS = [
   'toplanti-ingilizcesi',
   'sunum-teknikleri',
@@ -168,7 +175,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const ebookSlugs = await fetchEbookSlugs();
   const ebookDetailUrls: MetadataRoute.Sitemap = ebookSlugs.map(({ slug, updated_at }) => ({
     url: `${BASE_URL}/e-kitaplar/${slug}`,
-    lastModified: updated_at || today,
+    // Veritabanı tarihi "2026-11-15 15:52:01.525086+00" biçiminde gelir; site haritası ISO biçimi ister
+    // (Search Console bu 12 satırı "geçersiz tarih" hatası olarak işaretliyordu).
+    lastModified: isoDate(updated_at) ?? today,
     changeFrequency: 'monthly' as const,
     priority: 0.75,
   }));
