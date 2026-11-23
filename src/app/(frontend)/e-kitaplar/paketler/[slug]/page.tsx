@@ -153,7 +153,8 @@ export default async function BundleDetailPage({ params }: { params: { slug: str
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }} />
 
       {/* Breadcrumb */}
-      <nav className="max-w-6xl mx-auto px-6 lg:px-10 pt-8 text-[12px] text-gray-500">
+      {/* Üst menü sabit (72px) olduğu için içerik onun altından başlamalı: pt-24. pt-8 iken yol menünün altında kalıyordu. */}
+      <nav className="max-w-6xl mx-auto px-6 lg:px-10 pt-24 pb-2 text-[12px] text-gray-500" aria-label="Breadcrumb">
         <Link href="/e-kitaplar" className="hover:text-[#0ea5e9]">E-Kitaplar</Link>
         <span className="mx-2">/</span>
         <span>Paketler</span>
