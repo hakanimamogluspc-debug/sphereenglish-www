@@ -142,6 +142,21 @@ export default async function EKitaplarPage({ searchParams }: { searchParams: Pr
   const totalPages = ebooks.reduce((s, b) => s + (b.page_count ?? 0), 0);
   const kalip = ebooks.length * 50;
   const terim = ebooks.length * 150;
+  // "Neye ihtiyacın var?" satırı: ihtiyaç → o ihtiyaca en uygun tek kitap. Yayında olmayan kitap atlanır.
+  const NEEDS: Array<[string, string]> = [
+    ['Toplantı', 'toplanti-yonetimi-soz-alma-ve-karar'],
+    ['E-posta', 'profesyonel-e-posta-100-hazir-sablon'],
+    ['Sunum', 'sunum-teknikleri-veriyle-anlatim'],
+    ['Müzakere', 'muzakere-dili-pazarlik-taviz-ve-anlasma'],
+    ['Mülakat', 'is-mulakati-cvden-teklife-ingilizce'],
+    ['Telefon & video', 'telefon-video-gorusmeleri'],
+    ['Sohbet & network', 'small-talk-networking-is-ortaminda-sohbet'],
+    ['Satış & pazarlama', 'pazarlama-satis-musteri-iliskileri'],
+  ];
+  const needs = NEEDS
+    .map(([label, slug]) => ({ label, book: allEbooks.find((b) => b.slug === slug) }))
+    .filter((n): n is { label: string; book: Ebook } => !!n.book);
+
   const updated = ebooks.reduce((d, b) => (b.published_at > d ? b.published_at : d), '');
 
   // ─── JSON-LD ───
@@ -293,6 +308,37 @@ export default async function EKitaplarPage({ searchParams }: { searchParams: Pr
           </div>
         </div>
       </section>
+
+      {/* ─── İHTİYACINA GÖRE SEÇ ─────────────────────────────────────────
+          Set tek seçenek gibi görünmesin: tekil kitaplar sayfanın en üstünde, ihtiyaca göre. */}
+      {needs.length > 0 && (
+        <section id="ihtiyac" className="max-w-6xl mx-auto px-6 lg:px-10 pt-10 scroll-mt-24" aria-labelledby="needH">
+          <div className="flex items-end justify-between gap-4 flex-wrap">
+            <div>
+              <span className="text-[12px] font-extrabold tracking-[0.2em] uppercase text-[#0ea5e9]">Tek kitap da alabilirsin</span>
+              <h2 id="needH" className="mt-1 text-[24px] lg:text-[30px] font-extrabold text-[#1B365D] leading-tight">Neye ihtiyacın var?</h2>
+            </div>
+            <a href="#katalog" className="text-[13px] font-bold text-[#0e7da6] hover:underline">Tüm {allEbooks.length} kitabı gör →</a>
+          </div>
+          <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {needs.map(({ label, book }) => (
+              <Link key={book.slug} href={`/e-kitaplar/${book.slug}`}
+                className="group flex items-center gap-3 rounded-2xl bg-white border border-[#e6ebf2] p-3 hover:border-[#0ea5e9] hover:shadow-md transition">
+                <span className="relative w-12 h-16 flex-shrink-0 rounded-md overflow-hidden bg-[#e8eef8]">
+                  {book.cover_image_url && (
+                    <Image src={book.cover_image_url} alt="" fill sizes="48px" className="object-cover" />
+                  )}
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-[14px] font-extrabold text-[#1B365D] group-hover:text-[#0e7da6] leading-tight">{label}</span>
+                  <span className="block text-[11px] text-gray-500 leading-snug line-clamp-2 mt-0.5">{book.title}</span>
+                  <span className="block text-[12px] font-bold text-[#1B365D] mt-1">{fmtTRY(book.price_try)}</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ─── KISACA ───────────────────────────────────────────────────── */}
       <div className="max-w-6xl mx-auto px-6 lg:px-10">

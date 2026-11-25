@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import { ShoppingBag, Trash2, Package, ArrowLeft, Tag, Loader2, Check, AlertCircle } from 'lucide-react';
 import { useCart, formatTRY } from '@/lib/cart/cart-context';
 import CartCheckoutModal from './CartCheckoutModal';
+import CartSuggestions from './CartSuggestions';
 
 export default function SepetPage() {
   const { items, itemCount, subtotal, totalListPrice, savings, removeItem, clearCart } = useCart();
@@ -219,6 +220,9 @@ export default function SepetPage() {
               >
                 <Trash2 className="w-3.5 h-3.5" /> Sepeti temizle
               </button>
+
+              {/* Sepette olmayan kitaplardan öneriler (set alan diğer kitapları da görsün) */}
+              <CartSuggestions />
             </div>
 
             {/* Sağ — Özet + kupon + checkout */}
