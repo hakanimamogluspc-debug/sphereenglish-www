@@ -371,40 +371,47 @@ export default async function EKitaplarPage({ searchParams }: { searchParams: Pr
           <span className="text-[12px] font-extrabold tracking-[0.2em] uppercase text-[#0ea5e9]">Seriler ve paketler</span>
           <h2 id="serH" className="mt-1 text-[28px] lg:text-[36px] font-extrabold text-[#1B365D] leading-tight">Seriler</h2>
         </div>
-        <div className="grid md:grid-cols-3 gap-5">
-          {set ? (
-            <article className="rounded-2xl bg-gradient-to-br from-[#0B1F3A] to-[#1B365D] text-white p-6 flex flex-col gap-4 md:col-span-1 relative overflow-hidden">
-              <span className="self-start px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500 text-white">En çok tercih edilen</span>
-              {set.cover_image_url ? (
-                <div className="relative w-full aspect-[4/3] rounded-xl border border-white/10 overflow-hidden">
-                  <Image src={set.cover_image_url} alt={set.title} fill
-                    sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
-                </div>
-              ) : (
-                <div className="grid grid-cols-5 gap-1.5">
-                  {set.items_preview.slice(0, 5).map((it) => (
-                    <div key={it.id} className="relative aspect-[3/4] rounded-md overflow-hidden bg-white/10">
-                      {it.cover_image_url && (
-                        <Image src={it.cover_image_url} alt={it.title} fill sizes="80px" className="object-cover" />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-              <h3 className="text-[18px] font-extrabold leading-snug text-white">
-                <Link href={`/e-kitaplar/paketler/${set.slug}`} className="hover:text-[#7dd3fc]">{set.title}</Link>
-              </h3>
-              <p className="text-[13px] text-white/75 -mt-2">{set.subtitle ?? `${kalip} kurumsal kalıp + ${terim} terim.`}</p>
-              <div className="mt-auto flex items-center justify-between gap-3 flex-wrap">
-                <span className="text-[24px] font-extrabold tabular-nums">
-                  {fmtTRY(set.price_try)}
-                  {setList && setList > Number(set.price_try) && <s className="ml-2 text-[14px] font-semibold text-white/50">{fmtTRY(setList)}</s>}
+        <div className={`grid gap-5 ${bundles.length + GROUPS.length >= 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
+          {/* Tüm paketler (setler). Eskiden yalnızca öne çıkan tek set gösteriliyordu; yeni eklenen set sayfada görünmüyordu. */}
+          {bundles.map((bd) => {
+            const bdList = Number(bd.list_price_try ?? (bd as any).individual_total_try ?? 0) || null;
+            const isMain = set?.id === bd.id;
+            return (
+              <article key={bd.id} className="rounded-2xl bg-gradient-to-br from-[#0B1F3A] to-[#1B365D] text-white p-6 flex flex-col gap-4 relative overflow-hidden">
+                <span className={`self-start px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider text-white ${isMain ? 'bg-emerald-500' : 'bg-[#0ea5e9]'}`}>
+                  {isMain ? 'En çok tercih edilen' : `${bd.item_count} kitaplık set`}
                 </span>
-                <AddToCartButton type="bundle" slug={set.slug} title={set.title} subtitle={set.subtitle}
-                  coverImageUrl={set.cover_image_url} price={Number(set.price_try)} listPrice={setList} itemCount={set.item_count} />
-              </div>
-            </article>
-          ) : null}
+                {bd.cover_image_url ? (
+                  <div className="relative w-full aspect-[4/3] rounded-xl border border-white/10 overflow-hidden">
+                    <Image src={bd.cover_image_url} alt={bd.title} fill
+                      sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-5 gap-1.5">
+                    {bd.items_preview.slice(0, 5).map((it) => (
+                      <div key={it.id} className="relative aspect-[3/4] rounded-md overflow-hidden bg-white/10">
+                        {it.cover_image_url && (
+                          <Image src={it.cover_image_url} alt={it.title} fill sizes="80px" className="object-cover" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <h3 className="text-[18px] font-extrabold leading-snug text-white">
+                  <Link href={`/e-kitaplar/paketler/${bd.slug}`} className="hover:text-[#7dd3fc]">{bd.title}</Link>
+                </h3>
+                <p className="text-[13px] text-white/75 -mt-2">{bd.subtitle ?? `${bd.item_count} kitaplık set.`}</p>
+                <div className="mt-auto flex items-center justify-between gap-3 flex-wrap">
+                  <span className="text-[24px] font-extrabold tabular-nums">
+                    {fmtTRY(bd.price_try)}
+                    {bdList && bdList > Number(bd.price_try) && <s className="ml-2 text-[14px] font-semibold text-white/50">{fmtTRY(bdList)}</s>}
+                  </span>
+                  <AddToCartButton type="bundle" slug={bd.slug} title={bd.title} subtitle={bd.subtitle}
+                    coverImageUrl={bd.cover_image_url} price={Number(bd.price_try)} listPrice={bdList} itemCount={bd.item_count} />
+                </div>
+              </article>
+            );
+          })}
 
           {groups.filter((g) => g.books.length > 0).map((g) => (
             <article key={g.key} className="rounded-2xl bg-white border border-[#e6ebf2] p-6 flex flex-col gap-3 hover:border-[#0ea5e9]/40 hover:shadow-lg transition-all">
